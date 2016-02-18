@@ -2,7 +2,9 @@ package com.pewpew.pewpew.servelet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mongodb.MongoClient;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.mongo.MongoModule;
 import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.UUID;
 
 public class RegistrationService extends HttpServlet {
     private String email = "";
@@ -38,9 +41,17 @@ public class RegistrationService extends HttpServlet {
             response.setStatus(400);
             return;
         }
+
+        String newToken = UUID.randomUUID().toString();
+        user.setToken(newToken);
+
+        MongoModule mongoModule = MongoModule.getInstanse();
+        mongoModule.provideDatastore().save(user);
+
         JsonObject jsonResponse = new JsonObject();
-        jsonResponse.addProperty("token", "testTokenValue");
+        jsonResponse.addProperty("token", newToken);
         String stringResponse = gson.toJson(jsonResponse);
+
         response.setStatus(200);
         response.setContentType("application/json; charset=utf-8");
         response.getWriter().println(stringResponse);
