@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.Model;
+package com.pewpew.pewpew.model;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;

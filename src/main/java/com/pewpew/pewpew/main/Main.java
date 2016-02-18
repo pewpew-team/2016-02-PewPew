@@ -1,13 +1,9 @@
-package com.pewpew.pewpew;
+package com.pewpew.pewpew.main;
 
-import com.pewpew.pewpew.Model.User;
-import com.pewpew.pewpew.Mongo.MongoModule;
+import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.mongo.MongoModule;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-
-/**
- * Created by Leman on 18.02.16.
- */
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -15,9 +11,8 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setHandler(context);
         MongoModule mongoModule = MongoModule.getInstanse();
-        User user = createTestUser();
-        mongoModule.provideDatastore().save(user);
-
+//        User user = createTestUser();
+//        mongoModule.provideDatastore().save(user);
         server.start();
         server.join();
     }

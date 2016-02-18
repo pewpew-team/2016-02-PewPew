@@ -1,7 +1,9 @@
-package com.pewpew.pewpew.Servelets;
+package com.pewpew.pewpew.servelet;
 
 import com.google.gson.Gson;
-import com.pewpew.pewpew.Model.User;
+import com.google.gson.JsonObject;
+import com.pewpew.pewpew.model.User;
+import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegistrationService extends HttpServlet {
     private String email = "";
@@ -18,12 +18,13 @@ public class RegistrationService extends HttpServlet {
 
     public RegistrationService() { }
 
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         StringBuffer jsonBuffer = new StringBuffer();
-        String line = null;
         try {
             BufferedReader reader = request.getReader();
+            String line = null;
             while ((line = reader.readLine()) != null)
                 jsonBuffer.append(line);
         } catch (Exception e) {
@@ -33,14 +34,23 @@ public class RegistrationService extends HttpServlet {
         Gson gson = new Gson();
         User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
-        if (user.getEmail() == null || user.getEmail().isEmpty()
-                || user.getPassword().isEmpty()
-                || user.getPassword() == null) {
+        if (!validateUser(user)) {
             response.setStatus(400);
             return;
         }
-
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("token", "testTokenValue");
+        String stringResponse = gson.toJson(jsonResponse);
         response.setStatus(200);
         response.setContentType("application/json; charset=utf-8");
+        response.getWriter().println(stringResponse);
+    }
+
+    private boolean validateUser(User user) {
+        if (user.getEmail() == null) return false;
+        if (user.getEmail().isEmpty()) return false;
+        if (user.getPassword().isEmpty()) return false;
+        if (user.getPassword() == null) return false;
+        return true;
     }
 }

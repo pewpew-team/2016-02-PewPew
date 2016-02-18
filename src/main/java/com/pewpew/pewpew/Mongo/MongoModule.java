@@ -1,6 +1,5 @@
-package com.pewpew.pewpew.Mongo;
+package com.pewpew.pewpew.mongo;
 
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -20,7 +19,7 @@ public class MongoModule {
             return mongoModule;
         }
         Morphia morphia = new Morphia();
-        morphia.mapPackage("com.pewpew.pewpew.Model");
+        morphia.mapPackage("com.pewpew.pewpew.model");
         MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
         mongoModule = new MongoModule(morphia, mongoClient);
         return mongoModule;
