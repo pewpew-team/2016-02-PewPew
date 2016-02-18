@@ -11,8 +11,6 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setHandler(context);
         MongoModule mongoModule = MongoModule.getInstanse();
-//        User user = createTestUser();
-//        mongoModule.provideDatastore().save(user);
         server.start();
         server.join();
     }
