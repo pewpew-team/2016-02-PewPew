@@ -4,9 +4,6 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-/**
- * Created by Leman on 19.02.16.
- */
 @Entity(value = "users")
 public class User {
     @Id

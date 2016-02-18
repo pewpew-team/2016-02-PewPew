@@ -5,10 +5,6 @@ import com.mongodb.MongoClient;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
-/**
- * Created by Leman on 19.02.16.
- */
-
 public class MongoModule {
     private Morphia morphia;
     private MongoClient mongoClient;
