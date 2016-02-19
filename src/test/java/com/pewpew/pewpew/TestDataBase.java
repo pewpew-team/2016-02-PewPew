@@ -7,6 +7,7 @@ import com.pewpew.pewpew.additional.RandomString;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -24,9 +25,8 @@ public class TestDataBase {
         user.setPassword(randomString.nextString());
         user.setEmail(randomString.nextString());
 
-        List<User> sameUser =  mongoModule.provideDatastore().find(User.class, "email", user.getEmail()).asList();
-
-        assertFalse(sameUser.size() != 0);
+        User sameUser =  mongoModule.provideDatastore().find(User.class, "email", user.getEmail()).get();
+        assertEquals(user,sameUser);
 
         mongoModule.provideDatastore().save(user);
         assertNotNull("Не назначается идентификатор", user.getId());

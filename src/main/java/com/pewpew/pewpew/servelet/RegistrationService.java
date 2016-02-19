@@ -3,6 +3,7 @@ package com.pewpew.pewpew.servelet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.MongoClient;
+import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
 import jdk.nashorn.internal.parser.JSONParser;
@@ -19,7 +20,6 @@ public class RegistrationService extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         StringBuffer jsonBuffer = new StringBuffer();
         try {
             BufferedReader reader = request.getReader();
@@ -36,7 +36,7 @@ public class RegistrationService extends HttpServlet {
         Gson gson = new Gson();
         User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
-        if (!validateUser(user)) {
+        if (!Validate.user(user)) {
             response.setStatus(400);
             return;
         }
@@ -56,11 +56,11 @@ public class RegistrationService extends HttpServlet {
         response.getWriter().println(stringResponse);
     }
 
-    private boolean validateUser(User user) {
-        if (user.getEmail() == null) return false;
-        if (user.getEmail().isEmpty()) return false;
-        if (user.getPassword().isEmpty()) return false;
-        if (user.getPassword() == null) return false;
-        return true;
-    }
+//    private boolean validateUser(User user) {
+//        if (user.getEmail() == null) return false;
+//        if (user.getEmail().isEmpty()) return false;
+//        if (user.getPassword().isEmpty()) return false;
+//        if (user.getPassword() == null) return false;
+//        return true;
+//    }
 }
