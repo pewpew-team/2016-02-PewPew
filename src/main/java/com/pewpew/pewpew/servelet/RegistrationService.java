@@ -23,18 +23,19 @@ public class RegistrationService extends HttpServlet {
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            response.setStatus(403);
+            ResponseManager.errorResponse("Error reading input stream", response);
             return;
         }
         Gson gson = new Gson();
         User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
         if (!Validate.user(user)) {
-            response.setStatus(400);
+            ResponseManager.errorResponse("Some fiels is missing", response);
             return;
         }
 
         if (!MongoManager.userExist(user)) {
+            ResponseManager.errorResponse("User already exist", response);
             return;
         }
 

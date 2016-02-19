@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
-import com.pewpew.pewpew.mongo.MongoModule;
+import com.pewpew.pewpew.mongo.MongoManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,21 +21,19 @@ public class AuthorizationService extends HttpServlet {
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            response.setStatus(403);
+            ResponseManager.errorResponse("Error reading input stream", response);
             return;
         }
         Gson gson = new Gson();
         User authUser = gson.fromJson(jsonBuffer.toString(), User.class);
 
         if (!Validate.user(authUser)) {
-            response.setStatus(400);
+            ResponseManager.errorResponse("Some fiels is missing", response);
             return;
         }
-        MongoModule mongoModule = MongoModule.getInstanse();
-        User user = mongoModule.provideDatastore().find(
-                User.class, "email", authUser.getEmail()).get();
+        User user = MongoManager.getUser(authUser.getEmail(), authUser.getPassword());
         if (user == null) {
-            response.setStatus(403);
+            ResponseManager.errorResponse("User does not exist", response);
             return;
         }
 
