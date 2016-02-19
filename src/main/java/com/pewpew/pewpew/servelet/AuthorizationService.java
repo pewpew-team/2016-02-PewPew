@@ -3,7 +3,6 @@ package com.pewpew.pewpew.servelet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.mongodb.MongoClient;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;

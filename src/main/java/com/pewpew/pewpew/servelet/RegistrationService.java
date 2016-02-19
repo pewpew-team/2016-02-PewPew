@@ -3,6 +3,7 @@ package com.pewpew.pewpew.servelet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.MongoClient;
+import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
@@ -20,19 +21,12 @@ public class RegistrationService extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        StringBuffer jsonBuffer = new StringBuffer();
-        try {
-            BufferedReader reader = request.getReader();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                jsonBuffer.append(line);
-            }
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            response.setStatus(400);
+        BufferRead bufferRead = new BufferRead(request);
+        StringBuffer jsonBuffer = bufferRead.getStringBuffer();
+        if (jsonBuffer == null) {
+            response.setStatus(403);
             return;
         }
-
         Gson gson = new Gson();
         User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
@@ -44,7 +38,7 @@ public class RegistrationService extends HttpServlet {
         MongoModule mongoModule = MongoModule.getInstanse();
         User sameUser = mongoModule.provideDatastore().find(
                 User.class, "email", user.getEmail()).get();
-        
+
         if (sameUser != null) {
             response.setStatus(403);
             return;
