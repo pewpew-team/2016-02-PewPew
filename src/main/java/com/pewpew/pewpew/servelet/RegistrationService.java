@@ -16,10 +16,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class RegistrationService extends HttpServlet {
-    private String email = "";
-    private  String password = "";
-
-    public RegistrationService() { }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,10 +24,13 @@ public class RegistrationService extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
             String line = null;
-            while ((line = reader.readLine()) != null)
+            while ((line = reader.readLine()) != null) {
                 jsonBuffer.append(line);
+            }
         } catch (Exception e) {
             System.err.println(e.toString());
+            response.setStatus(400);
+            return;
         }
 
         Gson gson = new Gson();
