@@ -38,7 +38,6 @@ public class TestDataBase {
         assertNotNull("Не назначается идентификатор", user.getId());
         assertNotNull("Не создалось поле емеил", user.getEmail());
         assertNotNull("Не создалось поле пароль", user.getPassword());
+        assertNotNull("Не создался токен", user.getToken());
     }
-
-
 }
