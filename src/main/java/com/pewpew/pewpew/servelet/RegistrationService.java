@@ -41,10 +41,17 @@ public class RegistrationService extends HttpServlet {
             return;
         }
 
+        MongoModule mongoModule = MongoModule.getInstanse();
+        User sameUser = mongoModule.provideDatastore().find(
+                User.class, "email", user.getEmail()).get();
+        
+        if (sameUser != null) {
+            response.setStatus(403);
+            return;
+        }
+
         String newToken = UUID.randomUUID().toString();
         user.setToken(newToken);
-
-        MongoModule mongoModule = MongoModule.getInstanse();
         mongoModule.provideDatastore().save(user);
 
         JsonObject jsonResponse = new JsonObject();
@@ -55,12 +62,4 @@ public class RegistrationService extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
         response.getWriter().println(stringResponse);
     }
-
-//    private boolean validateUser(User user) {
-//        if (user.getEmail() == null) return false;
-//        if (user.getEmail().isEmpty()) return false;
-//        if (user.getPassword().isEmpty()) return false;
-//        if (user.getPassword() == null) return false;
-//        return true;
-//    }
 }
