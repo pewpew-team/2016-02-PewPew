@@ -33,7 +33,7 @@ public class AuthorizationService extends HttpServlet {
         }
         User user = MongoManager.getUser(authUser.getEmail(), authUser.getPassword());
         if (user == null) {
-            ResponseManager.errorResponse("User does not exist", response);
+            ResponseManager.errorResponse("Wrong email or password", response);
             return;
         }
 

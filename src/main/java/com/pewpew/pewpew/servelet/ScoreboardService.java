@@ -26,6 +26,6 @@ public class ScoreboardService extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json; charset=utf-8");
         response.getWriter().println(stringResponse);
-    }
+        }
     }
 
