@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class RegistrationService extends HttpServlet {
+    private MongoModule mongoModule = MongoModule.getInstanse();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,12 +34,7 @@ public class RegistrationService extends HttpServlet {
             return;
         }
 
-        MongoModule mongoModule = MongoModule.getInstanse();
-        User sameUser = mongoModule.provideDatastore().find(
-                User.class, "email", user.getEmail()).get();
-
-        if (sameUser != null) {
-            response.setStatus(403);
+        if (!MongoManager.userExist(user)) {
             return;
         }
 

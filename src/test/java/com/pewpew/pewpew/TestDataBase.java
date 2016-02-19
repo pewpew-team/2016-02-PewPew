@@ -5,8 +5,6 @@ import com.pewpew.pewpew.mongo.MongoModule;
 import org.junit.Test;
 import com.pewpew.pewpew.additional.RandomString;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class TestDataBase {
@@ -30,5 +28,10 @@ public class TestDataBase {
         assertNotNull("Не назначается идентификатор", user.getId());
         assertNotNull("Не создалось поле емеил", user.getEmail());
         assertNotNull("Не создалось поле пароль", user.getPassword());
+    }
+
+    @Test
+    public void userExist() {
+
     }
 }
