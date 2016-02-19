@@ -11,6 +11,15 @@ public class User {
     private String password;
     private String email;
     private String token;
+    private String rating;
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
 
     public ObjectId getId() {
         return id;

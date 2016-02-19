@@ -10,7 +10,7 @@ import java.io.IOException;
  * Created by Leman on 19.02.16.
  */
 public class ResponseManager {
-    static public void errorResponse(String errorText,
+    public static void errorResponse(String errorText,
                                      HttpServletResponse response) {
         Gson gson = new Gson();
         JsonObject jsonResponse = new JsonObject();

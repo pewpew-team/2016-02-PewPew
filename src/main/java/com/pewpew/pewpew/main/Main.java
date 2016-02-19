@@ -9,7 +9,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception, InterruptedException {
         Server server = new Server(8080);
         MongoModule mongoModule = MongoModule.getInstanse();
 
@@ -23,13 +23,6 @@ public class Main {
         server.setHandler(context);
         server.start();
         server.join();
-    }
-
-    private static User createTestUser() {
-        User user = new User();
-        user.setEmail("i_love_med@med.ru");
-        user.setPassword("medmed");
-        return user;
     }
 }
 

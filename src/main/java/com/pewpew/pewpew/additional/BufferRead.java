@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.additional;
 
+//import org.jetbrains.annotations.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 
@@ -13,6 +15,7 @@ public class BufferRead {
         this.request = request;
     }
 
+//    @Nullable
     public StringBuffer getStringBuffer() {
         StringBuffer jsonBuffer = new StringBuffer();
         try {
