@@ -41,7 +41,7 @@ public class AuthorizationService extends HttpServlet {
         jsonResponse.addProperty("token", user.getToken());
         String stringResponse = gson.toJson(jsonResponse);
 
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json; charset=utf-8");
         response.getWriter().println(stringResponse);
     }

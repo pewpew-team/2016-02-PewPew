@@ -11,13 +11,13 @@ public class User {
     private String password;
     private String email;
     private String token;
-    private String rating;
+    private Integer rating;
 
-    public String getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 

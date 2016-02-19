@@ -4,6 +4,7 @@ import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
 import com.pewpew.pewpew.servelet.AuthorizationService;
 import com.pewpew.pewpew.servelet.RegistrationService;
+import com.pewpew.pewpew.servelet.ScoreboardService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,6 +21,10 @@ public class Main {
 
         AuthorizationService authorizationService = new AuthorizationService();
         context.addServlet(new ServletHolder(authorizationService), "/auth");
+
+        ScoreboardService scoreboardService = new ScoreboardService();
+        context.addServlet(new ServletHolder(scoreboardService), "/scoreboard");
+
         server.setHandler(context);
         server.start();
         server.join();
@@ -27,5 +32,6 @@ public class Main {
 }
 
 // curl -H "Content-Type: application/json" -X POST -d '{"email":"xyz","password":"xyz"}' http://localhost:8080/auth
+// curl -i -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/scoreboard
 
 
