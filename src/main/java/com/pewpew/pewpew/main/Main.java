@@ -37,6 +37,8 @@ public class Main {
 
 // curl -H "Content-Type: application/json" -X POST -d '{"email":"xyz","password":"xyz"}' http://localhost:8080/auth
 // curl -i -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/scoreboard
-// curl -H "Content-Type: application/json" -X POST -d '{"userId":"56c77735f6ca4379ec6e5879"}' http://localhost:8080/getUser
+// curl -H "Content-Type: application/json" -X POST -d '{"id":"56c77735f6ca4379ec6e5895"}' http://localhost:8080/getUser
+// curl -H "Content-Type: application/json" -X POST -d {\"_id\":{\"$oid\":\"51eae100c2e6b6c222ec3431\"}} http://localhost:8080/getUser
+// curl -H "Content-Type: application/json" -X POST -d "{"_id":"56c77735f6ca4379ec6e5898"}" http://localhost:8080/getUser
 
 

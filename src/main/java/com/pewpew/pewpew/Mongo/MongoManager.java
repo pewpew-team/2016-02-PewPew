@@ -18,7 +18,7 @@ public class MongoManager {
                 User.class, "email", email).field("password").equal(password).get();
     }
     public static User getUser(ObjectId userId) {
-        return mongoModule.provideDatastore().find(User.class, "_id", userId).get();
+        return mongoModule.provideDatastore().get(User.class, userId);
     }
 
 //    @NotNull
