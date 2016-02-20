@@ -1,11 +1,12 @@
 package com.pewpew.pewpew.additional;
 
 import com.pewpew.pewpew.model.User;
+import com.sun.istack.internal.NotNull;
 
-/**
- * Created by Leman on 19.02.16.
- */
+
 public class Validate {
+
+    @NotNull
     public static boolean user(User user) {
         if (user.getEmail() == null) return false;
         if (user.getEmail().isEmpty()) return false;

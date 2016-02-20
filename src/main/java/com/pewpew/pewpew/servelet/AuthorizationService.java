@@ -3,6 +3,7 @@ package com.pewpew.pewpew.servelet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
@@ -25,24 +26,29 @@ public class AuthorizationService extends HttpServlet {
             return;
         }
         Gson gson = new Gson();
-        User authUser = gson.fromJson(jsonBuffer.toString(), User.class);
+        try {
+            User authUser = gson.fromJson(jsonBuffer.toString(), User.class);
 
-        if (!Validate.user(authUser)) {
-            ResponseManager.errorResponse("Some fiels is missing", response);
-            return;
+            if (!Validate.user(authUser)) {
+                ResponseManager.errorResponse("Some fiels is missing", response);
+                return;
+            }
+            User user = MongoManager.getUser(authUser.getEmail(), authUser.getPassword());
+            if (user == null) {
+                ResponseManager.errorResponse("Wrong email or password", response);
+                return;
+            }
+
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("token", user.getToken());
+            String stringResponse = gson.toJson(jsonResponse);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json; charset=utf-8");
+            response.getWriter().println(stringResponse);
+        } catch (JsonSyntaxException error) {
+            System.err.println(error);
+            ResponseManager.errorResponse("Cannot serilized Json", response);
         }
-        User user = MongoManager.getUser(authUser.getEmail(), authUser.getPassword());
-        if (user == null) {
-            ResponseManager.errorResponse("Wrong email or password", response);
-            return;
-        }
-
-        JsonObject jsonResponse = new JsonObject();
-        jsonResponse.addProperty("token", user.getToken());
-        String stringResponse = gson.toJson(jsonResponse);
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json; charset=utf-8");
-        response.getWriter().println(stringResponse);
     }
 }

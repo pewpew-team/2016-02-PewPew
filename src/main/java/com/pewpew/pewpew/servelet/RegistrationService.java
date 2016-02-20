@@ -2,6 +2,7 @@ package com.pewpew.pewpew.servelet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.model.User;
@@ -27,28 +28,33 @@ public class RegistrationService extends HttpServlet {
             return;
         }
         Gson gson = new Gson();
-        User user = gson.fromJson(jsonBuffer.toString(), User.class);
+        try {
+            User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
-        if (!Validate.user(user)) {
-            ResponseManager.errorResponse("Some fiels is missing", response);
-            return;
+            if (!Validate.user(user)) {
+                ResponseManager.errorResponse("Some fiels is missing", response);
+                return;
+            }
+
+            if (!MongoManager.userExist(user)) {
+                ResponseManager.errorResponse("User already exist", response);
+                return;
+            }
+
+            String newToken = UUID.randomUUID().toString();
+            user.setToken(newToken);
+            mongoModule.provideDatastore().save(user);
+
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("token", newToken);
+            String stringResponse = gson.toJson(jsonResponse);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json; charset=utf-8");
+            response.getWriter().println(stringResponse);
+        } catch (JsonSyntaxException error) {
+            System.err.println(error);
+            ResponseManager.errorResponse("Cannot serilized Json", response);
         }
-
-        if (!MongoManager.userExist(user)) {
-            ResponseManager.errorResponse("User already exist", response);
-            return;
-        }
-
-        String newToken = UUID.randomUUID().toString();
-        user.setToken(newToken);
-        mongoModule.provideDatastore().save(user);
-
-        JsonObject jsonResponse = new JsonObject();
-        jsonResponse.addProperty("token", newToken);
-        String stringResponse = gson.toJson(jsonResponse);
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json; charset=utf-8");
-        response.getWriter().println(stringResponse);
     }
 }

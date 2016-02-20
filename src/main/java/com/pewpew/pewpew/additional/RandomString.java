@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.additional;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 
 public class RandomString {
@@ -15,9 +17,11 @@ public class RandomString {
         symbols = tmp.toString().toCharArray();
     }
 
+
     private final Random random = new Random();
 
     private final char[] buf;
+
 
     public RandomString(int length) {
         if (length < 1)
@@ -25,6 +29,7 @@ public class RandomString {
         buf = new char[length];
     }
 
+    @NotNull
     public String nextString() {
         for (int idx = 0; idx < buf.length; ++idx)
             buf[idx] = symbols[random.nextInt(symbols.length)];

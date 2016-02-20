@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class IdFromJson {
 
-
     public String get_id() {
         return _id;
     }

@@ -1,13 +1,10 @@
 package com.pewpew.pewpew.additional;
 
-//import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 
-/**
- * Created by Leman on 19.02.16.
- */
 public class BufferRead {
     private HttpServletRequest request;
 
@@ -15,7 +12,7 @@ public class BufferRead {
         this.request = request;
     }
 
-//    @Nullable
+    @Nullable
     public StringBuffer getStringBuffer() {
         StringBuffer jsonBuffer = new StringBuffer();
         try {

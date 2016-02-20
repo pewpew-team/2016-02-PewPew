@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.mongo;
 
 import com.mongodb.MongoClient;
+import com.sun.istack.internal.NotNull;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -14,8 +15,10 @@ public class MongoModule {
         this.mongoClient = mongoClient;
     }
 
+    @NotNull
     public static MongoModule getInstanse() {
         if (mongoModule != null) {
+
             return mongoModule;
         }
         Morphia morphia = new Morphia();
@@ -25,6 +28,7 @@ public class MongoModule {
         return mongoModule;
     }
 
+    @NotNull
     public Datastore provideDatastore() {
         return morphia.createDatastore(mongoClient, "PewPewDataBase");
     }

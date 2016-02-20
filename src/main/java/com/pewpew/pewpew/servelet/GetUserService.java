@@ -40,6 +40,7 @@ public class GetUserService extends HttpServlet {
             String stringResponse = gson.toJson(user);
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json; charset=utf-8");
+
             response.getWriter().println(stringResponse);
         } catch (JsonSyntaxException e) {
             ResponseManager.errorResponse("Cannot serilized Json",response);
