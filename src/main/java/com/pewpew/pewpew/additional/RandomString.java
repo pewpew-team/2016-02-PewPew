@@ -2,9 +2,6 @@ package com.pewpew.pewpew.additional;
 
 import java.util.Random;
 
-/**
- * Created by Leman on 19.02.16.
- */
 public class RandomString {
 
     private static final char[] symbols;
