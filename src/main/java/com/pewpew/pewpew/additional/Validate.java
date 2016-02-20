@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.additional;
 
 import com.pewpew.pewpew.model.User;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 
 public class Validate {

@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.mongo;
 
 import com.mongodb.MongoClient;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
