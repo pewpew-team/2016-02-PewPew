@@ -1,25 +1,26 @@
 package com.pewpew.pewpew.mongo;
+import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mongodb.morphia.Datastore;
 
 public class MongoManager {
     private static MongoModule mongoModule = MongoModule.getInstanse();
+    private static Datastore ds = mongoModule.provideDatastore(Settings.USERS_COLLECTION, Settings.MODEL_PACKAGE);
 
     @Nullable
     public static User getUser(String email) {
-        return mongoModule.provideDatastore().find(
-                User.class, "email", email).get();
+        return ds.find(User.class, "email", email).get();
     }
 
     public static User getUser(String email, String password) {
-        return mongoModule.provideDatastore().find(
-                User.class, "email", email).field("password").equal(password).get();
+        return ds.find(User.class, "email", email).field("password").equal(password).get();
     }
 
     public static User getUser(ObjectId userId) {
-        return mongoModule.provideDatastore().get(User.class, userId);
+        return ds.get(User.class, userId);
     }
 
     @NotNull

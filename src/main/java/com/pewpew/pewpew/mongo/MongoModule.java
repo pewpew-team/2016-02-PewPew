@@ -1,35 +1,44 @@
 package com.pewpew.pewpew.mongo;
 
 import com.mongodb.MongoClient;
+import com.pewpew.pewpew.common.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.MappingException;
 
+//TODO: при использовании потоков будет лочиться. Предпочтительна другая реализация
 public class MongoModule {
+    private String dbAddress = Settings.DB_ADDRESS;
+    private int dbPort = Settings.DB_PORT;
     private Morphia morphia;
     private MongoClient mongoClient;
     private static MongoModule mongoModule;
 
-    public MongoModule(Morphia morphia, MongoClient mongoClient) {
-        this.morphia = morphia;
-        this.mongoClient = mongoClient;
+    private MongoModule() {
+        this.morphia = new Morphia();
+        this.mongoClient = new MongoClient(this.dbAddress, this.dbPort);
     }
 
     @NotNull
     public static MongoModule getInstanse() {
-        if (mongoModule != null) {
-
-            return mongoModule;
+        if (mongoModule == null) {
+            mongoModule = new MongoModule();
         }
-        Morphia morphia = new Morphia();
-        morphia.mapPackage("com.pewpew.pewpew.model");
-        MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
-        mongoModule = new MongoModule(morphia, mongoClient);
         return mongoModule;
     }
 
     @NotNull
-    public Datastore provideDatastore() {
-        return morphia.createDatastore(mongoClient, "PewPewDataBase");
+    public Datastore provideDatastore(String dbName, String mapPackage) {
+        if(mapPackage != null)
+        {
+            try {
+                morphia.mapPackage(mapPackage);
+            }
+            catch (MappingException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return morphia.createDatastore(mongoClient, dbName);
     }
 }

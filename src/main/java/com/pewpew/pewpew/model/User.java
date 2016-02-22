@@ -3,12 +3,14 @@ package com.pewpew.pewpew.model;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 @Entity(value = "users")
 public class User {
     @Id
     private ObjectId id;
     private String password;
+    @Indexed(unique = true)
     private String email;
     private String token;
     private Integer rating;

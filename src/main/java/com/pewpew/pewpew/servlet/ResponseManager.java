@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.servelet;
+package com.pewpew.pewpew.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

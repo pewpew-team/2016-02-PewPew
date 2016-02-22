@@ -1,11 +1,10 @@
 package com.pewpew.pewpew.main;
 
-import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
-import com.pewpew.pewpew.servelet.AuthorizationService;
-import com.pewpew.pewpew.servelet.GetUserService;
-import com.pewpew.pewpew.servelet.RegistrationService;
-import com.pewpew.pewpew.servelet.ScoreboardService;
+import com.pewpew.pewpew.servlet.AuthorizationService;
+import com.pewpew.pewpew.servlet.GetUserService;
+import com.pewpew.pewpew.servlet.RegistrationService;
+import com.pewpew.pewpew.servlet.ScoreboardService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
