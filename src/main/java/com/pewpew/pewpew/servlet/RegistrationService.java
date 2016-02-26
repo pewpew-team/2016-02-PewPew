@@ -33,7 +33,7 @@ public class RegistrationService extends HttpServlet {
         try {
             User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
-            if (!Validate.user(user)) {
+            if (!Validate.userRegister(user)) {
                 ResponseManager.errorResponse("Some fiels is missing", response);
                 return;
             }

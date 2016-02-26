@@ -12,7 +12,7 @@ public class User {
     private String password;
     @Indexed(unique = true)
     private String email;
-    private String token;
+    private String login;
     private Integer rating;
 
     public Integer getRating() {
@@ -43,11 +43,11 @@ public class User {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
+    public String getLogin() {
+        return login;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

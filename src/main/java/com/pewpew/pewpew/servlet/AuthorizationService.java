@@ -29,7 +29,7 @@ public class AuthorizationService extends HttpServlet {
         try {
             User authUser = gson.fromJson(jsonBuffer.toString(), User.class);
 
-            if (!Validate.user(authUser)) {
+            if (!Validate.userAuth(authUser)) {
                 ResponseManager.errorResponse("Some fiels is missing", response);
                 return;
             }

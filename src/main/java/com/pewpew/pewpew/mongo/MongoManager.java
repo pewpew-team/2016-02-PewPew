@@ -15,8 +15,8 @@ public class MongoManager {
         return ds.find(User.class, "email", email).get();
     }
 
-    public static User getUser(String email, String password) {
-        return ds.find(User.class, "email", email).field("password").equal(password).get();
+    public static User getUser(String login, String password) {
+        return ds.find(User.class, "login", login).field("password").equal(password).get();
     }
 
     public static User getUser(ObjectId userId) {
