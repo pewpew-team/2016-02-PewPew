@@ -1,6 +1,8 @@
 package com.pewpew.pewpew.servelet;
 
-import com.google.gson.*;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.additional.IdFromJson;

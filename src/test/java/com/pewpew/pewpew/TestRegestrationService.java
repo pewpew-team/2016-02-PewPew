@@ -1,6 +1,6 @@
 package com.pewpew.pewpew;
 
-import com.google.gson.Gson;
+
 import com.pewpew.pewpew.model.User;
 import org.junit.Test;
 
