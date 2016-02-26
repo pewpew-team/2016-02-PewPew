@@ -12,7 +12,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 public class Main {
     public static void main(String[] args) throws Exception, InterruptedException {
-        Server server = new Server(8080);
+        int port = 8080;
+        if (args.length == 1) {
+            String portString = args[0];
+            port = Integer.valueOf(portString);
+        }
+
+        Server server = new Server(port);
         MongoModule mongoModule = MongoModule.getInstanse();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
