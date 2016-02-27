@@ -2,13 +2,12 @@ package com.pewpew.pewpew.servlet;
 
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.common.CockieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
+import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -33,14 +32,14 @@ public class AuthorizationService extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cookie cockie = CockieHelper.getCockie(request, "token");
         if (cockie == null) {
-            ResponseManager.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
+            ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;
         }
         Gson gson = new Gson();
 
         ObjectId userId = accountService.getUserByToken(cockie.getValue()).getId();
         String stringResponse = JsonHelper.createJsonWithId(userId);
-        ResponseManager.successResponse(stringResponse, response);
+        ResponseHelper.successResponse(stringResponse, response);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class AuthorizationService extends HttpServlet {
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            ResponseManager.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
             return;
         }
         Cookie cockie = CockieHelper.getCockie(request, "token");
@@ -56,15 +55,15 @@ public class AuthorizationService extends HttpServlet {
         if (cockie == null) {
             User authUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
             if (authUser == null) {
-                ResponseManager.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+                ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
             }
             if (!Validate.userAuth(authUser)) {
-                ResponseManager.errorResponse("Some fiels is missing", response, Settings.BAD_REQUEST);
+                ResponseHelper.errorResponse("Some fiels is missing", response, Settings.BAD_REQUEST);
                 return;
             }
-            User user = MongoManager.getUser(authUser.getEmail(), authUser.getPassword());
+            User user = MongoManager.getUser(authUser.getLogin(), authUser.getPassword());
             if (user == null) {
-                ResponseManager.errorResponse("Wrong login or password", response, Settings.BAD_REQUEST);
+                ResponseHelper.errorResponse("Wrong login or password", response, Settings.BAD_REQUEST);
                 return;
             }
             String token = UUID.randomUUID().toString();
@@ -76,6 +75,6 @@ public class AuthorizationService extends HttpServlet {
         ObjectId userId = accountService.getUserByToken(cockie.getValue()).getId();
 
         String stringResponse = JsonHelper.createJsonWithId(userId);
-        ResponseManager.successResponse(stringResponse, response);
+        ResponseHelper.successResponse(stringResponse, response);
     }
 }

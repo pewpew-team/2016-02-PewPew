@@ -1,11 +1,11 @@
 package com.pewpew.pewpew.servlet;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.additional.Validate;
 import com.pewpew.pewpew.common.JsonHelper;
+import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
@@ -35,7 +35,7 @@ public class RegistrationService extends HttpServlet {
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            ResponseManager.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
             return;
         }
         Gson gson = new Gson();
@@ -43,12 +43,12 @@ public class RegistrationService extends HttpServlet {
             User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
             if (!Validate.userRegister(user)) {
-                ResponseManager.errorResponse("Some fiels is missing", response, Settings.FORBIDDEN);
+                ResponseHelper.errorResponse("Some fiels is missing", response, Settings.FORBIDDEN);
                 return;
             }
 
             if (!MongoManager.userExist(user)) {
-                ResponseManager.errorResponse("User already exist",response, Settings.FORBIDDEN);
+                ResponseHelper.errorResponse("User already exist",response, Settings.FORBIDDEN);
                 return;
             }
 
@@ -60,10 +60,10 @@ public class RegistrationService extends HttpServlet {
             response.addCookie(cockie);
 
             String stringResponse = JsonHelper.createJsonWithId(user.getId());
-            ResponseManager.successResponse(stringResponse, response);
+            ResponseHelper.successResponse(stringResponse, response);
         } catch (JsonSyntaxException error) {
             System.err.println(error);
-            ResponseManager.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
         }
     }
 }
