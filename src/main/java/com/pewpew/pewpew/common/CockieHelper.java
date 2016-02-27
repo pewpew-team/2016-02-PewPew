@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CockieHelper {
     @Nullable
-    static Cookie getCockie(HttpServletRequest request, String key) {
+    public static Cookie getCockie(HttpServletRequest request, String key) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (cookie.getName().equals(key)) {

@@ -1,10 +1,8 @@
 package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.mongo.MongoModule;
-import com.pewpew.pewpew.servlet.AuthorizationService;
-import com.pewpew.pewpew.servlet.GetUserService;
-import com.pewpew.pewpew.servlet.RegistrationService;
-import com.pewpew.pewpew.servlet.ScoreboardService;
+import com.pewpew.pewpew.servlet.*;
+import com.sun.tools.javac.comp.Check;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,19 +18,24 @@ public class Main {
         Server server = new Server(port);
         MongoModule mongoModule = MongoModule.getInstanse();
 
+        AccountService accountService = new AccountService();
+
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-        RegistrationService registrationService = new RegistrationService();
-        context.addServlet(new ServletHolder(registrationService),"/register");
+        RegistrationService registrationService = new RegistrationService(accountService);
+        context.addServlet(new ServletHolder(registrationService),"/user");
 
-        AuthorizationService authorizationService = new AuthorizationService();
-        context.addServlet(new ServletHolder(authorizationService), "/auth");
+        AuthorizationService authorizationService = new AuthorizationService(accountService);
+        context.addServlet(new ServletHolder(authorizationService), "/session");
 
         ScoreboardService scoreboardService = new ScoreboardService();
         context.addServlet(new ServletHolder(scoreboardService), "/scoreboard");
 
-        GetUserService getUserService = new GetUserService();
+        GetUserService getUserService = new GetUserService(accountService);
         context.addServlet(new ServletHolder(getUserService), "/getUser");
+
+
+
 
         server.setHandler(context);
         server.start();

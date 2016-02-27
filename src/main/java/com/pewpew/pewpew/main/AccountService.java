@@ -9,18 +9,23 @@ public class AccountService {
 
     private Map<String, User> tokens = new HashMap<>();
 
-    public void addSessions(String token, User user) {
-
-        tokens.put(token, user);
+    public boolean addToken(String token, User user) {
+        return tokens.put(token, user) != null;
     }
 
     public User getUserByToken(String token) {
-
         return tokens.get(token);
     }
 
-    public boolean closeSession(String token) {
+    public boolean updateUser(String token, User editedUser) {
+        return tokens.replace(token, editedUser) != null;
+    }
 
-        return true;
+    public boolean deleteUser(User user) {
+        return tokens.values().remove(user);
+    }
+
+    public boolean closeToken(String token) {
+        return tokens.remove(token) != null;
     }
 }

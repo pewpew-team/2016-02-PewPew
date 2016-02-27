@@ -15,10 +15,12 @@ public class MongoManager {
         return ds.find(User.class, "email", email).get();
     }
 
+    @Nullable
     public static User getUser(String login, String password) {
         return ds.find(User.class, "login", login).field("password").equal(password).get();
     }
 
+    @Nullable
     public static User getUser(ObjectId userId) {
         return ds.get(User.class, userId);
     }
@@ -27,5 +29,9 @@ public class MongoManager {
     public static Boolean userExist(User newUser) {
         User user = getUser(newUser.getEmail());
         return user == null;
+    }
+
+    public static void delete(User user) {
+        ds.delete(user);
     }
 }

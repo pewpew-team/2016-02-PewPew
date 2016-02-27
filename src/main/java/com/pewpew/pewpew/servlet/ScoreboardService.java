@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ScoreboardService extends HttpServlet {
+
     @NotNull
     private Datastore ds = MongoModule.getInstanse().provideDatastore(Settings.USERS_COLLECTION, Settings.MODEL_PACKAGE);
 
@@ -30,12 +31,10 @@ public class ScoreboardService extends HttpServlet {
             Gson gson = new Gson();
             String stringResponse = gson.toJson(users);
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; charset=utf-8");
-            response.getWriter().println(stringResponse);
+            ResponseManager.successResponse(stringResponse, response);
         } catch (JsonSyntaxException error) {
             System.err.println(error);
-            ResponseManager.errorResponse("Cannot serilized Json", response);
+            ResponseManager.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
         }
     }
     }
