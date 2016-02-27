@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.servlet;
+package com.pewpew.pewpew.common;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ResponseManager {
+public class ResponseHelper {
 
     public static void errorResponse(String errorText,
                                      HttpServletResponse response, Integer errorStatus) {
@@ -27,7 +27,7 @@ public class ResponseManager {
             }
         } catch (JsonSyntaxException error) {
             System.err.println(error);
-            ResponseManager.errorResponse("Cannot serilized Json", response, 500);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, 500);
             return;
         }
     }
