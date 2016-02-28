@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.additional;
+package com.pewpew.pewpew.common;
 
 import com.google.gson.annotations.SerializedName;
 import org.bson.types.ObjectId;
