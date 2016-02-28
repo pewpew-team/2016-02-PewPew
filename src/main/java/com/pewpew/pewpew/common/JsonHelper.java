@@ -3,8 +3,6 @@ package com.pewpew.pewpew.common;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.pewpew.pewpew.additional.MongoId;
-import com.pewpew.pewpew.additional.TokenJson;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
@@ -16,17 +14,6 @@ public class JsonHelper {
         Gson gson = new Gson();
         try {
             return gson.fromJson(json.toString(), User.class);
-        } catch(JsonSyntaxException error) {
-            System.err.println(error);
-            return null;
-        }
-    }
-
-    @Nullable
-    public static String getTokeOutOfJson(String json) {
-        Gson gson = new Gson();
-        try {
-            return gson.fromJson(json.toString(), TokenJson.class).getTokenValue();
         } catch(JsonSyntaxException error) {
             System.err.println(error);
             return null;
