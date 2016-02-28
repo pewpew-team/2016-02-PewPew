@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class JsonHelper {
@@ -31,6 +32,7 @@ public class JsonHelper {
         }
     }
 
+    @NotNull
     public static String createJsonWithId(ObjectId userId) {
         Gson gson = new Gson();
         JsonObject jsonResponse = new JsonObject();

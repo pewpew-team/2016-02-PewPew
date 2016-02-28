@@ -1,6 +1,8 @@
 package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.model.User;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,7 @@ public class AccountService {
         return tokens.put(token, user) != null;
     }
 
+    @Nullable
     public User getUserByToken(String token) {
         return tokens.get(token);
     }

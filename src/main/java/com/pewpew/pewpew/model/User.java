@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.model;
 
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
@@ -23,6 +24,7 @@ public class User {
         this.rating = rating;
     }
 
+    @NotNull
     public ObjectId getId() {
         return id;
     }
