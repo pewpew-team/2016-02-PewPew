@@ -11,23 +11,22 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
 public class TestRegestrationService {
 
-    private String targetURL = "http://localhost:8080/register";
-
     @Test
-    public void testRegestration() throws  Exception {
+    public void testRegestration() throws UnsupportedEncodingException {
         String urlParameters = "email=" + URLEncoder.encode("myemail@mail.ru", "UTF-8")
                 + "&password=" + URLEncoder.encode("myPassword", "UTF-8")
                 ;
-        URL url;
         HttpURLConnection connection = null;
         try {
-            url = new URL(targetURL);
+            String targetURL = "http://localhost:8080/register";
+            URL url = new URL(targetURL);
             connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type",
@@ -52,7 +51,7 @@ public class TestRegestrationService {
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while((line = rd.readLine()) != null) {
                 response.append(line);
                 response.append('\r');

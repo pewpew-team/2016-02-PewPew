@@ -11,7 +11,4 @@ public class MongoId {
         return new ObjectId(_id);
     }
 
-    public void set_id(String tokenValue) {
-        this._id = _id;
-    }
 }

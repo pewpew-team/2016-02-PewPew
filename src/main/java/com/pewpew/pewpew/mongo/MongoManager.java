@@ -1,5 +1,4 @@
 package com.pewpew.pewpew.mongo;
-import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -7,8 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 
 public class MongoManager {
-    private static MongoModule mongoModule = MongoModule.getInstanse();
-    private static Datastore ds = mongoModule.provideDatastore(Settings.USERS_COLLECTION, Settings.MODEL_PACKAGE);
+    private static final MongoModule mongoModule = MongoModule.getInstanse();
+    private static final Datastore ds = mongoModule.provideDatastore();
 
     @Nullable
     public static User getUser(String email) {

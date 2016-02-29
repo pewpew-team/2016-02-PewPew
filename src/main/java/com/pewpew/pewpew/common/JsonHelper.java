@@ -14,7 +14,7 @@ public class JsonHelper {
     public static User getUserOutOfJson(String json) {
         Gson gson = new Gson();
         try {
-            return gson.fromJson(json.toString(), User.class);
+            return gson.fromJson(json, User.class);
         } catch(JsonSyntaxException error) {
             System.err.println(error);
             return null;
@@ -25,7 +25,7 @@ public class JsonHelper {
     public static ObjectId getUserIdOfJson(String json) {
         Gson gson = new Gson();
         try {
-            return gson.fromJson(json.toString(), MongoId.class).get_id();
+            return gson.fromJson(json, MongoId.class).get_id();
         } catch(JsonSyntaxException error) {
             System.err.println(error);
             return null;

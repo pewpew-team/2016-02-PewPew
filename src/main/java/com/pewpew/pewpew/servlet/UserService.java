@@ -29,7 +29,7 @@ public class UserService extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cockie = CookieHelper.getCockie(request, "token");
+        Cookie cockie = CookieHelper.getCockie(request);
         Gson gson = new Gson();
         if (cockie == null) {
             ResponseHelper.errorResponse("User is unauth", response, Settings.UNAUTHORIZED);
@@ -66,7 +66,7 @@ public class UserService extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cockie = CookieHelper.getCockie(request, "token");
+        Cookie cockie = CookieHelper.getCockie(request);
         if (cockie == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;

@@ -4,9 +4,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.io.IOException;
 
 public class BufferRead {
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     public BufferRead(HttpServletRequest request) {
         this.request = request;
@@ -21,9 +22,8 @@ public class BufferRead {
             while ((line = reader.readLine()) != null) {
                 jsonBuffer.append(line);
             }
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return jsonBuffer;
     }

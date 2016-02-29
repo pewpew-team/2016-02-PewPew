@@ -22,12 +22,10 @@ public class ResponseHelper {
                 response.getWriter().println(stringResponse);
             } catch (IOException e) {
                 System.err.println("Json cannot be send");
-                return;
             }
         } catch (JsonSyntaxException error) {
             System.err.println(error);
             ResponseHelper.errorResponse("Cannot serilized Json", response, 500);
-            return;
         }
     }
 

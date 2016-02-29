@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class AccountService {
 
-    private Map<String, User> tokens = new HashMap<>();
+    private final Map<String, User> tokens = new HashMap<>();
 
     public boolean addToken(String token, User user) {
         return tokens.put(token, user) != null;

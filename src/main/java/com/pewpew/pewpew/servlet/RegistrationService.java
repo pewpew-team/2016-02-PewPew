@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class RegistrationService extends HttpServlet {
-    private Datastore ds = MongoModule.getInstanse().provideDatastore(Settings.USERS_COLLECTION, Settings.MODEL_PACKAGE);
+    private final Datastore ds = MongoModule.getInstanse().provideDatastore();
     private AccountService accountService = new AccountService();
 
     public RegistrationService(AccountService accountService) {

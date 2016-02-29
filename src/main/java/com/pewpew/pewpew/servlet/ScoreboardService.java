@@ -19,7 +19,7 @@ import java.util.List;
 public class ScoreboardService extends HttpServlet {
 
     @NotNull
-    private Datastore ds = MongoModule.getInstanse().provideDatastore(Settings.USERS_COLLECTION, Settings.MODEL_PACKAGE);
+    private final Datastore ds = MongoModule.getInstanse().provideDatastore();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

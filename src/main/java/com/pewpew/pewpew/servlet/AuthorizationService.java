@@ -30,8 +30,9 @@ public class AuthorizationService extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cookie = CookieHelper.getCockie(request, "token");
+        Cookie cookie = CookieHelper.getCockie(request);
         if (cookie == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;
@@ -55,12 +56,13 @@ public class AuthorizationService extends HttpServlet {
             ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
             return;
         }
-        Cookie cookie = CookieHelper.getCockie(request, "token");
+        Cookie cookie = CookieHelper.getCockie(request);
         Gson gson = new Gson();
         if (cookie == null) {
             User authUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
             if (authUser == null) {
                 ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+                return;
             }
             if (!Validate.userAuth(authUser)) {
                 ResponseHelper.errorResponse("Some fiels is missing", response, Settings.BAD_REQUEST);
@@ -85,7 +87,7 @@ public class AuthorizationService extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cockie = CookieHelper.getCockie(request, "token");
+        Cookie cockie = CookieHelper.getCockie(request);
         if (cockie == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;

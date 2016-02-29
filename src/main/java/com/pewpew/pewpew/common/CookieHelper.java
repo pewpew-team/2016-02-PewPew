@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CookieHelper {
     @Nullable
-    public static Cookie getCockie(HttpServletRequest request, String key) {
+    public static Cookie getCockie(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(key)) {
+                if (cookie.getName().equals("token")) {
                     return cookie;
                 }
             }
