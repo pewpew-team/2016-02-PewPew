@@ -6,7 +6,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 
-public class CockieHelper {
+public class CookieHelper {
     @Nullable
     public static Cookie getCockie(HttpServletRequest request, String key) {
         if (request.getCookies() != null) {
