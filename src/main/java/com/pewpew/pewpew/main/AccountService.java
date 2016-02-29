@@ -29,6 +29,6 @@ public class AccountService {
     }
 
     public boolean closeToken(String token) {
-        return tokens.remove(token) != null;
+        return tokens.remove(token) == null;
     }
 }
