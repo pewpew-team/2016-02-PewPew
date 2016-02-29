@@ -3,7 +3,7 @@ package com.pewpew.pewpew.servlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.additional.BufferRead;
-import com.pewpew.pewpew.additional.Validate;
+import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
@@ -56,8 +56,8 @@ public class RegistrationService extends HttpServlet {
             accountService.addToken(newToken, user);
             ds.save(user);
 
-            Cookie cockie = new Cookie("token", newToken);
-            response.addCookie(cockie);
+            Cookie cookie = new Cookie("token", newToken);
+            response.addCookie(cookie);
 
             String stringResponse = JsonHelper.createJsonWithId(user.getId());
             ResponseHelper.successResponse(stringResponse, response);

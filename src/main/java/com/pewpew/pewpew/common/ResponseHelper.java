@@ -23,7 +23,6 @@ public class ResponseHelper {
             } catch (IOException e) {
                 System.err.println("Json cannot be send");
                 return;
-            /* FIX ME: Need to push error to top */
             }
         } catch (JsonSyntaxException error) {
             System.err.println(error);

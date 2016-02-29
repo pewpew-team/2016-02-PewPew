@@ -4,8 +4,8 @@ package com.pewpew.pewpew.servlet;
 import com.google.gson.Gson;
 
 import com.pewpew.pewpew.additional.BufferRead;
-import com.pewpew.pewpew.additional.Validate;
-import com.pewpew.pewpew.common.CockieHelper;
+import com.pewpew.pewpew.common.Validate;
+import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.main.AccountService;
@@ -30,14 +30,14 @@ public class AuthorizationService extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cockie = CockieHelper.getCockie(request, "token");
-        if (cockie == null) {
+        Cookie cookie = CookieHelper.getCockie(request, "token");
+        if (cookie == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;
         }
         Gson gson = new Gson();
 
-        ObjectId userId = accountService.getUserByToken(cockie.getValue()).getId();
+        ObjectId userId = accountService.getUserByToken(cookie.getValue()).getId();
         String stringResponse = JsonHelper.createJsonWithId(userId);
         ResponseHelper.successResponse(stringResponse, response);
     }
@@ -50,9 +50,9 @@ public class AuthorizationService extends HttpServlet {
             ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
             return;
         }
-        Cookie cockie = CockieHelper.getCockie(request, "token");
+        Cookie cookie = CookieHelper.getCockie(request, "token");
         Gson gson = new Gson();
-        if (cockie == null) {
+        if (cookie == null) {
             User authUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
             if (authUser == null) {
                 ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
@@ -68,11 +68,11 @@ public class AuthorizationService extends HttpServlet {
             }
             String token = UUID.randomUUID().toString();
             accountService.addToken(token, user);
-            cockie = new Cookie("token", token);
-            response.addCookie(cockie);
+            cookie = new Cookie("token", token);
+            response.addCookie(cookie);
         }
 
-        ObjectId userId = accountService.getUserByToken(cockie.getValue()).getId();
+        ObjectId userId = accountService.getUserByToken(cookie.getValue()).getId();
 
         String stringResponse = JsonHelper.createJsonWithId(userId);
         ResponseHelper.successResponse(stringResponse, response);

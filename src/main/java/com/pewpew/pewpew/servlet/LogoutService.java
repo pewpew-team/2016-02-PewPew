@@ -2,7 +2,7 @@ package com.pewpew.pewpew.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.pewpew.pewpew.common.CockieHelper;
+import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.main.AccountService;
@@ -22,7 +22,7 @@ public class LogoutService extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cookie cockie = CockieHelper.getCockie(request, "token");
+        Cookie cockie = CookieHelper.getCockie(request, "token");
         if (cockie == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;

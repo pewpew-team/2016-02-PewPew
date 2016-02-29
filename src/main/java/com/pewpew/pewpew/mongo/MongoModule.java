@@ -7,7 +7,6 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.MappingException;
 
-//TODO: при использовании потоков будет лочиться. Предпочтительна другая реализация
 public class MongoModule {
     private String dbAddress = Settings.DB_ADDRESS;
     private int dbPort = Settings.DB_PORT;
