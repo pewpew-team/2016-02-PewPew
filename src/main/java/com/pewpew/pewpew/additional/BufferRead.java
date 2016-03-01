@@ -18,7 +18,7 @@ public class BufferRead {
         StringBuffer jsonBuffer = new StringBuffer();
         try {
             BufferedReader reader = request.getReader();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 jsonBuffer.append(line);
             }

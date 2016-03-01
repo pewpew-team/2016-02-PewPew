@@ -8,6 +8,9 @@ import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class JsonHelper {
 
     @Nullable
@@ -16,18 +19,8 @@ public class JsonHelper {
         try {
             return gson.fromJson(json, User.class);
         } catch(JsonSyntaxException error) {
-            System.err.println(error);
-            return null;
-        }
-    }
-
-    @Nullable
-    public static ObjectId getUserIdOfJson(String json) {
-        Gson gson = new Gson();
-        try {
-            return gson.fromJson(json, MongoId.class).get_id();
-        } catch(JsonSyntaxException error) {
-            System.err.println(error);
+            Logger log = Logger.getLogger(JsonHelper.class.getName());
+            log.log(Level.WARNING, "Got an exception.", error);
             return null;
         }
     }

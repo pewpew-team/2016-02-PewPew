@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Indexed;
 
 @Entity(value = "users")
 public class User {
+    @SuppressWarnings({"unused", "InstanceVariableNamingConvention"})
     @Id
     private ObjectId id;
     private String password;

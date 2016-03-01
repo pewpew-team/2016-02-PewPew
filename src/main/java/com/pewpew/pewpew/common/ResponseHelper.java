@@ -6,6 +6,8 @@ import com.google.gson.JsonSyntaxException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResponseHelper {
 
@@ -24,8 +26,9 @@ public class ResponseHelper {
                 System.err.println("Json cannot be send");
             }
         } catch (JsonSyntaxException error) {
-            System.err.println(error);
-            ResponseHelper.errorResponse("Cannot serilized Json", response, 500);
+            Logger log = Logger.getLogger(ResponseHelper.class.getName());
+            log.log(Level.WARNING, "Got an exception.", error);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
         }
     }
 

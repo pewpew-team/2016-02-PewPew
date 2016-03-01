@@ -20,9 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistrationService extends HttpServlet {
-    private final Datastore ds = MongoModule.getInstanse().provideDatastore();
+    private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
     private AccountService accountService = new AccountService();
 
     public RegistrationService(AccountService accountService) {
@@ -54,7 +56,7 @@ public class RegistrationService extends HttpServlet {
 
             String newToken = UUID.randomUUID().toString();
             accountService.addToken(newToken, user);
-            ds.save(user);
+            datastore.save(user);
 
             Cookie cookie = new Cookie("token", newToken);
             response.addCookie(cookie);
@@ -62,7 +64,8 @@ public class RegistrationService extends HttpServlet {
             String stringResponse = JsonHelper.createJsonWithId(user.getId());
             ResponseHelper.successResponse(stringResponse, response);
         } catch (JsonSyntaxException error) {
-            System.err.println(error);
+            Logger log = Logger.getLogger(RegistrationService.class.getName());
+            log.log(Level.WARNING, "Got an exception.", error);
             ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
         }
     }

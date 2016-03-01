@@ -6,22 +6,22 @@ import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 
 public class MongoManager {
-    private static final MongoModule mongoModule = MongoModule.getInstanse();
-    private static final Datastore ds = mongoModule.provideDatastore();
+    private static final MongoModule MONGO_MODULE = MongoModule.getInstanse();
+    private static final Datastore DATASTORE = MONGO_MODULE.provideDatastore();
 
     @Nullable
     public static User getUser(String email) {
-        return ds.find(User.class, "email", email).get();
+        return DATASTORE.find(User.class, "email", email).get();
     }
 
     @Nullable
     public static User getUser(String login, String password) {
-        return ds.find(User.class, "login", login).field("password").equal(password).get();
+        return DATASTORE.find(User.class, "login", login).field("password").equal(password).get();
     }
 
     @Nullable
     public static User getUser(ObjectId userId) {
-        return ds.get(User.class, userId);
+        return DATASTORE.get(User.class, userId);
     }
 
     @NotNull
@@ -31,6 +31,6 @@ public class MongoManager {
     }
 
     public static void delete(User user) {
-        ds.delete(user);
+        DATASTORE.delete(user);
     }
 }

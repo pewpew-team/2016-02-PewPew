@@ -37,7 +37,6 @@ public class AuthorizationService extends HttpServlet {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
             return;
         }
-        Gson gson = new Gson();
         User user = accountService.getUserByToken(cookie.getValue());
         if (user == null) {
             ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
@@ -57,7 +56,6 @@ public class AuthorizationService extends HttpServlet {
             return;
         }
         Cookie cookie = CookieHelper.getCockie(request);
-        Gson gson = new Gson();
         if (cookie == null) {
             User authUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
             if (authUser == null) {
@@ -78,8 +76,17 @@ public class AuthorizationService extends HttpServlet {
             cookie = new Cookie("token", token);
             response.addCookie(cookie);
         }
-
-        ObjectId userId = accountService.getUserByToken(cookie.getValue()).getId();
+        String tokenString = cookie.getValue();
+        if (tokenString == null) {
+            ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
+            return;
+        }
+        User userFromToken = accountService.getUserByToken(tokenString);
+        if (userFromToken == null) {
+            ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
+            return;
+        }
+        ObjectId userId = userFromToken.getId();
 
         String stringResponse = JsonHelper.createJsonWithId(userId);
         ResponseHelper.successResponse(stringResponse, response);

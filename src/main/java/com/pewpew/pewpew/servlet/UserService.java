@@ -11,7 +11,9 @@ import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
+import com.pewpew.pewpew.mongo.MongoModule;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -20,8 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@SuppressWarnings("ALL")
 public class UserService extends HttpServlet {
     private AccountService accountService = new AccountService();
+    private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
 
     public UserService(AccountService accountService) {
         this.accountService = accountService;
@@ -46,16 +50,20 @@ public class UserService extends HttpServlet {
             ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
         }
         User user = accountService.getUserByToken(cockie.getValue());
-        if (Validate.validateField(editUser.getLogin())) {
+        if (Validate.validateField(editUser != null ? editUser.getLogin() : null)) {
             user.setLogin(editUser.getLogin());
         }
         if (Validate.validateField(editUser.getEmail())) {
-            user.setLogin(editUser.getEmail());
+            user.setEmail(editUser.getEmail());
         }
         if (Validate.validateField(editUser.getPassword())) {
-            user.setLogin(editUser.getPassword());
+            user.setPassword(editUser.getPassword());
         }
-        accountService.updateUser(cockie.getValue(), user);
+        if (!accountService.updateUser(cockie.getValue(), user)) {
+            ResponseHelper.errorResponse("User not updated", response, Settings.INTERNAL_ERROR);
+        }
+
+        datastore.save(user);
 
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.addProperty("Message", "User update complite");

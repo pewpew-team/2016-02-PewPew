@@ -4,9 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class RandomString {
 
-    private static final char[] symbols;
+    private static final char[] SYMBOLS;
 
     static {
         StringBuilder tmp = new StringBuilder();
@@ -14,7 +15,7 @@ public class RandomString {
             tmp.append(ch);
         for (char ch = 'a'; ch <= 'z'; ++ch)
             tmp.append(ch);
-        symbols = tmp.toString().toCharArray();
+        SYMBOLS = tmp.toString().toCharArray();
     }
 
 
@@ -32,7 +33,7 @@ public class RandomString {
     @NotNull
     public String nextString() {
         for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols[random.nextInt(symbols.length)];
+            buf[idx] = SYMBOLS[random.nextInt(SYMBOLS.length)];
         return new String(buf);
     }
 }

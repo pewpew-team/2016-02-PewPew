@@ -1,3 +1,4 @@
+<!--suppress XmlUnboundNsPrefix -->
 <root>
   <item name='java.lang.StringBuffer'>
     <annotation name='org.jetbrains.annotations.NotNull'/>

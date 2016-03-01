@@ -29,14 +29,11 @@ public final class MongoModule {
 
     @NotNull
     public Datastore provideDatastore() {
-        if(Settings.MODEL_PACKAGE != null)
-        {
-            try {
-                morphia.mapPackage(Settings.MODEL_PACKAGE);
-            }
-            catch (MappingException ex) {
-                System.out.println(ex.getMessage());
-            }
+        try {
+            morphia.mapPackage(Settings.MODEL_PACKAGE);
+        }
+        catch (MappingException ex) {
+            System.out.println(ex.getMessage());
         }
         return morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
     }

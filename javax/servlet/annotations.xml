@@ -1,3 +1,4 @@
+<!--suppress XmlUnboundNsPrefix -->
 <root>
   <item name='javax.servlet.ServletResponse java.io.PrintWriter getWriter()'>
     <annotation name='org.jetbrains.annotations.NotNull'/>

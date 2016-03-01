@@ -1,12 +1,12 @@
 package com.pewpew.pewpew.main;
 
-import com.pewpew.pewpew.mongo.MongoModule;
 import com.pewpew.pewpew.servlet.*;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 public class Main {
+    @SuppressWarnings("DuplicateThrows")
     public static void main(String[] args) throws Exception, InterruptedException {
         if (args.length != 1) {
             System.out.append("Use port as the first argument");
@@ -17,7 +17,7 @@ public class Main {
         int port = Integer.valueOf(portString);
 
         Server server = new Server(port);
-        MongoModule mongoModule = MongoModule.getInstanse();
+//        MongoModule mongoModule = MongoModule.getInstanse();
 
         AccountService accountService = new AccountService();
 

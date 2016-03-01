@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.model.User;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -11,8 +10,8 @@ public class AccountService {
 
     private final Map<String, User> tokens = new HashMap<>();
 
-    public boolean addToken(String token, User user) {
-        return tokens.put(token, user) != null;
+    public void addToken(String token, User user) {
+        tokens.put(token, user);
     }
 
     @Nullable
@@ -20,12 +19,12 @@ public class AccountService {
         return tokens.get(token);
     }
 
-    public boolean updateUser(String token, User editedUser) {
+    public boolean updateUser(String token, @Nullable User editedUser) {
         return tokens.replace(token, editedUser) != null;
     }
 
-    public boolean deleteUser(User user) {
-        return tokens.values().remove(user);
+    public void deleteUser(User user) {
+        tokens.values().remove(user);
     }
 
     public boolean closeToken(String token) {
