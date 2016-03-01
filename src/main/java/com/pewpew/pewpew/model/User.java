@@ -17,10 +17,6 @@ public class User {
     private String login;
     private Integer rating;
 
-    public Integer getRating() {
-        return rating;
-    }
-
     public void setRating(Integer rating) {
         this.rating = rating;
     }
