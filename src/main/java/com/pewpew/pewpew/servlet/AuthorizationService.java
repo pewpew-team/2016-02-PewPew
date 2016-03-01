@@ -9,7 +9,7 @@ import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
-import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.model.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.common.Settings;

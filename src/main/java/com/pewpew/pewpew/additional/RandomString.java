@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-@SuppressWarnings("unused")
 public class RandomString {
 
     private static final char[] SYMBOLS;
@@ -24,10 +23,8 @@ public class RandomString {
     private final char[] buf;
 
 
-    public RandomString(int length) {
-        if (length < 1)
-            throw new IllegalArgumentException("length < 1: " + length);
-        buf = new char[length];
+    public RandomString() {
+        buf = new char[10];
     }
 
     @NotNull

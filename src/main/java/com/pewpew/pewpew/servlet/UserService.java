@@ -8,7 +8,7 @@ import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
-import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.model.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@SuppressWarnings("ALL")
 public class UserService extends HttpServlet {
     private AccountService accountService = new AccountService();
     private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
@@ -48,9 +47,14 @@ public class UserService extends HttpServlet {
         User editUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
         if (editUser == null) {
             ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            return;
         }
         User user = accountService.getUserByToken(cockie.getValue());
-        if (Validate.validateField(editUser != null ? editUser.getLogin() : null)) {
+        if (user == null)  {
+            ResponseHelper.errorResponse("User is unauth", response, Settings.UNAUTHORIZED);
+            return;
+        }
+        if (Validate.validateField(editUser.getLogin())) {
             user.setLogin(editUser.getLogin());
         }
         if (Validate.validateField(editUser.getEmail())) {
@@ -62,13 +66,10 @@ public class UserService extends HttpServlet {
         if (!accountService.updateUser(cockie.getValue(), user)) {
             ResponseHelper.errorResponse("User not updated", response, Settings.INTERNAL_ERROR);
         }
-
         datastore.save(user);
-
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.addProperty("Message", "User update complite");
         String stringResponse = gson.toJson(jsonResponse);
-
         ResponseHelper.successResponse(stringResponse, response);
     }
 
@@ -97,10 +98,6 @@ public class UserService extends HttpServlet {
         String[] pathParts = pathInfo.split("/");
         ObjectId userId = new ObjectId(pathParts[1]);
 
-        if (userId == null) {
-            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
-            return;
-        }
         User user = MongoManager.getUser(userId);
         if (user == null) {
             ResponseHelper.errorResponse("User does not exist", response, Settings.BAD_REQUEST);
