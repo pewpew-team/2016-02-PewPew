@@ -42,3 +42,6 @@ fabric.properties
 
 # TestTxt
 curl.txt
+
+#Static
+static/

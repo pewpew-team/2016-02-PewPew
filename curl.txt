@@ -1,6 +1,12 @@
-// curl -H "Content-Type: application/json" -X POST -d '{"login":"xyz","password":"xyz"}' http://localhost:8080/session
 // curl -H "Content-Type: application/json" -X POST -b cookies.txt -d '{"login":"xyz","password":"xyz"}' http://localhost:8080/session
 // curl -H "Content-Type: application/json" -X POST -c cookies.txt -d '{"email":"xyz", "login": "xyz","password":"xyz"}' http://localhost:8080/user
 // curl -X DELETE "http://localhost:8080/user/56d20a7c92b9e55ff8503002"
 // curl -i -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/scoreboard
-// curl -i -H "Accept: application/json" -H "Content-Type: application/json" -b cookies.txt http://localhost:8080/user/56d20e2392b9e560b1514a15
+
+curl -H "Content-Type: application/json" -X POST -c cookies.txt -d '{"email":"RK1", "login": "RK1","password":"xyz"}' http://localhost:8080/user
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -b cookies.txt  http://localhost:8080/session
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -b cookies.txt http://localhost:8080/user/56d20e2392b9e560b1514a15
+
+curl -X DELETE "http://localhost:8080/user/56d20a7c92b9e55ff8503002"

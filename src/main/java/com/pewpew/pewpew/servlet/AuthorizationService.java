@@ -59,7 +59,7 @@ public class AuthorizationService extends HttpServlet {
         if (cookie == null) {
             User authUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
             if (authUser == null) {
-                ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+                ResponseHelper.errorResponse("User doesnot exist", response, Settings.INTERNAL_ERROR);
                 return;
             }
             if (!Validate.userAuth(authUser)) {
