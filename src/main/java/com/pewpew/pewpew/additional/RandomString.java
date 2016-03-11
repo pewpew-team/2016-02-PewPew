@@ -23,6 +23,7 @@ public class RandomString {
     private final char[] buf;
 
 
+    @SuppressWarnings("unused")
     public RandomString() {
         buf = new char[10];
     }
