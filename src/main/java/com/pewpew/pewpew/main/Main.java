@@ -9,16 +9,31 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.out.append("Use port as the first argument");
+        if (args.length != 2) {
+            System.out.println("Usage: java -jar <jar file> <port> </path/to/static>");
             System.exit(1);
         }
 
-        String portString = args[0];
-        int port = Integer.valueOf(portString);
+        int port = 0;
+        Path pathToStatic = null;
+
+        //noinspection OverlyBroadCatchBlock
+        try {
+            port = Integer.valueOf(args[0]);
+            pathToStatic = Paths.get(args[1]);
+            if(!Files.isDirectory(pathToStatic)) throw new IllegalArgumentException();
+        }
+        catch (IllegalArgumentException ex) {
+            System.out.println("Error: please input valid format of port and path.");
+            System.exit(1);
+        }
 
         Server server = new Server(port);
 
@@ -40,7 +55,7 @@ public class Main {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setResourceBase("static");
+        resourceHandler.setResourceBase(pathToStatic.toString());
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resourceHandler, context});

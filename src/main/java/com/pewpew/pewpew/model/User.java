@@ -15,6 +15,7 @@ public class User {
     @Indexed(unique = true)
     private String email;
     private String login;
+    @SuppressWarnings("FieldCanBeLocal")
     private Integer rating;
 
     public void setRating(Integer rating) {
