@@ -6,7 +6,6 @@ import com.pewpew.pewpew.additional.BufferRead;
 import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
-import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.model.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -37,7 +36,7 @@ public class RegistrationService extends HttpServlet {
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Error reading input stream", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
         Gson gson = new Gson();
@@ -45,12 +44,12 @@ public class RegistrationService extends HttpServlet {
             User user = gson.fromJson(jsonBuffer.toString(), User.class);
 
             if (!Validate.userRegister(user)) {
-                ResponseHelper.errorResponse("Some fiels is missing", response, Settings.FORBIDDEN);
+                ResponseHelper.errorResponse("Some fiels is missing", response, HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
 
             if (!MongoManager.userExist(user)) {
-                ResponseHelper.errorResponse("User already exist",response, Settings.FORBIDDEN);
+                ResponseHelper.errorResponse("User already exist",response, HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
 
@@ -66,7 +65,7 @@ public class RegistrationService extends HttpServlet {
         } catch (JsonSyntaxException error) {
             Logger log = Logger.getLogger(RegistrationService.class.getName());
             log.log(Level.WARNING, "Got an exception.", error);
-            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

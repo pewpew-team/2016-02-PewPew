@@ -7,7 +7,6 @@ import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
-import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.model.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -35,23 +34,23 @@ public class UserService extends HttpServlet {
         Cookie cockie = CookieHelper.getCockie(request);
         Gson gson = new Gson();
         if (cockie == null) {
-            ResponseHelper.errorResponse("User is unauth", response, Settings.UNAUTHORIZED);
+            ResponseHelper.errorResponse("User is unauth", response, HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         BufferRead bufferRead = new BufferRead(request);
         StringBuffer jsonBuffer = bufferRead.getStringBuffer();
         if (jsonBuffer == null) {
-            ResponseHelper.errorResponse("Error reading input stream", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Error reading input stream", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
         User editUser = JsonHelper.getUserOutOfJson(jsonBuffer.toString());
         if (editUser == null) {
-            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
         User user = accountService.getUserByToken(cockie.getValue());
         if (user == null)  {
-            ResponseHelper.errorResponse("User is unauth", response, Settings.UNAUTHORIZED);
+            ResponseHelper.errorResponse("User is unauth", response, HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         if (Validate.validateField(editUser.getLogin())) {
@@ -64,7 +63,7 @@ public class UserService extends HttpServlet {
             user.setPassword(editUser.getPassword());
         }
         if (!accountService.updateUser(cockie.getValue(), user)) {
-            ResponseHelper.errorResponse("User not updated", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("User not updated", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         datastore.save(user);
         JsonObject jsonResponse = new JsonObject();
@@ -77,12 +76,12 @@ public class UserService extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cookie cockie = CookieHelper.getCockie(request);
         if (cockie == null) {
-            ResponseHelper.errorResponse("User unauth", response, Settings.UNAUTHORIZED);
+            ResponseHelper.errorResponse("User unauth", response, HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         User user = accountService.getUserByToken(cockie.getValue());
         if (user == null) {
-            ResponseHelper.errorResponse("User unauth or token expired", response, Settings.BAD_REQUEST);
+            ResponseHelper.errorResponse("User unauth or token expired", response, HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -100,7 +99,7 @@ public class UserService extends HttpServlet {
 
         User user = MongoManager.getUser(userId);
         if (user == null) {
-            ResponseHelper.errorResponse("User does not exist", response, Settings.BAD_REQUEST);
+            ResponseHelper.errorResponse("User does not exist", response, HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         MongoManager.delete(user);

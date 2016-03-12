@@ -28,7 +28,7 @@ public class ResponseHelper {
         } catch (JsonSyntaxException error) {
             Logger log = Logger.getLogger(ResponseHelper.class.getName());
             log.log(Level.WARNING, "Got an exception.", error);
-            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

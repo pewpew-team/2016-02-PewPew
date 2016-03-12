@@ -3,7 +3,6 @@ package com.pewpew.pewpew.servlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.common.ResponseHelper;
-import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +36,7 @@ public class ScoreboardService extends HttpServlet {
         } catch (JsonSyntaxException error) {
             Logger log = Logger.getLogger(ScoreboardService.class.getName());
             log.log(Level.WARNING, "Got an exception.", error);
-            ResponseHelper.errorResponse("Cannot serilized Json", response, Settings.INTERNAL_ERROR);
+            ResponseHelper.errorResponse("Cannot serilized Json", response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
