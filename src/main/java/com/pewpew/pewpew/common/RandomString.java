@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.additional;
+package com.pewpew.pewpew.common;
 
 import org.jetbrains.annotations.NotNull;
 

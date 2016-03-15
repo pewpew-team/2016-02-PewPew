@@ -3,7 +3,7 @@ package com.pewpew.pewpew;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;
 import org.junit.Test;
-import com.pewpew.pewpew.additional.RandomString;
+import com.pewpew.pewpew.common.RandomString;
 import org.mongodb.morphia.Datastore;
 
 import java.util.Random;

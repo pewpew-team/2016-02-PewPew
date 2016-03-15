@@ -1,11 +1,9 @@
 package com.pewpew.pewpew.rest;
 
-import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.model.UserAuth;
 import com.pewpew.pewpew.mongo.MongoManager;
-import org.bson.types.ObjectId;
 
 import javax.inject.Singleton;
 import javax.validation.Valid;

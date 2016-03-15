@@ -1,18 +1,14 @@
 package com.pewpew.pewpew;
 
-import com.pewpew.pewpew.additional.RandomString;
+import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.model.UserAuth;
-import com.sun.tools.javac.util.List;
-import org.glassfish.jersey.client.ClientResponse;
-import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 

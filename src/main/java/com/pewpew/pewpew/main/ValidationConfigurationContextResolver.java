@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.common;
+package com.pewpew.pewpew.main;
 
 import org.glassfish.jersey.server.validation.ValidationConfig;
 import org.glassfish.jersey.server.validation.internal.InjectingConstraintValidatorFactory;
