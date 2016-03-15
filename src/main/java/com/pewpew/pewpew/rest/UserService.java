@@ -3,15 +3,13 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
-import com.pewpew.pewpew.model.ValidForCreation;
-import com.pewpew.pewpew.model.ValidForModification;
+import com.pewpew.pewpew.annotations.ValidForCreation;
+import com.pewpew.pewpew.annotations.ValidForModification;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 
 import javax.inject.Singleton;
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.UUID;
@@ -41,7 +39,7 @@ public class UserService {
         return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId().toString()).build();
     }
 
-    @UserInfo
+
     @GET
     @Path("{id}")
     public Response userInfo(@PathParam("id") String userId,

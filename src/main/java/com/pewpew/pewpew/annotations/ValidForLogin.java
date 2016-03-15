@@ -17,19 +17,19 @@ import javax.validation.Payload;
 
 @Target({TYPE, PARAMETER})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidForModification.Validator.class)
+@Constraint(validatedBy = ValidForLogin.Validator.class)
 public @interface ValidForLogin {
 
-    String message() default "{pl.pjagielski.constraint.ValidForModification}";
+    String message() default "{pl.pjagielski.constraint.ValidForLogin}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class Validator implements ConstraintValidator<ValidForModification, User> {
+    class Validator implements ConstraintValidator<ValidForLogin, User> {
 
         @Override
-        public void initialize(ValidForModification validForCreation) {}
+        public void initialize(ValidForLogin validForCreation) {}
 
         @Override
         public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {

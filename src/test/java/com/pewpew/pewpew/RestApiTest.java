@@ -52,17 +52,19 @@ public class RestApiTest extends JerseyTest {
     @Test
     public void testEditUser() {
         User user = new User();
+        user.setLogin("123");
+        user.setPassword("123");
         final Response json = target("session").request().post(Entity.json(user));
         String id = json.readEntity(String.class);
         final Map<String, NewCookie> cookies = json.getCookies();
         this.newCookie = cookies.get("token");
 
         User userForEdit = new User();
-//        User userForEdit = new User("123","123","123");
         user.setPassword("123");
         user.setLogin("223");
         Response userInfo = target("user").path("id").request().cookie(this.newCookie).put(Entity.json(user));
-        User returnedUser = userInfo.readEntity(User.class);
+        Response userInfo2 = target("user").path("id").request().cookie(this.newCookie).put(Entity.json(user));
+        User returnedUser = userInfo2.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
     }
 

@@ -3,10 +3,10 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.annotations.ValidForLogin;
 import com.pewpew.pewpew.mongo.MongoManager;
 
 import javax.inject.Singleton;
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.UUID;
@@ -25,8 +25,7 @@ public class SessionService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @UserInfo
-    public Response signIn(User authUser, @Context HttpHeaders headers,
+    public Response signIn(@ValidForLogin User authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
         if (authUser != null) {
             if (token == null || token.isEmpty()) {

@@ -18,17 +18,14 @@ public class User {
 
 
     @Id
-//    @UserInfo
     private ObjectId id;
 
     private String password;
 
 
     @Indexed(unique = true)
-//    @UserInfo
     private String email;
 
-//    @UserInfo
     private String login;
 
     @Nullable
