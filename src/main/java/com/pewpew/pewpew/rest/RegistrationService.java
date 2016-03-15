@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.servlet;
+package com.pewpew.pewpew.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -7,7 +7,7 @@ import com.pewpew.pewpew.common.Validate;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
-import com.pewpew.pewpew.model.AccountService;
+import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;

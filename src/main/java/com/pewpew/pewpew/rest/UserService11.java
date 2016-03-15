@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.servlet;
+package com.pewpew.pewpew.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -8,7 +8,7 @@ import com.pewpew.pewpew.common.CookieHelper;
 import com.pewpew.pewpew.common.JsonHelper;
 import com.pewpew.pewpew.common.ResponseHelper;
 import com.pewpew.pewpew.common.Settings;
-import com.pewpew.pewpew.model.AccountService;
+import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
@@ -22,11 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UserService extends HttpServlet {
+public class UserService11 extends HttpServlet {
     private AccountService accountService = new AccountService();
     private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
 
-    public UserService(AccountService accountService) {
+    public UserService11(AccountService accountService) {
         this.accountService = accountService;
     }
 

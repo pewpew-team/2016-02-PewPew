@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.servlet;
+package com.pewpew.pewpew.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

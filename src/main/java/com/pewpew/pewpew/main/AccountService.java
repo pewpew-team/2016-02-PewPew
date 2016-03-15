@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.model;
+package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.model.User;
 import org.jetbrains.annotations.Nullable;

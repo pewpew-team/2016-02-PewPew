@@ -1,50 +1,39 @@
 package com.pewpew.pewpew.main;
 
-import com.pewpew.pewpew.model.AccountService;
-import com.pewpew.pewpew.servlet.*;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.out.append("Use port as the first argument");
+        int port = -1;
+        if (args.length == 1) {
+            port = Integer.valueOf(args[0]);
+        } else {
+            System.err.println("Specify port");
             System.exit(1);
         }
-
-        String portString = args[0];
-        int port = Integer.valueOf(portString);
 
         Server server = new Server(port);
 
         AccountService accountService = new AccountService();
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        final ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
-        RegistrationService registrationService = new RegistrationService(accountService);
-        context.addServlet(new ServletHolder(registrationService),"/user");
+        final ServletHolder servletHolder = new ServletHolder(ServletContainer.class);
+        servletHolder.setInitParameter("javax.ws.rs.Application",
+                "com.pewpew.pewpew.main.RestApplication");
 
-        AuthorizationService authorizationService = new AuthorizationService(accountService);
-        context.addServlet(new ServletHolder(authorizationService), "/session");
-
-        ScoreboardService scoreboardService = new ScoreboardService();
-        context.addServlet(new ServletHolder(scoreboardService), "/scoreboard");
-
-        UserService userService = new UserService(accountService);
-        context.addServlet(new ServletHolder(userService), "/user/*");
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
         resourceHandler.setResourceBase("static");
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resourceHandler, context});
-        server.setHandler(handlers);
+        context.addServlet(servletHolder, "/*");
+        context.setHandler(resourceHandler);
 
         server.start();
         server.join();
