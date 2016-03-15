@@ -8,17 +8,12 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @ApplicationPath("api")
 public class RestApplication extends ResourceConfig {
 
-    final static private AccountService ACCOUNT_SERVICE = new AccountService();
+    private static final AccountService ACCOUNT_SERVICE = new AccountService();
     public RestApplication() {
         property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE, new Annotation[]{
                 //
@@ -26,12 +21,13 @@ public class RestApplication extends ResourceConfig {
         property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
         register(EntityFilteringFeature.class);
 
-        final SessionService sessionService = new SessionService(ACCOUNT_SERVICE);
-        final UserService userService = new UserService(ACCOUNT_SERVICE);
+        final SessionService sessionService = new SessionService();
+        final UserService userService = new UserService();
         final ScoreboardService scoreboardService = new ScoreboardService();
 
         register(sessionService);
         register(userService);
+        register(scoreboardService);
     }
 }
 

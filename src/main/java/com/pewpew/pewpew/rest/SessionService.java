@@ -1,6 +1,5 @@
 package com.pewpew.pewpew.rest;
 
-import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForLogin;
@@ -16,10 +15,10 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SessionService {
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    public SessionService(AccountService accountService) {
-        this.accountService = accountService;
+    public SessionService() {
+        this.accountService = com.pewpew.pewpew.main.RestApplication.ACCOUNT_SERVICE;
     }
 
     @POST

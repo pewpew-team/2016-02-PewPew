@@ -19,8 +19,6 @@ public class Main {
 
         Server server = new Server(port);
 
-        AccountService accountService = new AccountService();
-
         final ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
         final ServletHolder servletHolder = new ServletHolder(ServletContainer.class);

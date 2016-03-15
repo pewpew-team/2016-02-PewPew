@@ -32,8 +32,9 @@ public @interface ValidForCreation {
 
         @Override
         public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {
+            //noinspection OverlyComplexBooleanExpression
             return user != null
-                    && user.getLogin() == null
+                    && user.getLogin() != null
                     && user.getPassword() != null
                     && user.getLogin() != null;
         }

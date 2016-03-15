@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 public @interface UserInfo {
 
     @SuppressWarnings("ClassExplicitlyAnnotation")
-    public static final class Factory extends AnnotationLiteral<UserInfo> implements UserInfo {
+    final class Factory extends AnnotationLiteral<UserInfo> implements UserInfo {
 
         private Factory() {
         }
