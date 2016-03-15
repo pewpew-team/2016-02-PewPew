@@ -10,23 +10,18 @@ public class MongoManager {
     private static final Datastore DATASTORE = MONGO_MODULE.provideDatastore();
 
     @Nullable
-    public static User getUser(String email) {
-        return DATASTORE.find(User.class, "email", email).get();
-    }
-
-    @Nullable
     public static User getUser(String login, String password) {
         return DATASTORE.find(User.class, "login", login).field("password").equal(password).get();
     }
 
     @Nullable
-    public static User getUser(ObjectId userId) {
-        return DATASTORE.get(User.class, userId);
+    public static User getUser(String userId) {
+        return DATASTORE.get(User.class, new ObjectId(userId));
     }
 
     @NotNull
     public static Boolean userExist(User newUser) {
-        User user = getUser(newUser.getEmail());
+        User user = DATASTORE.find(User.class, "email", newUser.getEmail()).get();;
         return user == null;
     }
 

@@ -96,4 +96,21 @@ public class RestApiTest extends JerseyTest {
         assertEquals(authStateJson.getStatus(), 200);
     }
 
+    @Test
+    public void testDelete() {
+        RandomString randomString = new RandomString();
+        User userProfile = new User();
+        userProfile.setLogin(randomString.nextString());
+        userProfile.setPassword(randomString.nextString());
+        userProfile.setEmail(randomString.nextString());
+        final String json = target("user").request("application/json").post(Entity.json(userProfile), String.class);
+
+        final Response idJson = target("session").request().post(Entity.json(userProfile));
+        String id = idJson.readEntity(String.class);
+
+        final Response deleteJson = target("user").path(id).request().delete();
+
+        assertEquals(deleteJson.getStatus(), 200);
+    }
+
 }
