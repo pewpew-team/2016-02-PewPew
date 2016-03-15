@@ -2,22 +2,16 @@ package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
-import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForCreation;
 import com.pewpew.pewpew.annotations.ValidForModification;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
-import jersey.repackaged.com.google.common.collect.Maps;
 import org.mongodb.morphia.Datastore;
 
 import javax.inject.Singleton;
-import javax.json.JsonObject;
 import javax.ws.rs.*;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.*;
-import java.lang.annotation.Annotation;
-import java.util.Map;
 import java.util.UUID;
 
 @Singleton
@@ -47,19 +41,13 @@ public class UserService {
 
 
     @GET
-    @Path("{id}")
+//    @Path("{id}")
     @UserInfo
-    public Response userInfo(@PathParam("id") String userId,
+    public Response userInfo(
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-            Response response = Response.ok(Response.Status.OK).entity(userProfile, new Annotation[] {UserInfo.Factory.getInstance() }).build();
-            try {
-                User returnedUser = (User)response.getEntity();
-                System.out.print(returnedUser.getId());
-            } catch (Exception e) {
-                System.out.print(e);
-            }
+            Response response = Response.ok(Response.Status.OK).entity(userProfile).build();
             return response;
         }
         return Response.status(Response.Status.CONFLICT).build();

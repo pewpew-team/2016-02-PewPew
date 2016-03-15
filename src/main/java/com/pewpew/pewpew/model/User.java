@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.model;
 
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.pewpew.pewpew.annotations.UserInfo;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
@@ -7,9 +9,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+
 
 
 //@XmlRootElement
@@ -19,14 +19,14 @@ public class User {
 
 
     @Id
-//    @UserInfo
-    private ObjectId id;
+    @UserInfo
+    private String  id;
 
     private String password;
 
 
     @Indexed(unique = true)
-//    @UserInfo
+    @UserInfo
     private String email;
 
     @UserInfo
@@ -43,11 +43,11 @@ public class User {
 //    }
 
 //    @XmlElement(name = "id")
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -88,3 +88,5 @@ public class User {
         this.rating = rating;
     }
 }
+
+
