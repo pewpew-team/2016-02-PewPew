@@ -2,6 +2,7 @@ package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForCreation;
 import com.pewpew.pewpew.annotations.ValidForModification;
@@ -22,8 +23,8 @@ public class UserService {
     private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
     private final AccountService accountService;
 
-    public UserService() {
-        this.accountService = com.pewpew.pewpew.main.RestApplication.ACCOUNT_SERVICE;
+    public UserService(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @POST

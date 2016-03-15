@@ -13,7 +13,7 @@ import java.lang.annotation.Annotation;
 @ApplicationPath("api")
 public class RestApplication extends ResourceConfig {
 
-    private static final AccountService ACCOUNT_SERVICE = new AccountService();
+
     public RestApplication() {
         property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE, new Annotation[]{
                 //
@@ -21,8 +21,9 @@ public class RestApplication extends ResourceConfig {
         property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
         register(EntityFilteringFeature.class);
 
-        final SessionService sessionService = new SessionService();
-        final UserService userService = new UserService();
+        final AccountService accountService = new AccountService();
+        final SessionService sessionService = new SessionService(accountService);
+        final UserService userService = new UserService(accountService);
         final ScoreboardService scoreboardService = new ScoreboardService();
 
         register(sessionService);

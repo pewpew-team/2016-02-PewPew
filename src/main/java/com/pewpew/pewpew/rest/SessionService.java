@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForLogin;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -17,8 +18,8 @@ import java.util.UUID;
 public class SessionService {
     private final AccountService accountService;
 
-    public SessionService() {
-        this.accountService = com.pewpew.pewpew.main.RestApplication.ACCOUNT_SERVICE;
+    public SessionService(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @POST
@@ -41,7 +42,7 @@ public class SessionService {
             if (userFromToken == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
-            return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
+            return Response.ok(Response.Status.OK).entity(userFromToken.getId().toString()).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -57,7 +58,7 @@ public class SessionService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return Response.ok(Response.Status.OK).entity(user.getId()).build();
+        return Response.ok(Response.Status.OK).entity(user.getId().toString()).build();
     }
 
     @DELETE

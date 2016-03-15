@@ -21,6 +21,9 @@ public class DataBaseTest {
     public void creationTest() {
         RandomString randomString = new RandomString();
         User user = new User();
+        user.setEmail(randomString.nextString());
+        user.setLogin(randomString.nextString());
+        user.setPassword(randomString.nextString());
 //        User user = new User(randomString.nextString(), randomString.nextString(), randomString.nextString());
         Random rand = new Random();
         user.setRating(rand.nextInt(100));
@@ -38,9 +41,10 @@ public class DataBaseTest {
     public void generateUsers() {
         for(int i = 0; i < 100; ++i) {
             RandomString randomString = new RandomString();
-//            User user = new User(randomString.nextString(),
-//                    randomString.nextString(), randomString.nextString());
             User user = new User();
+            user.setEmail(randomString.nextString());
+            user.setLogin(randomString.nextString());
+            user.setPassword(randomString.nextString());
             Random rand = new Random();
             user.setRating(rand.nextInt(100));
 
