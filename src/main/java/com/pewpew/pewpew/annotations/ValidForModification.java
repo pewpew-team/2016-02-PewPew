@@ -1,4 +1,6 @@
-package com.pewpew.pewpew.model;
+package com.pewpew.pewpew.annotations;
+
+import com.pewpew.pewpew.model.User;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
@@ -12,32 +14,28 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 
+
 @Target({TYPE, PARAMETER})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidForCreation.Validator.class)
-public @interface ValidForCreation {
+@Constraint(validatedBy = ValidForModification.Validator.class)
+public @interface ValidForModification {
 
-    String message() default "{pl.pjagielski.constraint.ValidForCreation}";
+    String message() default "{pl.pjagielski.constraint.ValidForModification}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class Validator implements ConstraintValidator<ValidForCreation, User> {
+    class Validator implements ConstraintValidator<ValidForModification, User> {
 
         @Override
-        public void initialize(ValidForCreation validForCreation) {}
+        public void initialize(ValidForModification validForCreation) {}
 
         @Override
         public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {
             return user != null
-                    && user.getLogin() == null
-                    && user.getPassword() != null
-                    && user.getLogin() != null;
+                    && (user.getPassword() != null || user.getEmail() != null || user.getLogin() != null);
         }
     }
 
 }
-
-
-
