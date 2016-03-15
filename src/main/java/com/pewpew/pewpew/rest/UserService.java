@@ -3,6 +3,8 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.model.ValidForCreation;
+import com.pewpew.pewpew.model.ValidForModification;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
 import org.bson.types.ObjectId;
@@ -27,7 +29,7 @@ public class UserService {
     }
 
     @POST
-    public Response signUp(@Valid User user, @Context HttpHeaders headers,
+    public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
         if (!MongoManager.userExist(user)) {
             return Response.status(Response.Status.CONFLICT).build();
@@ -53,7 +55,8 @@ public class UserService {
 
     @PUT
     @Path("{id}")
-    public Response changeUserInfo(User editedUser, @CookieParam("token") String token) {
+    public Response changeUserInfo(@PathParam("id") String userId,
+                                   @ValidForModification User editedUser, @CookieParam("token") String token) {
         User activeUser = accountService.getUserByToken(token);
         if (activeUser == null) {
             return Response.status(Response.Status.FORBIDDEN).build();

@@ -1,8 +1,8 @@
 package com.pewpew.pewpew.rest;
 
+import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
-import com.pewpew.pewpew.model.UserAuth;
 import com.pewpew.pewpew.mongo.MongoManager;
 
 import javax.inject.Singleton;
@@ -23,7 +23,10 @@ public class SessionService {
     }
 
     @POST
-    public Response signIn(@Valid  UserAuth authUser, @Context HttpHeaders headers,
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserInfo
+    public Response signIn(User authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
         if (authUser != null) {
             if (token == null || token.isEmpty()) {
@@ -46,6 +49,8 @@ public class SessionService {
     }
 
     @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response checkUserAuth(@CookieParam("token") String token) {
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -58,6 +63,8 @@ public class SessionService {
     }
 
     @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response signOut(@CookieParam("token") Cookie cookie) {
         if (cookie == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();

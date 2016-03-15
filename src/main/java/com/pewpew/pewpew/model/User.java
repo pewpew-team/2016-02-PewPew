@@ -18,30 +18,29 @@ public class User {
 
 
     @Id
-    @UserInfo
+//    @UserInfo
     private ObjectId id;
 
-    @NotNull
-    @Size(min=1)
     private String password;
 
 
     @Indexed(unique = true)
-    @NotNull
-//    @Email
-    @UserInfo
+//    @UserInfo
     private String email;
 
-
-    @NotNull
-    @Size(min=1)
-    @UserInfo
+//    @UserInfo
     private String login;
 
     @Nullable
     private Integer rating;
 
-    @XmlElement(name = "id")
+
+//    public User(String email, String login, String password) {
+//        this.email = email;
+//        this.login = login;
+//        this.password = password;
+//    }
+
     public String getId() {
         return id.toString();
     }
@@ -50,30 +49,27 @@ public class User {
         this.id = id;
     }
 
-    @NotNull
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotNull String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    @NotNull
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotNull String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    @NotNull
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(@NotNull String login) {
+    public void setLogin(String login) {
         this.login = login;
     }
 

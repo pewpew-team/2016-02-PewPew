@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.main;
 
+import com.pewpew.pewpew.rest.ScoreboardService;
 import com.pewpew.pewpew.rest.SessionService;
 import com.pewpew.pewpew.rest.UserService;
 import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
@@ -27,6 +28,7 @@ public class RestApplication extends ResourceConfig {
 
         final SessionService sessionService = new SessionService(ACCOUNT_SERVICE);
         final UserService userService = new UserService(ACCOUNT_SERVICE);
+        final ScoreboardService scoreboardService = new ScoreboardService();
 
         register(sessionService);
         register(userService);

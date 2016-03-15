@@ -51,13 +51,13 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.1.0.M0</version>
+            <version>9.3.0.M2</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.1.0.M0</version>
+            <version>9.3.0.M2</version>
         </dependency>
 
         <dependency>
