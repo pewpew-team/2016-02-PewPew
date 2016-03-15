@@ -10,35 +10,40 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
 
 @Entity(value = "users")
 public class User {
     @SuppressWarnings({"unused", "InstanceVariableNamingConvention"})
 
-    @UserInfo
+
     @Id
+    @UserInfo
     private ObjectId id;
 
     @NotNull
     @Size(min=1)
     private String password;
 
-    @UserInfo
+
     @Indexed(unique = true)
     @NotNull
 //    @Email
+    @UserInfo
     private String email;
 
-    @UserInfo
+
     @NotNull
     @Size(min=1)
+    @UserInfo
     private String login;
 
     @Nullable
     private Integer rating;
 
-    public ObjectId getId() {
-        return id;
+    @XmlElement(name = "id")
+    public String getId() {
+        return id.toString();
     }
 
     public void setId(ObjectId id) {

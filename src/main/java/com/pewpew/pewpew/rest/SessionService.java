@@ -15,6 +15,8 @@ import java.util.UUID;
 
 @Singleton
 @Path("/session")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class SessionService {
     private AccountService accountService;
 
@@ -23,8 +25,6 @@ public class SessionService {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response signIn(@Valid  UserAuth authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
         if (authUser != null) {
@@ -42,14 +42,12 @@ public class SessionService {
             if (userFromToken == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
-            ObjectId userId = userFromToken.getId();
             return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public Response checkUserAuth(@CookieParam("token") String token) {
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -62,7 +60,6 @@ public class SessionService {
     }
 
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     public Response signOut(@CookieParam("token") Cookie cookie) {
         if (cookie == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
