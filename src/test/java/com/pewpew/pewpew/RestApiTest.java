@@ -44,7 +44,7 @@ public class RestApiTest extends JerseyTest {
         String id = json.readEntity(String.class);
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
-        Response userInfo = target("user").request().cookie(newCookie).get();
+        Response userInfo = target("user").path("id").request().cookie(newCookie).get();
         User returnedUser = userInfo.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
         assertEquals(user.getPassword(), returnedUser.getPassword());

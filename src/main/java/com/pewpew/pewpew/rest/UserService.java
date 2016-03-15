@@ -41,9 +41,9 @@ public class UserService {
 
 
     @GET
-//    @Path("{id}")
+    @Path("{id}")
     @UserInfo
-    public Response userInfo(
+    public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
