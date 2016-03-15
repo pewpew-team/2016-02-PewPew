@@ -8,11 +8,16 @@ import com.pewpew.pewpew.annotations.ValidForCreation;
 import com.pewpew.pewpew.annotations.ValidForModification;
 import com.pewpew.pewpew.mongo.MongoManager;
 import com.pewpew.pewpew.mongo.MongoModule;
+import jersey.repackaged.com.google.common.collect.Maps;
 import org.mongodb.morphia.Datastore;
 
 import javax.inject.Singleton;
+import javax.json.JsonObject;
 import javax.ws.rs.*;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.*;
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.UUID;
 
 @Singleton
@@ -48,7 +53,14 @@ public class UserService {
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-            return Response.ok(Response.Status.OK).entity(userProfile).build();
+            Response response = Response.ok(Response.Status.OK).entity(userProfile, new Annotation[] {UserInfo.Factory.getInstance() }).build();
+            try {
+                User returnedUser = (User)response.getEntity();
+                System.out.print(returnedUser.getId());
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+            return response;
         }
         return Response.status(Response.Status.CONFLICT).build();
     }

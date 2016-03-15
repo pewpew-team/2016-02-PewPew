@@ -24,7 +24,7 @@ public class DataBaseTest {
         user.setEmail(randomString.nextString());
         user.setLogin(randomString.nextString());
         user.setPassword(randomString.nextString());
-//        User user = new User(randomString.nextString(), randomString.nextString(), randomString.nextString());
+
         Random rand = new Random();
         user.setRating(rand.nextInt(100));
 

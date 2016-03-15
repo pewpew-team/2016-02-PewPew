@@ -8,21 +8,25 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+
+//@XmlRootElement
 @Entity(value = "users")
 public class User {
     @SuppressWarnings({"unused", "InstanceVariableNamingConvention"})
 
 
     @Id
-    @UserInfo
+//    @UserInfo
     private ObjectId id;
 
     private String password;
 
 
     @Indexed(unique = true)
-    @UserInfo
+//    @UserInfo
     private String email;
 
     @UserInfo
@@ -38,7 +42,7 @@ public class User {
 //        this.password = password;
 //    }
 
-    @XmlElement(name = "id")
+//    @XmlElement(name = "id")
     public ObjectId getId() {
         return id;
     }
@@ -47,6 +51,7 @@ public class User {
         this.id = id;
     }
 
+//    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -55,6 +60,7 @@ public class User {
         this.password = password;
     }
 
+//    @XmlTransient
     public String getEmail() {
         return email;
     }
@@ -63,6 +69,7 @@ public class User {
         this.email = email;
     }
 
+//    @XmlTransient
     public String getLogin() {
         return login;
     }
@@ -72,6 +79,7 @@ public class User {
     }
 
     @Nullable
+//    @XmlTransient
     public Integer getRating() {
         return rating;
     }

@@ -44,7 +44,7 @@ public class RestApiTest extends JerseyTest {
         String id = json.readEntity(String.class);
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
-        Response userInfo = target("user").path("id").request().cookie(this.newCookie).get();
+        Response userInfo = target("user").path("id").request().cookie(newCookie).get();
         Response userInfo2 = target("user").path("id").request().cookie(newCookie).get();
         User returnedUser = userInfo2.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
@@ -72,12 +72,32 @@ public class RestApiTest extends JerseyTest {
         assertEquals(userID, "56e82db30ae21fc88e43d020");
     }
 
-//    @Test
-//    public void test
+    @Test
+    public void testCheckAuth() {
+        User user = new User();
+        user.setLogin("111");
+        user.setPassword("111");
+        final Response json = target("session").request().post(Entity.json(user));
+        String id = json.readEntity(String.class);
+        final Map<String, NewCookie> cookies = json.getCookies();
+        newCookie = cookies.get("token");
 
-//    @Test
-//    public void testGetUserInfo() {
-//        final String userInfo = target("user").path("123sd").request().cookie(this.newCookie).get(String.class);
-//        String a = "0";
-//    }
+        final Response authStateJson = target("session").request().cookie(newCookie).get();
+        assertEquals(authStateJson.getStatus(), 200);
+    }
+
+    @Test
+    public void testLogout() {
+        User user = new User();
+        user.setLogin("111");
+        user.setPassword("111");
+        final Response json = target("session").request().post(Entity.json(user));
+        String id = json.readEntity(String.class);
+        final Map<String, NewCookie> cookies = json.getCookies();
+        newCookie = cookies.get("token");
+
+        final Response authStateJson = target("session").request().cookie(newCookie).delete();
+        assertEquals(authStateJson.getStatus(), 200);
+    }
+
 }
