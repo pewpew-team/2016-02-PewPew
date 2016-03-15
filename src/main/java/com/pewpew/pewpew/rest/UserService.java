@@ -12,6 +12,7 @@ import org.mongodb.morphia.Datastore;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.lang.annotation.Annotation;
 import java.util.UUID;
 
 @Singleton
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserService {
     private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
-    private AccountService accountService;
+    private final AccountService accountService;
 
     public UserService(AccountService accountService) {
         this.accountService = accountService;
@@ -42,11 +43,15 @@ public class UserService {
 
     @GET
     @Path("{id}")
+    @UserInfo
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-            return Response.ok(Response.Status.OK).entity(userProfile).build();
+            userProfile.setPassword(null);
+            Response response = Response.ok(Response.Status.OK).entity(userProfile,
+                    new Annotation[] {UserInfo.Factory.getInstance()}).build();
+            return response;
         }
         return Response.status(Response.Status.CONFLICT).build();
     }
@@ -69,7 +74,7 @@ public class UserService {
             activeUser.setPassword(editedUser.getPassword());
         }
         datastore.save(activeUser);
-        return Response.ok(Response.Status.OK).entity(activeUser).build();
+        return Response.ok(Response.Status.OK).entity(activeUser.getId().toString()).build();
     }
 
     @DELETE

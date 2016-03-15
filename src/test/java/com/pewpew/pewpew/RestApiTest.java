@@ -1,5 +1,3 @@
-package com.pewpew.pewpew;
-
 import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
@@ -15,62 +13,87 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 public class RestApiTest extends JerseyTest {
-        @Override
-        protected Application configure() {
-            return new RestApplication();
-        }
+    @Override
+    protected Application configure() {
+        return new RestApplication();
+    }
 
     private static NewCookie newCookie;
 
-        @Test
-        public void testCreateUser() {
-            RandomString randomString = new RandomString();
-            User userProfile = new User();
-            final String json = target("user").request("application/json").post(Entity.json(userProfile), String.class);
-            assertNotNull(json);
-        }
+    @Test
+    public void testCreateUser() {
+        RandomString randomString = new RandomString();
+        User userProfile = new User();
+        userProfile.setLogin(randomString.nextString());
+        userProfile.setPassword(randomString.nextString());
+        userProfile.setEmail(randomString.nextString());
+        final String json = target("user").request("application/json").post(Entity.json(userProfile), String.class);
+        assertNotNull(json);
+    }
 
     @Test
     public void testSignIn() {
         User user = new User();
-        user.setLogin("123");
-        user.setPassword("123");
+        user.setLogin("111");
+        user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
         String id = json.readEntity(String.class);
         final Map<String, NewCookie> cookies = json.getCookies();
-        this.newCookie = cookies.get("token");
-        Response userInfo = target("user").path("id").request().cookie(this.newCookie).get();
-        Response userInfo2 = target("user").path("id").request().cookie(this.newCookie).get();
-        User returnedUser = userInfo2.readEntity(User.class);
+        newCookie = cookies.get("token");
+        Response userInfo = target("user").path("id").request().cookie(newCookie).get();
+        User returnedUser = userInfo.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
-        assertEquals(user.getPassword(), returnedUser.getPassword());
     }
 
     @Test
     public void testEditUser() {
         User user = new User();
-        user.setLogin("123");
-        user.setPassword("123");
+        user.setLogin("111");
+        user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
         String id = json.readEntity(String.class);
         final Map<String, NewCookie> cookies = json.getCookies();
-        this.newCookie = cookies.get("token");
+        newCookie = cookies.get("token");
 
-        User userForEdit = new User();
-        user.setPassword("123");
-        user.setLogin("223");
-        Response userInfo = target("user").path("id").request().cookie(this.newCookie).put(Entity.json(user));
-        Response userInfo2 = target("user").path("id").request().cookie(this.newCookie).put(Entity.json(user));
-        User returnedUser = userInfo2.readEntity(User.class);
-        assertEquals(user.getLogin(), returnedUser.getLogin());
+        user.setLogin("222");
+        Response userInfo = target("user").path("id").request().cookie(newCookie).put(Entity.json(user));
+        String userID = userInfo.readEntity(String.class);
+        assertEquals(userID, "56e82db30ae21fc88e43d020");
+
+        user.setLogin("111");
+        userInfo = target("user").path("id").request().cookie(newCookie).put(Entity.json(user));
+        userID = userInfo.readEntity(String.class);
+        assertEquals(userID, "56e82db30ae21fc88e43d020");
     }
 
-//    @Test
-//    public void testGetUserInfo() {
-//        final String userInfo = target("user").path("123sd").request().cookie(this.newCookie).get(String.class);
-//        String a = "0";
-//    }
+    @Test
+    public void testCheckAuth() {
+        User user = new User();
+        user.setLogin("111");
+        user.setPassword("111");
+        final Response json = target("session").request().post(Entity.json(user));
+        String id = json.readEntity(String.class);
+        final Map<String, NewCookie> cookies = json.getCookies();
+        newCookie = cookies.get("token");
+
+        final Response authStateJson = target("session").request().cookie(newCookie).get();
+        assertEquals(authStateJson.getStatus(), 200);
+    }
+
+    @Test
+    public void testLogout() {
+        User user = new User();
+        user.setLogin("111");
+        user.setPassword("111");
+        final Response json = target("session").request().post(Entity.json(user));
+        String id = json.readEntity(String.class);
+        final Map<String, NewCookie> cookies = json.getCookies();
+        newCookie = cookies.get("token");
+
+        final Response authStateJson = target("session").request().cookie(newCookie).delete();
+        assertEquals(authStateJson.getStatus(), 200);
+    }
+
 }

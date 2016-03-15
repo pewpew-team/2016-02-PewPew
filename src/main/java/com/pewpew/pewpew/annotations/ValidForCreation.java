@@ -33,7 +33,7 @@ public @interface ValidForCreation {
         @Override
         public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {
             return user != null
-                    && user.getLogin() == null
+                    && user.getLogin() != null
                     && user.getPassword() != null
                     && user.getLogin() != null;
         }

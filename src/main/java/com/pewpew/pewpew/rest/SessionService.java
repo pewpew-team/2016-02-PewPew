@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.rest;
 
-import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForLogin;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -16,15 +16,13 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SessionService {
-    private AccountService accountService;
+    private final AccountService accountService;
 
     public SessionService(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response signIn(@ValidForLogin User authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
         if (authUser != null) {
@@ -42,14 +40,12 @@ public class SessionService {
             if (userFromToken == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
-            return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
+            return Response.ok(Response.Status.OK).entity(userFromToken.getId().toString()).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response checkUserAuth(@CookieParam("token") String token) {
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -58,12 +54,10 @@ public class SessionService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return Response.ok(Response.Status.OK).entity(user.getId()).build();
+        return Response.ok(Response.Status.OK).entity(user.getId().toString()).build();
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response signOut(@CookieParam("token") Cookie cookie) {
         if (cookie == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
