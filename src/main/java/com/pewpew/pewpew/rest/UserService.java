@@ -1,6 +1,5 @@
 package com.pewpew.pewpew.rest;
 
-import com.pewpew.pewpew.annotations.UserInfo;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForCreation;
@@ -12,7 +11,6 @@ import org.mongodb.morphia.Datastore;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.lang.annotation.Annotation;
 import java.util.UUID;
 
 @Singleton
@@ -43,14 +41,11 @@ public class UserService {
 
     @GET
     @Path("{id}")
-    @UserInfo
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-//            userProfile.setPassword(null);
-            Response response = Response.ok(Response.Status.OK).entity(userProfile,
-                    new Annotation[] {UserInfo.Factory.getInstance()}).build();
+            Response response = Response.ok(Response.Status.OK).entity(userProfile).build();
             return response;
         }
         return Response.status(Response.Status.CONFLICT).build();

@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.model;
 
 
-import com.pewpew.pewpew.annotations.UserInfo;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.annotations.Entity;
@@ -16,15 +15,11 @@ public class User {
 
 
     @Id
-    @UserInfo
-    //TODO:https://stackoverflow.com/questions/4802887/gson-how-to-exclude-specific-fields-from-serialization-without-annotations/17733569#17733569
     private ObjectId id;
 
     @Indexed(unique = true)
-    @UserInfo
     private String email;
 
-    @UserInfo
     private String login;
 
     @Nullable
