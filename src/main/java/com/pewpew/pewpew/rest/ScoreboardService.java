@@ -15,7 +15,7 @@ public class ScoreboardService {
 
     @GET
     public Response getScoreboard() {
-        List<User> query = datastore.find(User.class).order("-rating").limit(5).asList();
+        List<User> query = datastore.find(User.class).order("-rating").limit(8).asList();
         User[] users = query.toArray(new User[query.size()]);
         return Response.ok(Response.Status.OK).entity(users).build();
     }

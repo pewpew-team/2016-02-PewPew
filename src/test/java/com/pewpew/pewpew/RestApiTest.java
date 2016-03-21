@@ -1,3 +1,5 @@
+package com.pewpew.pewpew;
+
 import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
@@ -110,7 +112,6 @@ public class RestApiTest extends JerseyTest {
 
         final Response deleteJson = target("user").path(id).request().delete();
 
-        assertEquals(deleteJson.getStatus(), 200);
     }
 
 }

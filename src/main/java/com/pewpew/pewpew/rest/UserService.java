@@ -48,7 +48,7 @@ public class UserService {
                              @CookieParam("token") String token) {
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-            userProfile.setPassword(null);
+//            userProfile.setPassword(null);
             Response response = Response.ok(Response.Status.OK).entity(userProfile,
                     new Annotation[] {UserInfo.Factory.getInstance()}).build();
             return response;
