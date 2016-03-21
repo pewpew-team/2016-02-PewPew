@@ -10,11 +10,21 @@ public class UserSerializer implements JsonSerializer<User>{
     public JsonElement serialize(User src, Type typeOfSrc, JsonSerializationContext context) {
 
         JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("id", src.getId().toString());
-        jsonObject.addProperty("email", src.getEmail());
-        jsonObject.addProperty("login", src.getLogin());
-        jsonObject.addProperty("rating", src.getRating());
+        if (src.getId() != null) {
+            jsonObject.addProperty("id", src.getId().toString());
+        }
+        if (src.getEmail() != null) {
+            jsonObject.addProperty("email", src.getEmail());
+        }
+        if (src.getLogin() != null) {
+            jsonObject.addProperty("login", src.getLogin());
+        }
+        if (src.getPassword() !=null) {
+            jsonObject.addProperty("password", src.getPassword());
+        }
+        if(src.getRating() != null) {
+            jsonObject.addProperty("rating", src.getRating());
+        }
 
         return jsonObject;
     }

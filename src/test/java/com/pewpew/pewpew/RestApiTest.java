@@ -1,9 +1,13 @@
 package com.pewpew.pewpew;
 
 import com.pewpew.pewpew.common.RandomString;
+import com.pewpew.pewpew.main.GsonMessageBodyHandler;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
@@ -17,9 +21,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class RestApiTest extends JerseyTest {
+
+
+
+
     @Override
     protected Application configure() {
+//        ResourceConfig resourceConfig = new ResourceConfig();
+//        resourceConfig.packages("com.pewpew.pewpew.main");
+//        resourceConfig.register(GsonMessageBodyHandler.class);
         return new RestApplication();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @Override
+    protected void configureClient(ClientConfig clientConfig) {
+        clientConfig.register(GsonMessageBodyHandler.class);
     }
 
     private static NewCookie newCookie;

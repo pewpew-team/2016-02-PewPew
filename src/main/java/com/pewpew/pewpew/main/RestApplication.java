@@ -17,8 +17,8 @@ public class RestApplication extends ResourceConfig {
 
     public RestApplication() {
 
+//        packages("com.pewpew.pewpew.main");
         register(GsonMessageBodyHandler.class);
-
         final AccountService accountService = new AccountService();
         final SessionService sessionService = new SessionService(accountService);
         final UserService userService = new UserService(accountService);
