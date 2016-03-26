@@ -1,3 +1,4 @@
+package com.pewpew.pewpew;
 
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.mongo.MongoModule;

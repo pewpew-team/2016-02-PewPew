@@ -4,38 +4,28 @@ import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.GsonMessageBodyHandler;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class RestApiTest extends JerseyTest {
-
-
-
+    private static final int OK_STATUS = 200;
 
     @Override
     protected Application configure() {
-//        ResourceConfig resourceConfig = new ResourceConfig();
-//        resourceConfig.packages("com.pewpew.pewpew.main");
-//        resourceConfig.register(GsonMessageBodyHandler.class);
         return new RestApplication();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
     }
 
     @Override
@@ -61,13 +51,18 @@ public class RestApiTest extends JerseyTest {
         User user = new User();
         user.setLogin("111");
         user.setPassword("111");
+
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(String.class);
+        String id = json.readEntity(ObjectId.class).toString();
+
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
-        Response userInfo = target("user").path("id").request().cookie(newCookie).get();
+
+        Response userInfo = target("user").path(id).request().cookie(newCookie).get();
         User returnedUser = userInfo.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
+        assertNotNull(returnedUser.getEmail());
+        assertEquals(returnedUser.getId().toString(), id);
     }
 
     @Test
@@ -76,19 +71,19 @@ public class RestApiTest extends JerseyTest {
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(String.class);
+        String id = json.readEntity(ObjectId.class).toString();
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
         user.setLogin("222");
-        Response userInfo = target("user").path("id").request().cookie(newCookie).put(Entity.json(user));
-        String userID = userInfo.readEntity(String.class);
-        assertEquals(userID, "56e82db30ae21fc88e43d020");
+        Response userInfo = target("user").path(id).request().cookie(newCookie).put(Entity.json(user));
+        String userID = userInfo.readEntity(ObjectId.class).toString();
+        assertEquals(userID, id);
 
         user.setLogin("111");
         userInfo = target("user").path("id").request().cookie(newCookie).put(Entity.json(user));
-        userID = userInfo.readEntity(String.class);
-        assertEquals(userID, "56e82db30ae21fc88e43d020");
+        userID = userInfo.readEntity(ObjectId.class).toString();
+        assertEquals(userID, id);
     }
 
     @Test
@@ -97,12 +92,13 @@ public class RestApiTest extends JerseyTest {
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(String.class);
+        String id = json.readEntity(ObjectId.class).toString();
+        assertNotNull(id);
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
         final Response authStateJson = target("session").request().cookie(newCookie).get();
-        assertEquals(authStateJson.getStatus(), 200);
+        assertEquals(authStateJson.getStatus(), OK_STATUS);
     }
 
     @Test
@@ -111,12 +107,13 @@ public class RestApiTest extends JerseyTest {
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(String.class);
+        String id = json.readEntity(ObjectId.class).toString();
+        assertNotNull(id);
+
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
-
         final Response authStateJson = target("session").request().cookie(newCookie).delete();
-        assertEquals(authStateJson.getStatus(), 200);
+        assertEquals(authStateJson.getStatus(), OK_STATUS);
     }
 
     @Test
@@ -126,13 +123,29 @@ public class RestApiTest extends JerseyTest {
         userProfile.setLogin(randomString.nextString());
         userProfile.setPassword(randomString.nextString());
         userProfile.setEmail(randomString.nextString());
-        final String json = target("user").request("application/json").post(Entity.json(userProfile), String.class);
+        final Response json = target("user").request("application/json")
+                .post(Entity.json(userProfile));
+        assertEquals(json.getStatus(), OK_STATUS);
 
         final Response idJson = target("session").request().post(Entity.json(userProfile));
-        String id = idJson.readEntity(String.class);
+        String id = idJson.readEntity(ObjectId.class).toString();
 
         final Response deleteJson = target("user").path(id).request().delete();
-
+        assertEquals(deleteJson.getStatus(), OK_STATUS);
     }
 
+    @Test
+    public void testScroyboard() {
+        final Response scroyBoard = target("scoreboard").request("application/json").get();
+        List<User> users = scroyBoard.readEntity(new ListGenericType());
+        assertNotNull(users);
+        assertFalse(users.size() < 2);
+        Integer firstUserRating = users.get(0).getRating();
+        Integer secondUserRating = users.get(1).getRating();
+        assertNotNull(firstUserRating);
+        assertNotNull(secondUserRating);
+        assertTrue(firstUserRating >= secondUserRating);
+    }
+
+    private static class ListGenericType extends GenericType<List<User>> {}
 }

@@ -60,7 +60,6 @@ public class User {
     }
 
     @Nullable
-//    @XmlTransient
     public Integer getRating() {
         return rating;
     }

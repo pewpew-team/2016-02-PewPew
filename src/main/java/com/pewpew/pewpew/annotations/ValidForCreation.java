@@ -19,7 +19,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = ValidForCreation.Validator.class)
 public @interface ValidForCreation {
 
-    String message() default "{pl.pjagielski.constraint.ValidForCreation}";
+    String message() default "{constraint.ValidForCreation}";
 
     Class<?>[] groups() default {};
 

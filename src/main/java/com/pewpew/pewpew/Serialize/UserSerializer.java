@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.Serialize;
+package com.pewpew.pewpew.serialize;
 
 import com.google.gson.*;
 import com.pewpew.pewpew.model.User;
@@ -11,7 +11,7 @@ public class UserSerializer implements JsonSerializer<User>{
 
         JsonObject jsonObject = new JsonObject();
         if (src.getId() != null) {
-            jsonObject.addProperty("id", src.getId().toString());
+            jsonObject.addProperty("_id", src.getId().toString());
         }
         if (src.getEmail() != null) {
             jsonObject.addProperty("email", src.getEmail());
@@ -25,7 +25,7 @@ public class UserSerializer implements JsonSerializer<User>{
         if(src.getRating() != null) {
             jsonObject.addProperty("rating", src.getRating());
         }
-
+        System.out.print("Serialized user and sending");
         return jsonObject;
     }
 }

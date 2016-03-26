@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.main.AccountService;
-import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForLogin;
 import com.pewpew.pewpew.mongo.MongoManager;
@@ -24,7 +23,9 @@ public class SessionService {
 
     @POST
     public Response signIn(@ValidForLogin User authUser, @Context HttpHeaders headers,
-                           @CookieParam("token") String token) {
+                           @CookieParam("token") String token,
+                           @CookieParam("token") Cookie cook) {
+        System.out.print("Got request: authUser \n");
         if (authUser != null) {
             if (token == null || token.isEmpty()) {
                 User user = MongoManager.getUser(authUser.getLogin(), authUser.getPassword());
@@ -34,14 +35,19 @@ public class SessionService {
                 token = UUID.randomUUID().toString();
                 accountService.addToken(token, user);
                 NewCookie cookie = new NewCookie("token", token);
-                return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId().toString()).build();
+                System.out.print("Putting token into cookie \n");
+                return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
             }
             User userFromToken = accountService.getUserByToken(token);
             if (userFromToken == null) {
-                return Response.status(Response.Status.UNAUTHORIZED).build();
+                System.out.print("User have cookie, but not auth \n");
+                NewCookie newCookie = new NewCookie(cook, null, 0, false);
+                return Response.status(Response.Status.UNAUTHORIZED).cookie(newCookie).build();
             }
-            return Response.ok(Response.Status.OK).entity(userFromToken.getId().toString()).build();
+            System.out.print("Sending user info from logged user \n");
+            return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
         }
+        System.out.print("got empty json \n");
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -54,19 +60,22 @@ public class SessionService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return Response.ok(Response.Status.OK).entity(user.getId().toString()).build();
+        return Response.ok(Response.Status.OK).entity(user.getId()).build();
     }
 
     @DELETE
     public Response signOut(@CookieParam("token") Cookie cookie) {
+        System.out.print("Got request: cancel token" + '\n');
         if (cookie == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            System.out.print("Cookie is null" + '\n');
+            return Response.ok().build();
         }
         if (accountService.closeToken(cookie.getValue())) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         NewCookie newCookie = new NewCookie(cookie, null, 0, false);
-        return Response.ok("OK").cookie(newCookie).build();
+        System.out.print("Putting empty token" + '\n');
+        return Response.ok().cookie(newCookie).build();
     }
 
 }

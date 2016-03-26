@@ -1,7 +1,5 @@
 package com.pewpew.pewpew.common;
 
-import javax.servlet.http.HttpServletResponse;
-
 public class Settings {
     public static final String DB_ADDRESS = "127.0.0.1";
     public static final int DB_PORT = 27017;

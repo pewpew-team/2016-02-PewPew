@@ -1,6 +1,6 @@
 <!--suppress XmlUnboundNsPrefix -->
 <root>
-  <item name='java.io.InputStreamReader'>
+  <item name='javax.servlet.ServletResponse java.io.PrintWriter getWriter()'>
     <annotation name='org.jetbrains.annotations.NotNull'/>
   </item>
 </root>

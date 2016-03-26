@@ -21,7 +21,7 @@ public class MongoManager {
 
     @NotNull
     public static Boolean userExist(User newUser) {
-        User user = DATASTORE.find(User.class, "email", newUser.getEmail()).get();;
+        User user = DATASTORE.find(User.class, "email", newUser.getEmail()).get();
         return user == null;
     }
 

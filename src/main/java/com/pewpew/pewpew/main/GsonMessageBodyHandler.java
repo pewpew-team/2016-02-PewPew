@@ -2,9 +2,14 @@ package com.pewpew.pewpew.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.pewpew.pewpew.Serialize.UserDeserializer;
-import com.pewpew.pewpew.Serialize.UserSerializer;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.pewpew.pewpew.serialize.ObjectIdDeserializer;
+import com.pewpew.pewpew.serialize.ObjectIdSerializer;
+import com.pewpew.pewpew.serialize.UserDeserializer;
+import com.pewpew.pewpew.serialize.UserSerializer;
 import com.pewpew.pewpew.model.User;
+import org.bson.types.ObjectId;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -33,6 +38,8 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
             gson = gsonBuilder.disableHtmlEscaping().
                     registerTypeAdapter(User.class, new UserSerializer()).
                     registerTypeAdapter(User.class, new UserDeserializer()).
+                    registerTypeAdapter(ObjectId.class, new ObjectIdSerializer()).
+                    registerTypeAdapter(ObjectId.class, new ObjectIdDeserializer()).
                     setPrettyPrinting().create();
         }
         return gson;
@@ -48,33 +55,35 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
     public Object readFrom(Class<Object> type, Type genericType,
                            Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
-        InputStreamReader streamReader = null;
-        try {
-            streamReader = new InputStreamReader(entityStream, UTF_8);
+        //noinspection TryWithIdenticalCatches
+        try (InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8)) {
+
+            try {
+                Type jsonType;
+                if (type.equals(genericType)) {
+                    jsonType = type;
+                } else {
+                    jsonType = genericType;
+                }
+                try {
+                    return getGson().fromJson(streamReader, jsonType);
+                } catch (JsonIOException | JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+
+            } finally {
+                try {
+                    streamReader.close();
+                } catch (IOException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        try {
-            Type jsonType;
-            if (type.equals(genericType)) {
-                jsonType = type;
-            } else {
-                jsonType = genericType;
-            }
-            try {
-                return getGson().fromJson(streamReader, jsonType);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } finally {
-            try {
-                streamReader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return new Object();
     }
 
     @Override
@@ -95,8 +104,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                         MultivaluedMap<String, Object> httpHeaders,
                         OutputStream entityStream) throws IOException,
             WebApplicationException {
-        OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8);
-        try {
+        try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
             Type jsonType;
             if (type.equals(genericType)) {
                 jsonType = type;
@@ -104,8 +112,6 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                 jsonType = genericType;
             }
             getGson().toJson(object, jsonType, writer);
-        } finally {
-            writer.close();
         }
     }
 }

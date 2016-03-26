@@ -2,7 +2,6 @@ package com.pewpew.pewpew.main;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -32,8 +31,6 @@ public class Main {
         servletHolder.setInitParameter("javax.ws.rs.Application",
                 "com.pewpew.pewpew.main.RestApplication");
 
-
-
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
         resourceHandler.setResourceBase(staticPath);
@@ -46,7 +43,6 @@ public class Main {
 
 
         server.setHandler(handlerCollection);
-
         server.start();
         server.join();
     }

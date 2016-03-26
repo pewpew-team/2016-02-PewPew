@@ -28,6 +28,7 @@ public class UserService {
     @POST
     public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
+        System.out.print("Got request: createUser \n");
         if (!MongoManager.userExist(user)) {
             return Response.status(Response.Status.CONFLICT).build();
         }
@@ -35,7 +36,8 @@ public class UserService {
         accountService.addToken(newToken, user);
         datastore.save(user);
         NewCookie cookie = new NewCookie("token", newToken);
-        return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId().toString()).build();
+        System.out.print("Putting token into cookie \n");
+        return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
     }
 
 
@@ -43,11 +45,13 @@ public class UserService {
     @Path("{id}")
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
+        System.out.print("Got request: userInfo with id"  + userId + '\n');
         User userProfile = accountService.getUserByToken(token);
         if (userProfile != null) {
-            Response response = Response.ok(Response.Status.OK).entity(userProfile).build();
-            return response;
+            System.out.print("Putting userInfo in json \n");
+            return Response.ok(Response.Status.OK).entity(userProfile).build();
         }
+        System.out.print("User not found \n");
         return Response.status(Response.Status.CONFLICT).build();
     }
 
@@ -55,6 +59,7 @@ public class UserService {
     @Path("{id}")
     public Response changeUserInfo(@PathParam("id") String userId,
                                    @ValidForModification User editedUser, @CookieParam("token") String token) {
+        System.out.print("Got request: changeUserInfo"  + userId + '\n');
         User activeUser = accountService.getUserByToken(token);
         if (activeUser == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -69,12 +74,13 @@ public class UserService {
             activeUser.setPassword(editedUser.getPassword());
         }
         datastore.save(activeUser);
-        return Response.ok(Response.Status.OK).entity(activeUser.getId().toString()).build();
+        return Response.ok(Response.Status.OK).entity(activeUser.getId()).build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteUser(@PathParam("id") String userId) {
+
         User user = MongoManager.getUser(userId);
         if (user == null) {
             return Response.status(Response.Status.FORBIDDEN).build();

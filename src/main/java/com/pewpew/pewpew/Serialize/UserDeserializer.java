@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.Serialize;
+package com.pewpew.pewpew.serialize;
 
 import com.google.gson.*;
 import com.pewpew.pewpew.model.User;
@@ -11,8 +11,8 @@ public class UserDeserializer implements JsonDeserializer<User> {
     public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         User user = new User();
         JsonObject jsonObject = json.getAsJsonObject();
-        if (jsonObject.has("id")) {
-            user.setId(new ObjectId(jsonObject.get("id").getAsString()));
+        if (jsonObject.has("_id")) {
+            user.setId(new ObjectId(jsonObject.get("_id").getAsString()));
         }
         if (jsonObject.has("password")) {
             user.setPassword(jsonObject.get("password").getAsString());

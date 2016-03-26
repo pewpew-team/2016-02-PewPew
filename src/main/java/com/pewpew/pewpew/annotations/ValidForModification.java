@@ -20,7 +20,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = ValidForModification.Validator.class)
 public @interface ValidForModification {
 
-    String message() default "{pl.pjagielski.constraint.ValidForModification}";
+    String message() default "{constraint.ValidForModification}";
 
     Class<?>[] groups() default {};
 

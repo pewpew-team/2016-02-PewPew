@@ -20,7 +20,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = ValidForLogin.Validator.class)
 public @interface ValidForLogin {
 
-    String message() default "{pl.pjagielski.constraint.ValidForLogin}";
+    String message() default "{constraint.ValidForLogin}";
 
     Class<?>[] groups() default {};
 
