@@ -2,12 +2,15 @@ package com.pewpew.pewpew.main;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
+
+import static com.pewpew.pewpew.common.Settings.SERVER_HOST;
 
 
 public class Main {
@@ -17,13 +20,16 @@ public class Main {
         if (args.length == 2) {
             port = Integer.valueOf(args[0]);
             staticPath = String.valueOf(args[1]);
-
         } else {
             System.err.println("Specify port");
             System.exit(1);
         }
 
-        Server server = new Server(port);
+        Server server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setHost(SERVER_HOST);
+        connector.setPort(port);
+        server.addConnector(connector);
 
         final ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
