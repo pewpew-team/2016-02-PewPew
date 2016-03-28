@@ -1,33 +1,47 @@
 package com.pewpew.pewpew.model;
 
+
 import org.bson.types.ObjectId;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
+
+
 @Entity(value = "users")
 public class User {
     @SuppressWarnings({"unused", "InstanceVariableNamingConvention"})
+
+
     @Id
     private ObjectId id;
-    private String password;
+
     @Indexed(unique = true)
     private String email;
+
+    @Indexed(unique = true)
     private String login;
+
+    @Nullable
     private Integer rating;
 
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
+    private String password;
 
-    @NotNull
     public ObjectId getId() {
         return id;
     }
 
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(@Nullable String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -38,15 +52,20 @@ public class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getLogin() {
         return login;
     }
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    @Nullable
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(@Nullable Integer rating) {
+        this.rating = rating;
     }
 }

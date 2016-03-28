@@ -1,0 +1,6 @@
+<!--suppress XmlUnboundNsPrefix -->
+<root>
+  <item name='java.io.InputStreamReader'>
+    <annotation name='org.jetbrains.annotations.NotNull'/>
+  </item>
+</root>
