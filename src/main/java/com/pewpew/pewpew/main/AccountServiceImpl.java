@@ -21,8 +21,9 @@ public class AccountServiceImpl implements AccountService{
 
     public AccountServiceImpl() {
         Morphia morphia = new Morphia();
+        @SuppressWarnings("resource")
         MongoClient mongoClient = new MongoClient(Settings.DB_ADDRESS, Settings.DB_PORT);
-            this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
+        this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
     }
 
     @Override

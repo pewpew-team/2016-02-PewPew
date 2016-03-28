@@ -4,7 +4,6 @@ import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.*;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -30,12 +29,7 @@ public class SuccessTest extends JerseyTest {
 
         final ResourceConfig config = new ResourceConfig(SessionService.class,
                 UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
-        config.register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(context);
-            }
-        });
+        config.register(new MyAbstractBinder(context));
         return config;
     }
 
@@ -55,6 +49,7 @@ public class SuccessTest extends JerseyTest {
         userProfile.setEmail(randomString.nextString());
         final String json = target("user").request("application/json").post(Entity.json(userProfile), String.class);
         assertNotNull(json);
+        assert(json.contains("id"));
     }
 
     @Test
