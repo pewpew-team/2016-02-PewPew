@@ -26,29 +26,25 @@ public class SessionService {
                            @CookieParam("token") String token,
                            @CookieParam("token") Cookie cook) {
         System.out.print("Got request: authUser \n");
-        if (authUser != null) {
-            if (token == null || token.isEmpty()) {
-                User user = MongoManager.getUser(authUser.getLogin(), authUser.getPassword());
-                if (user == null) {
-                    return Response.status(Response.Status.FORBIDDEN).build();
-                }
-                token = UUID.randomUUID().toString();
-                accountService.addToken(token, user);
-                NewCookie cookie = new NewCookie("token", token);
-                System.out.print("Putting token into cookie \n");
-                return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
+        if (token == null || token.isEmpty()) {
+            User user = MongoManager.getUser(authUser.getLogin(), authUser.getPassword());
+            if (user == null) {
+                return Response.status(Response.Status.FORBIDDEN).build();
             }
-            User userFromToken = accountService.getUserByToken(token);
-            if (userFromToken == null) {
-                System.out.print("User have cookie, but not auth \n");
-                NewCookie newCookie = new NewCookie(cook, null, 0, false);
-                return Response.status(Response.Status.UNAUTHORIZED).cookie(newCookie).build();
-            }
-            System.out.print("Sending user info from logged user \n");
-            return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
+            token = UUID.randomUUID().toString();
+            accountService.addToken(token, user);
+            NewCookie cookie = new NewCookie("token", token);
+            System.out.print("Putting token into cookie \n");
+            return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
         }
-        System.out.print("got empty json \n");
-        return Response.status(Response.Status.FORBIDDEN).build();
+        User userFromToken = accountService.getUserByToken(token);
+        if (userFromToken == null) {
+            System.out.print("User have cookie, but not auth \n");
+            NewCookie newCookie = new NewCookie(cook, null, 0, false);
+            return Response.status(Response.Status.UNAUTHORIZED).cookie(newCookie).build();
+        }
+        System.out.print("Sending user info from logged user \n");
+        return Response.ok(Response.Status.OK).entity(userFromToken.getId()).build();
     }
 
     @GET
@@ -77,5 +73,4 @@ public class SessionService {
         System.out.print("Putting empty token" + '\n');
         return Response.ok().cookie(newCookie).build();
     }
-
 }

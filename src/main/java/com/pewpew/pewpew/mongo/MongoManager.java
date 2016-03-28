@@ -16,7 +16,7 @@ public class MongoManager {
 
     @Nullable
     public static User getUser(String userId) {
-        return DATASTORE.get(User.class, new ObjectId(userId));
+        return DATASTORE.find(User.class,"id", new ObjectId(userId)).get();
     }
 
     @NotNull

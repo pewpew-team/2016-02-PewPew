@@ -1,4 +1,4 @@
-package com.pewpew.pewpew;
+package com.pewpew.pewpew.restApiTest;
 
 import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.GsonMessageBodyHandler;
@@ -20,8 +20,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class RestApiTest extends JerseyTest {
-    private static final int OK_STATUS = 200;
+public class SuccessTests extends JerseyTest {
 
     @Override
     protected Application configure() {
@@ -36,7 +35,7 @@ public class RestApiTest extends JerseyTest {
     private static NewCookie newCookie;
 
     @Test
-    public void testCreateUser() {
+    public void testSignUp() {
         RandomString randomString = new RandomString();
         User userProfile = new User();
         userProfile.setLogin(randomString.nextString());
@@ -98,7 +97,7 @@ public class RestApiTest extends JerseyTest {
         newCookie = cookies.get("token");
 
         final Response authStateJson = target("session").request().cookie(newCookie).get();
-        assertEquals(authStateJson.getStatus(), OK_STATUS);
+        assertEquals(authStateJson.getStatus(), Response.Status.OK.getStatusCode());
     }
 
     @Test
@@ -113,7 +112,7 @@ public class RestApiTest extends JerseyTest {
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
         final Response authStateJson = target("session").request().cookie(newCookie).delete();
-        assertEquals(authStateJson.getStatus(), OK_STATUS);
+        assertEquals(authStateJson.getStatus(), Response.Status.OK.getStatusCode());
     }
 
     @Test
@@ -125,13 +124,13 @@ public class RestApiTest extends JerseyTest {
         userProfile.setEmail(randomString.nextString());
         final Response json = target("user").request("application/json")
                 .post(Entity.json(userProfile));
-        assertEquals(json.getStatus(), OK_STATUS);
+        assertEquals(json.getStatus(), Response.Status.OK.getStatusCode());
 
         final Response idJson = target("session").request().post(Entity.json(userProfile));
         String id = idJson.readEntity(ObjectId.class).toString();
 
         final Response deleteJson = target("user").path(id).request().delete();
-        assertEquals(deleteJson.getStatus(), OK_STATUS);
+        assertEquals(deleteJson.getStatus(), Response.Status.OK.getStatusCode());
     }
 
     @Test

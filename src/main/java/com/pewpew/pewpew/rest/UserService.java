@@ -46,13 +46,18 @@ public class UserService {
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
         System.out.print("Got request: userInfo with id"  + userId + '\n');
-        User userProfile = accountService.getUserByToken(token);
-        if (userProfile != null) {
-            System.out.print("Putting userInfo in json \n");
-            return Response.ok(Response.Status.OK).entity(userProfile).build();
+        try {
+            User userProfile = MongoManager.getUser(userId);
+            if (userProfile != null) {
+                System.out.print("Putting userInfo in json \n");
+                userProfile.setPassword(null);
+                return Response.ok(Response.Status.OK).entity(userProfile).build();
+            }
+            System.out.print("User not found \n");
+            return Response.status(Response.Status.CONFLICT).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        System.out.print("User not found \n");
-        return Response.status(Response.Status.CONFLICT).build();
     }
 
     @PUT
@@ -81,12 +86,16 @@ public class UserService {
     @Path("{id}")
     public Response deleteUser(@PathParam("id") String userId) {
 
-        User user = MongoManager.getUser(userId);
-        if (user == null) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+        try {
+            User user = MongoManager.getUser(userId);
+            if (user == null) {
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+            MongoManager.delete(user);
+            accountService.deleteUser(user);
+            return Response.ok(Response.Status.OK).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        MongoManager.delete(user);
-        accountService.deleteUser(user);
-        return Response.ok(Response.Status.OK).build();
     }
 }
