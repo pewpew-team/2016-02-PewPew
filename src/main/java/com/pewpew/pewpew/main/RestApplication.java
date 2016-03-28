@@ -12,9 +12,9 @@ public class RestApplication extends ResourceConfig {
 
     public RestApplication() {
         register(GsonMessageBodyHandler.class);
-        final AccountService accountService = new AccountService();
+        final AccountServiceImpl accountService = new AccountServiceImpl();
         final SessionService sessionService = new SessionService(accountService);
-        final UserService userService = new UserService(accountService);
+        final UserService userService = new UserService();
         final ScoreboardService scoreboardService = new ScoreboardService();
 
         register(sessionService);
