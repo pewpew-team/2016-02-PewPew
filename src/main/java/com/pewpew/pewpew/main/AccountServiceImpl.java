@@ -15,14 +15,14 @@ import java.util.Map;
 
 public class AccountServiceImpl implements AccountService{
 
-    private Datastore datastore;
+    private final Datastore datastore;
 
     private final Map<String, User> tokens = new HashMap<>();
 
     public AccountServiceImpl() {
         Morphia morphia = new Morphia();
         MongoClient mongoClient = new MongoClient(Settings.DB_ADDRESS, Settings.DB_PORT);
-        this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
+            this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
     }
 
     @Override
@@ -31,9 +31,8 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Boolean addUser(User user) {
+    public void addUser(User user) {
         datastore.save(user);
-        return true;
     }
 
     @Override

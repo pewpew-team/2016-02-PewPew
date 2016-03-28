@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.model.User;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -12,7 +11,7 @@ public interface AccountService {
 
     void addToken(String token, User user);
 
-    Boolean addUser(User user);
+    void addUser(User user);
 
     User getUserByToken(String token);
 

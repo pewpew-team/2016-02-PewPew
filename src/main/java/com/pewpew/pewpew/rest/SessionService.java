@@ -16,14 +16,12 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SessionService {
-//    private final AccountServiceImpl accountService;
-
     @Inject
     private com.pewpew.pewpew.main.Context context;
 
-    public SessionService(AccountServiceImpl accountService) {}
-
     @POST
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
     public Response signIn(@ValidForLogin User authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token,
                            @CookieParam("token") Cookie cook) {

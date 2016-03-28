@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.main.AccountService;
-import com.pewpew.pewpew.main.AccountServiceImpl;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForCreation;
 import com.pewpew.pewpew.annotations.ValidForModification;
@@ -19,8 +18,6 @@ import java.util.UUID;
 public class UserService {
     @Inject
     private com.pewpew.pewpew.main.Context context;
-
-    public UserService() {}
 
     @POST
     public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,

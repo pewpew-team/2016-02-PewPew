@@ -1,9 +1,10 @@
-package com.pewpew.pewpew.restApiTest;
+package com.pewpew.pewpew.rest;
 
-import com.pewpew.pewpew.main.GsonMessageBodyHandler;
-import com.pewpew.pewpew.main.RestApplication;
+import com.pewpew.pewpew.main.*;
 import com.pewpew.pewpew.model.User;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
@@ -16,11 +17,17 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class ErrorTests extends JerseyTest {
+public class ErrorTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        return new RestApplication();
+        final Context context = new Context();
+        context.put(AccountService.class, new AccountServiceImpl());
+
+        final ResourceConfig config = new ResourceConfig(SessionService.class,
+                UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
+        config.register(new MyAbstractBinder(context));
+        return config;
     }
 
     @Override
@@ -142,5 +149,18 @@ public class ErrorTests extends JerseyTest {
         String id = "56f94e8a67bc2e7632974677";
         Response deleteJson = target("user").path(id).request().delete();
         assertEquals(deleteJson.getStatus(), Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    private static class MyAbstractBinder extends AbstractBinder {
+        private final Context context;
+
+        MyAbstractBinder(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void configure() {
+            bind(context);
+        }
     }
 }

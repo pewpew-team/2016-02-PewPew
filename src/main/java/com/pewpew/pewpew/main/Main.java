@@ -38,33 +38,38 @@ public class Main {
         final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
         final Context context = new Context();
-        context.put(AccountService.class, new AccountServiceImpl());
+        try {
+            context.put(AccountService.class, new AccountServiceImpl());
 
-        final ResourceConfig config = new ResourceConfig(SessionService.class,
-                UserService.class, ScoreboardService.class);
+            final ResourceConfig config = new ResourceConfig(SessionService.class,
+                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
 
-        config.register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(context);
-            }
-        });
+            config.register(new AbstractBinder() {
+                @Override
+                protected void configure() {
+                    bind(context);
+                }
+            });
 
-        final ServletHolder servletHolder = new ServletHolder(new ServletContainer(config));
+            final ServletHolder servletHolder = new ServletHolder(new ServletContainer(config));
 
-        contextHandler.addServlet(servletHolder, "/*");
+            contextHandler.addServlet(servletHolder, "/*");
 
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setResourceBase(staticPath);
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(true);
+            resourceHandler.setResourceBase(staticPath);
 
-        HandlerCollection handlerCollection = new HandlerCollection();
-        handlerCollection.setHandlers(new Handler[] { resourceHandler,
-                contextHandler, new DefaultHandler() });
+            HandlerCollection handlerCollection = new HandlerCollection();
+            handlerCollection.setHandlers(new Handler[]{resourceHandler,
+                    contextHandler, new DefaultHandler()});
 
-        server.setHandler(handlerCollection);
-        server.start();
-        server.join();
+            server.setHandler(handlerCollection);
+            server.start();
+            server.join();
+        } catch (InterruptedException e) {
+            System.err.println("Database error");
+            System.exit(1);
+        }
     }
 }
 

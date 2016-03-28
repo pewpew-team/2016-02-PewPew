@@ -3,9 +3,7 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.main.Context;
 import com.pewpew.pewpew.model.User;
-import com.pewpew.pewpew.mongo.MongoModule;
-import org.jetbrains.annotations.NotNull;
-import org.mongodb.morphia.Datastore;
+
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,9 +22,6 @@ import java.util.List;
 public class ScoreboardService {
     @Inject
     private Context context;
-
-//    @NotNull
-//    private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
 
     @GET
     public Response getScoreboard() {
