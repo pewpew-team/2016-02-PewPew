@@ -1,10 +1,8 @@
 package com.pewpew.pewpew.restApiTest;
 
-import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.GsonMessageBodyHandler;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
-import org.bson.types.ObjectId;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;

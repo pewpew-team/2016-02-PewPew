@@ -1,13 +1,12 @@
 package com.pewpew.pewpew.rest;
 
 import com.pewpew.pewpew.main.AccountService;
+import com.pewpew.pewpew.main.AccountServiceImpl;
 import com.pewpew.pewpew.model.User;
 import com.pewpew.pewpew.annotations.ValidForCreation;
 import com.pewpew.pewpew.annotations.ValidForModification;
-import com.pewpew.pewpew.mongo.MongoManager;
-import com.pewpew.pewpew.mongo.MongoModule;
-import org.mongodb.morphia.Datastore;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -18,23 +17,22 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserService {
-    private final Datastore datastore = MongoModule.getInstanse().provideDatastore();
-    private final AccountService accountService;
+    @Inject
+    private com.pewpew.pewpew.main.Context context;
 
-    public UserService(AccountService accountService) {
-        this.accountService = accountService;
-    }
+    public UserService() {}
 
     @POST
     public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
+        AccountService accountService = context.get(AccountService.class);
         System.out.print("Got request: createUser \n");
-        if (!MongoManager.userExist(user)) {
+        if (!accountService.userExists(user)) {
             return Response.status(Response.Status.CONFLICT).build();
         }
         String newToken = UUID.randomUUID().toString();
         accountService.addToken(newToken, user);
-        datastore.save(user);
+        accountService.addUser(user);
         NewCookie cookie = new NewCookie("token", newToken);
         System.out.print("Putting token into cookie \n");
         return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
@@ -45,9 +43,11 @@ public class UserService {
     @Path("{id}")
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
+        AccountService accountService = context.get(AccountService.class);
+
         System.out.print("Got request: userInfo with id"  + userId + '\n');
         try {
-            User userProfile = MongoManager.getUser(userId);
+            User userProfile = accountService.getUserById(userId);
             if (userProfile != null) {
                 System.out.print("Putting userInfo in json \n");
                 userProfile.setPassword(null);
@@ -64,6 +64,8 @@ public class UserService {
     @Path("{id}")
     public Response changeUserInfo(@PathParam("id") String userId,
                                    @ValidForModification User editedUser, @CookieParam("token") String token) {
+        AccountService accountService = context.get(AccountService.class);
+
         System.out.print("Got request: changeUserInfo"  + userId + '\n');
         User activeUser = accountService.getUserByToken(token);
         if (activeUser == null) {
@@ -78,20 +80,20 @@ public class UserService {
         if (editedUser.getPassword() != null) {
             activeUser.setPassword(editedUser.getPassword());
         }
-        datastore.save(activeUser);
+        accountService.addUser(activeUser);
         return Response.ok(Response.Status.OK).entity(activeUser.getId()).build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteUser(@PathParam("id") String userId) {
-
+        AccountService accountService = context.get(AccountService.class);
         try {
-            User user = MongoManager.getUser(userId);
+            User user = accountService.getUserById(userId);
             if (user == null) {
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
-            MongoManager.delete(user);
+            accountService.delete(user);
             accountService.deleteUser(user);
             return Response.ok(Response.Status.OK).build();
         } catch (RuntimeException e) {

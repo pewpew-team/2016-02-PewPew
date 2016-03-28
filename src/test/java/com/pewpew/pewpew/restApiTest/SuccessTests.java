@@ -4,8 +4,12 @@ import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.GsonMessageBodyHandler;
 import com.pewpew.pewpew.main.RestApplication;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.rest.ScoreboardService;
+import com.pewpew.pewpew.rest.SessionService;
+import com.pewpew.pewpew.rest.UserService;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
@@ -24,7 +28,8 @@ public class SuccessTests extends JerseyTest {
 
     @Override
     protected Application configure() {
-        return new RestApplication();
+        return new ResourceConfig(SessionService.class,
+                UserService.class, ScoreboardService.class);
     }
 
     @Override
