@@ -1,9 +1,5 @@
 package com.pewpew.pewpew.rest;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.main.Context;
 import com.pewpew.pewpew.model.User;
@@ -41,6 +37,5 @@ public class ScoreboardService {
             this.scores = scores;
         }
     }
-
 }
 
