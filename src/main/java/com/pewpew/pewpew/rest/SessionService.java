@@ -20,8 +20,6 @@ public class SessionService {
     private com.pewpew.pewpew.main.Context context;
 
     @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
     public Response signIn(@ValidForLogin User authUser, @Context HttpHeaders headers,
                            @CookieParam("token") String token,
                            @CookieParam("token") Cookie cook) {

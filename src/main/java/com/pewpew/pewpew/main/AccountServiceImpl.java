@@ -28,7 +28,7 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public List<User> getTop() {
-        return datastore.find(User.class).order("-rating").limit(8).asList();
+        return datastore.find(User.class).retrievedFields(true, "login", "rating").order("-rating").limit(8).asList();
     }
 
     @Override
