@@ -4,7 +4,6 @@ import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.main.Context;
 import com.pewpew.pewpew.model.User;
 
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
