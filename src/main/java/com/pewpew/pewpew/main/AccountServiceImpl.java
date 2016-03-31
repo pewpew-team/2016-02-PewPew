@@ -63,7 +63,7 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public void updateUser(String token, @Nullable User editedUser) {
-        return tokens.replace(token, editedUser) != null;
+        tokens.replace(token, editedUser);
     }
 
     @Override

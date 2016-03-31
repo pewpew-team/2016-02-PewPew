@@ -3,6 +3,7 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.*;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.model.Users;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -144,17 +145,17 @@ public class SuccessTest extends JerseyTest {
     @Test
     public void testScroyboard() {
         final Response scroyBoard = target("scoreboard").request("application/json").get();
-        final List<User> users = scroyBoard.readEntity(new ListGenericType());
+        final Users users = scroyBoard.readEntity(Users.class);
         assertNotNull(users);
-        assertFalse(users.size() < 2);
-        final Integer firstUserRating = users.get(0).getRating();
-        final Integer secondUserRating = users.get(1).getRating();
+        assertFalse(users.getScores().size() < 2);
+        final Integer firstUserRating = users.getScores().get(0).getRating();
+        final Integer secondUserRating = users.getScores().get(1).getRating();
         assertNotNull(firstUserRating);
         assertNotNull(secondUserRating);
         assertTrue(firstUserRating >= secondUserRating);
     }
 
     @SuppressWarnings("unused")
-    private static class ListGenericType extends GenericType<List<User>> {}
+    private static class ListGenericType extends GenericType<List<Users>> {}
 
 }
