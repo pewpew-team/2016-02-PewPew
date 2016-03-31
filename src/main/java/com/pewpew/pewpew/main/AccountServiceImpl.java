@@ -69,7 +69,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     @NotNull
     public Boolean userExists(User newUser) {
-        User user = datastore.find(User.class, "email", newUser.getEmail()).get();
+        final User user = datastore.find(User.class, "email", newUser.getEmail()).get();
         return user == null;
     }
 

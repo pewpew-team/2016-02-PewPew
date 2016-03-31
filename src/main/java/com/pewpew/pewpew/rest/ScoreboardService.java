@@ -25,8 +25,8 @@ public class ScoreboardService {
     @GET
     public Response getScoreboard() {
         final AccountService accountService = context.get(AccountService.class);
-        List<User> query = accountService.getTop();
-        User[] users = query.toArray(new User[query.size()]);
+        final List<User> query = accountService.getTop();
+        final User[] users = query.toArray(new User[query.size()]);
         return Response.ok(Response.Status.OK).entity(new Users(users)).build();
     }
 

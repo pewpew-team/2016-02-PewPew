@@ -29,8 +29,8 @@ public class Main {
             System.exit(1);
         }
 
-        Server server = new Server();
-        ServerConnector connector = new ServerConnector(server);
+        final Server server = new Server();
+        final ServerConnector connector = new ServerConnector(server);
         connector.setHost(Settings.SERVER_HOST);
         connector.setPort(port);
         server.addConnector(connector);
@@ -55,11 +55,11 @@ public class Main {
 
             contextHandler.addServlet(servletHolder, "/*");
 
-            ResourceHandler resourceHandler = new ResourceHandler();
+            final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
             resourceHandler.setResourceBase(staticPath);
 
-            HandlerCollection handlerCollection = new HandlerCollection();
+            final HandlerCollection handlerCollection = new HandlerCollection();
             handlerCollection.setHandlers(new Handler[]{resourceHandler,
                     contextHandler, new DefaultHandler()});
 

@@ -38,7 +38,7 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testErrorSignUp() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         user.setEmail("11@mail.ru");
@@ -48,7 +48,7 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testErrorSighIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("i'm not existed user");
         user.setPassword("111");
 
@@ -58,7 +58,7 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testValidateSignIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("i'm not existed user");
         final Response errorJson = target("session").request().post(Entity.json(user));
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), errorJson.getStatus());
@@ -66,7 +66,7 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testDoubleSignIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
 
@@ -79,10 +79,10 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testWrongTokenSighIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
-        NewCookie cookie = new NewCookie("token", "123");
+        final NewCookie cookie = new NewCookie("token", "123");
         final Response errorJson = target("session").request().cookie(cookie).post(Entity.json(user));
         assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), errorJson.getStatus());
     }
@@ -103,29 +103,29 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testErrorChangeUserInfo() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
-        Response userInfo = target("user").path("/123").request().cookie(newCookie).put(Entity.json(user));
+        final Response userInfo = target("user").path("/123").request().cookie(newCookie).put(Entity.json(user));
         assertEquals(Response.Status.FORBIDDEN.getStatusCode(), userInfo.getStatus());
     }
 
     @Test
     public void testErrorGetUserById() {
-        Response userInfo = target("user").path("/123").request().cookie(newCookie).get();
+        final Response userInfo = target("user").path("/123").request().cookie(newCookie).get();
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), userInfo.getStatus());
     }
 
     @Test
     public void testWrongIdUserById() {
-        String id = "56f94e8a67bc2e7632974677";
-        Response userInfo = target("user").path(id).request().cookie(newCookie).get();
+        final String id = "56f94e8a67bc2e7632974677";
+        final Response userInfo = target("user").path(id).request().cookie(newCookie).get();
         assertEquals(Response.Status.CONFLICT.getStatusCode(), userInfo.getStatus());
     }
 
     @Test
     public void testErrorLogout() {
-        NewCookie cookie = new NewCookie("token", "123");
+        final NewCookie cookie = new NewCookie("token", "123");
         final Response json = target("session").request().cookie(cookie).delete();
         assertEquals(json.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
     }
@@ -138,15 +138,15 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testErrorNotIdDelete() {
-        String id = "1111";
+        final String id = "1111";
         final Response deleteJson = target("user").path(id).request().delete();
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), deleteJson.getStatus());
     }
 
     @Test
     public void testErrorDoubleDelete() {
-        String id = "56f94e8a67bc2e7632974677";
-        Response deleteJson = target("user").path(id).request().delete();
+        final String id = "56f94e8a67bc2e7632974677";
+        final Response deleteJson = target("user").path(id).request().delete();
         assertEquals(deleteJson.getStatus(), Response.Status.FORBIDDEN.getStatusCode());
     }
 }

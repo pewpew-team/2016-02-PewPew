@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.serelize;
+package com.pewpew.pewpew.serialize;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,7 +13,7 @@ public class ObjectIdSerializer implements JsonSerializer<ObjectId> {
 
     @Override
     public JsonElement serialize(ObjectId src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         if (src != null) {
             jsonObject.addProperty("_id", src.toString());
         }

@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.pewpew.pewpew.serelize.ObjectIdDeserializer;
-import com.pewpew.pewpew.serelize.ObjectIdSerializer;
-import com.pewpew.pewpew.serelize.UserDeserializer;
-import com.pewpew.pewpew.serelize.UserSerializer;
+import com.pewpew.pewpew.serialize.ObjectIdDeserializer;
+import com.pewpew.pewpew.serialize.ObjectIdSerializer;
+import com.pewpew.pewpew.serialize.UserDeserializer;
+import com.pewpew.pewpew.serialize.UserSerializer;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 
@@ -59,7 +59,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         try (InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8)) {
 
             try {
-                Type jsonType;
+                final Type jsonType;
                 if (type.equals(genericType)) {
                     jsonType = type;
                 } else {
@@ -105,7 +105,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                         OutputStream entityStream) throws IOException,
             WebApplicationException {
         try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
-            Type jsonType;
+            final Type jsonType;
             if (type.equals(genericType)) {
                 jsonType = type;
             } else {

@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.serelize;
+package com.pewpew.pewpew.serialize;
 
 import com.google.gson.*;
 import com.pewpew.pewpew.model.User;
