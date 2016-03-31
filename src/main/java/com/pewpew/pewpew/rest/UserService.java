@@ -22,15 +22,15 @@ public class UserService {
     @POST
     public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,
                            @CookieParam("token") String token) {
-        AccountService accountService = context.get(AccountService.class);
+        final AccountService accountService = context.get(AccountService.class);
         System.out.print("Got request: createUser \n");
         if (!accountService.userExists(user)) {
             return Response.status(Response.Status.CONFLICT).build();
         }
-        String newToken = UUID.randomUUID().toString();
+        final String newToken = UUID.randomUUID().toString();
         accountService.addToken(newToken, user);
         accountService.addUser(user);
-        NewCookie cookie = new NewCookie("token", newToken);
+        final NewCookie cookie = new NewCookie("token", newToken);
         System.out.print("Putting token into cookie \n");
         return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
     }
@@ -40,11 +40,11 @@ public class UserService {
     @Path("{id}")
     public Response userInfo(@PathParam("id") String userId,
                              @CookieParam("token") String token) {
-        AccountService accountService = context.get(AccountService.class);
+        final AccountService accountService = context.get(AccountService.class);
 
         System.out.print("Got request: userInfo with id"  + userId + '\n');
         try {
-            User userProfile = accountService.getUserById(userId);
+            final User userProfile = accountService.getUserById(userId);
             if (userProfile != null) {
                 System.out.print("Putting userInfo in json \n");
                 userProfile.setPassword(null);
@@ -61,10 +61,10 @@ public class UserService {
     @Path("{id}")
     public Response changeUserInfo(@PathParam("id") String userId,
                                    @ValidForModification User editedUser, @CookieParam("token") String token) {
-        AccountService accountService = context.get(AccountService.class);
+        final AccountService accountService = context.get(AccountService.class);
 
         System.out.print("Got request: changeUserInfo"  + userId + '\n');
-        User activeUser = accountService.getUserByToken(token);
+        final User activeUser = accountService.getUserByToken(token);
         if (activeUser == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -78,15 +78,16 @@ public class UserService {
             activeUser.setPassword(editedUser.getPassword());
         }
         accountService.addUser(activeUser);
+        accountService.updateUser(token, activeUser);
         return Response.ok(Response.Status.OK).entity(activeUser.getId()).build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteUser(@PathParam("id") String userId) {
-        AccountService accountService = context.get(AccountService.class);
+        final AccountService accountService = context.get(AccountService.class);
         try {
-            User user = accountService.getUserById(userId);
+            final User user = accountService.getUserById(userId);
             if (user == null) {
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
@@ -101,8 +102,8 @@ public class UserService {
     @PUT
     @Path("/rating")
     public Response addRating(Rating rating, @CookieParam("token") String token) {
-        AccountService accountService = context.get(AccountService.class);
-        User user = accountService.getUserByToken(token);
+        final AccountService accountService = context.get(AccountService.class);
+        final User user = accountService.getUserByToken(token);
         if (user == null) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
@@ -113,6 +114,7 @@ public class UserService {
         return Response.ok(Response.Status.OK).build();
     }
 
+    @SuppressWarnings("unused")
     private static class Rating {
         private Integer score;
 

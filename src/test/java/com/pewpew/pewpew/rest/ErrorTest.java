@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unused")
 public class ErrorTest extends JerseyTest {
 
     @Override
@@ -90,7 +91,7 @@ public class ErrorTest extends JerseyTest {
 
     @Test
     public void testErrorCheckAuth() {
-        NewCookie cookie = new NewCookie("token", "123");
+        final NewCookie cookie = new NewCookie("token", "123");
         final Response errorJson = target("session").request().cookie(cookie).get();
         assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), errorJson.getStatus());
     }

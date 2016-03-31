@@ -12,7 +12,7 @@ import org.mongodb.morphia.annotations.Indexed;
 
 @Entity(value = "users")
 public class User {
-    @SuppressWarnings({"unused", "InstanceVariableNamingConvention"})
+    @SuppressWarnings({"unused"})
 
 
     @Id

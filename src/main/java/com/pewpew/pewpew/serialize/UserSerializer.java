@@ -9,7 +9,7 @@ public class UserSerializer implements JsonSerializer<User>{
     @Override
     public JsonElement serialize(User src, Type typeOfSrc, JsonSerializationContext context) {
 
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         if (src.getId() != null) {
             jsonObject.addProperty("_id", src.getId().toString());
         }

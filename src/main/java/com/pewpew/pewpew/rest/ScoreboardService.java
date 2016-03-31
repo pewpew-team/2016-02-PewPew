@@ -30,6 +30,7 @@ public class ScoreboardService {
         return Response.ok(Response.Status.OK).entity(new Users(users)).build();
     }
 
+    @SuppressWarnings("unused")
     private static class Users {
         private final User[] scores;
         Users(User[] scores) {

@@ -98,6 +98,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         return -1;
     }
 
+    @SuppressWarnings("OverlyBroadThrowsClause")
     @Override
     public void writeTo(Object object, Class<?> type, Type genericType,
                         Annotation[] annotations, MediaType mediaType,

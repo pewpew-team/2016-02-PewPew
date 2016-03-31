@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unused")
 public class SuccessTest extends JerseyTest {
 
     @Override
@@ -42,8 +43,8 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testSignUp() {
-        RandomString randomString = new RandomString();
-        User userProfile = new User();
+        final RandomString randomString = new RandomString();
+        final User userProfile = new User();
         userProfile.setLogin(randomString.nextString());
         userProfile.setPassword(randomString.nextString());
         userProfile.setEmail(randomString.nextString());
@@ -54,18 +55,18 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testSignIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
 
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
 
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
-        Response userInfo = target("user").path(id).request().cookie(newCookie).get();
-        User returnedUser = userInfo.readEntity(User.class);
+        final Response userInfo = target("user").path(id).request().cookie(newCookie).get();
+        final User returnedUser = userInfo.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
         assertNotNull(returnedUser.getEmail());
         assertEquals(returnedUser.getId().toString(), id);
@@ -73,11 +74,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testEditUser() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
@@ -94,11 +95,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testCheckAuth() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         assertNotNull(id);
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
@@ -109,11 +110,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testLogout() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         assertNotNull(id);
 
         final Map<String, NewCookie> cookies = json.getCookies();
@@ -124,8 +125,8 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testDelete() {
-        RandomString randomString = new RandomString();
-        User userProfile = new User();
+        final RandomString randomString = new RandomString();
+        final User userProfile = new User();
         userProfile.setLogin(randomString.nextString());
         userProfile.setPassword(randomString.nextString());
         userProfile.setEmail(randomString.nextString());
@@ -134,7 +135,7 @@ public class SuccessTest extends JerseyTest {
         assertEquals(json.getStatus(), Response.Status.OK.getStatusCode());
 
         final Response idJson = target("session").request().post(Entity.json(userProfile));
-        String id = idJson.readEntity(ObjectId.class).toString();
+        final String id = idJson.readEntity(ObjectId.class).toString();
 
         final Response deleteJson = target("user").path(id).request().delete();
         assertEquals(deleteJson.getStatus(), Response.Status.OK.getStatusCode());
@@ -143,16 +144,17 @@ public class SuccessTest extends JerseyTest {
     @Test
     public void testScroyboard() {
         final Response scroyBoard = target("scoreboard").request("application/json").get();
-        List<User> users = scroyBoard.readEntity(new ListGenericType());
+        final List<User> users = scroyBoard.readEntity(new ListGenericType());
         assertNotNull(users);
         assertFalse(users.size() < 2);
-        Integer firstUserRating = users.get(0).getRating();
-        Integer secondUserRating = users.get(1).getRating();
+        final Integer firstUserRating = users.get(0).getRating();
+        final Integer secondUserRating = users.get(1).getRating();
         assertNotNull(firstUserRating);
         assertNotNull(secondUserRating);
         assertTrue(firstUserRating >= secondUserRating);
     }
 
+    @SuppressWarnings("unused")
     private static class ListGenericType extends GenericType<List<User>> {}
 
 }

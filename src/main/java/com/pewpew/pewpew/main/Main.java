@@ -18,6 +18,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 
 public class Main {
+    @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
         int port = -1;
         String staticPath = "";
