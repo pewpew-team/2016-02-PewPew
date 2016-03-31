@@ -24,6 +24,8 @@ public class UserSerializer implements JsonSerializer<User>{
         }
         if(src.getRating() != null) {
             jsonObject.addProperty("rating", src.getRating());
+        } else {
+            jsonObject.addProperty("rating", 0);
         }
         System.out.print("Serialized user and sending");
         return jsonObject;
