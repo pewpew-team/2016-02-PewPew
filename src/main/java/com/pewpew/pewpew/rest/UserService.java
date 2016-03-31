@@ -113,7 +113,7 @@ public class UserService {
         return Response.ok(Response.Status.OK).build();
     }
 
-    private class Rating {
+    private static class Rating {
         private Integer score;
 
         public Integer getScore() {

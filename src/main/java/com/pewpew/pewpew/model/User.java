@@ -2,6 +2,7 @@ package com.pewpew.pewpew.model;
 
 
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -60,7 +61,7 @@ public class User {
         this.login = login;
     }
 
-    @Nullable
+    @NotNull
     public Integer getRating() {
         if (rating == null)  return 0;
         return rating;

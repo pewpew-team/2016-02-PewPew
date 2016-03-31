@@ -31,9 +31,9 @@ public class ScoreboardService {
         return Response.ok(Response.Status.OK).entity(new Users(users)).build();
     }
 
-    private class Users {
-        private User[] scores;
-        public Users(User[] scores) {
+    private static class Users {
+        private final User[] scores;
+        Users(User[] scores) {
             this.scores = scores;
         }
     }

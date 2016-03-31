@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.serialize;
+package com.pewpew.pewpew.serelize;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
