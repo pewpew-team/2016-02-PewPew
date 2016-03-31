@@ -1,0 +1,1 @@
+mvm clean compile assembly:single

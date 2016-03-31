@@ -1,68 +1,75 @@
 package com.pewpew.pewpew.main;
 
-import com.pewpew.pewpew.model.AccountService;
-import com.pewpew.pewpew.servlet.*;
+import com.pewpew.pewpew.common.Settings;
+import com.pewpew.pewpew.rest.ScoreboardService;
+import com.pewpew.pewpew.rest.SessionService;
+import com.pewpew.pewpew.rest.UserService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.out.println("Usage: java -jar <jar file> <port> </path/to/static>");
-            System.exit(1);
-        }
-
-        int port = 0;
-        Path pathToStatic = null;
-
-        //noinspection OverlyBroadCatchBlock
-        try {
+        int port = -1;
+        String staticPath = "";
+        if (args.length == 2) {
             port = Integer.valueOf(args[0]);
-            pathToStatic = Paths.get(args[1]);
-            if(!Files.isDirectory(pathToStatic)) throw new IllegalArgumentException();
-        }
-        catch (IllegalArgumentException ex) {
-            System.out.println("Error: please input valid format of port and path.");
+            staticPath = String.valueOf(args[1]);
+        } else {
+            System.err.println("Specify port");
             System.exit(1);
         }
 
-        Server server = new Server(port);
+        Server server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setHost(Settings.SERVER_HOST);
+        connector.setPort(port);
+        server.addConnector(connector);
 
-        AccountService accountService = new AccountService();
+        final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        final Context context = new Context();
+        try {
+            context.put(AccountService.class, new AccountServiceImpl());
 
-        RegistrationService registrationService = new RegistrationService(accountService);
-        context.addServlet(new ServletHolder(registrationService),"/user");
+            final ResourceConfig config = new ResourceConfig(SessionService.class,
+                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
 
-        AuthorizationService authorizationService = new AuthorizationService(accountService);
-        context.addServlet(new ServletHolder(authorizationService), "/session");
+            config.register(new AbstractBinder() {
+                @Override
+                protected void configure() {
+                    bind(context);
+                }
+            });
 
-        ScoreboardService scoreboardService = new ScoreboardService();
-        context.addServlet(new ServletHolder(scoreboardService), "/scoreboard");
+            final ServletHolder servletHolder = new ServletHolder(new ServletContainer(config));
 
-        UserService userService = new UserService(accountService);
-        context.addServlet(new ServletHolder(userService), "/user/*");
+            contextHandler.addServlet(servletHolder, "/*");
 
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setResourceBase(pathToStatic.toString());
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(true);
+            resourceHandler.setResourceBase(staticPath);
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resourceHandler, context});
-        server.setHandler(handlers);
+            HandlerCollection handlerCollection = new HandlerCollection();
+            handlerCollection.setHandlers(new Handler[]{resourceHandler,
+                    contextHandler, new DefaultHandler()});
 
-        server.start();
-        server.join();
+            server.setHandler(handlerCollection);
+            server.start();
+            server.join();
+        } catch (InterruptedException e) {
+            System.err.println("Database error");
+            System.exit(1);
+        }
     }
 }
 
