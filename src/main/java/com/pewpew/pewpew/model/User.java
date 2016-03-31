@@ -62,6 +62,7 @@ public class User {
 
     @Nullable
     public Integer getRating() {
+        if (rating == null)  return 0;
         return rating;
     }
 

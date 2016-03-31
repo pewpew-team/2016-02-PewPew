@@ -97,4 +97,31 @@ public class UserService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+
+    @PUT
+    @Path("/rating")
+    public Response addRating(Rating rating, @CookieParam("token") String token) {
+        AccountService accountService = context.get(AccountService.class);
+        User user = accountService.getUserByToken(token);
+        if (user == null) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        if (user.getRating() < rating.getScore()) {
+            user.setRating(rating.getScore());
+        }
+        accountService.addUser(user);
+        return Response.ok(Response.Status.OK).build();
+    }
+
+    private class Rating {
+        private Integer score;
+
+        public Integer getScore() {
+            return score;
+        }
+
+        public void setScore(Integer score) {
+            this.score = score;
+        }
+    }
 }
