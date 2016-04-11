@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.rest;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.main.Context;
 import com.pewpew.pewpew.model.User;
@@ -28,6 +30,8 @@ public class ScoreboardService {
         final AccountService accountService = context.get(AccountService.class);
         try {
             final List<User> query = accountService.getTop();
+            final JsonArray array = new JsonArray();
+//            query.stream().forEach(user->array.add(new JsonObject(user)));
             return Response.ok(Response.Status.OK).entity(new Users(query)).build();
         } catch (RuntimeException e) {
             e.printStackTrace();

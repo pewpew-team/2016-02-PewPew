@@ -18,6 +18,8 @@ import java.util.UUID;
 public class UserService {
     @Inject
     private com.pewpew.pewpew.main.Context context;
+    @Inject
+    private AccountService accountService;
 
     @POST
     public Response signUp(@ValidForCreation User user, @Context HttpHeaders headers,
