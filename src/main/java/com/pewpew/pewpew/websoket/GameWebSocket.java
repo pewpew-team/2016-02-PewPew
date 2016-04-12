@@ -3,13 +3,17 @@ package com.pewpew.pewpew.websoket;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.mechanics.GameMechanics;
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
+import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.WebSocketException;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.io.IOException;
@@ -21,7 +25,9 @@ public class GameWebSocket {
 
     private User user;
     private Session userSession;
-    private MessageHandler messageHandler;
+
+    @NotNull
+    private GameFrameHandler messageHandler;
 
 //    @Inject
 //    private Context context;
@@ -37,6 +43,8 @@ public class GameWebSocket {
 
         GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
         gameMechanics.addUser(userSession.getId());
+
+        messageHandler = new GameFrameHandler(webSocketService);
         logger.info("onOpen");
     }
 
@@ -49,14 +57,25 @@ public class GameWebSocket {
     @OnMessage
     public void onMessage(String message) {
         if (this.messageHandler != null) {
-            this.messageHandler.handleMessage(message);
-            logger.info("Got message: " + message);
+            final GameFrame gameFrame;
+            try {
+                gameFrame = new Gson().fromJson(message, GameFrame.class);
+            } catch (JsonSyntaxException ex) {
+                logger.error("wrong json format at ping response", ex);
+                return;
+            }
+            try {
+                //noinspection ConstantConditions
+                messageHandler.handle(gameFrame, userSession.getId());
+            } catch (HandleException e) {
+                logger.error("Can't handle message with content: " + message, e);
+            }
         }
     }
 
-    public void addMessageHandler(MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
-    }
+//    public void addMessageHandler(MessageHandler msgHandler) {
+//        this.messageHandler = msgHandler;
+//    }
 
     public void sendMessage(String message) {
         this.userSession.getAsyncRemote().sendText(message);
@@ -79,10 +98,5 @@ public class GameWebSocket {
 
     public void setUserSession(Session userSession) {
         this.userSession = userSession;
-    }
-
-    public static interface MessageHandler {
-
-        public void handleMessage(String message);
     }
 }
