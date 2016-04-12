@@ -4,6 +4,8 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.JsonObject;
+import com.pewpew.pewpew.mechanics.GameMechanics;
+import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
 import com.pewpew.pewpew.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +13,8 @@ import org.eclipse.jetty.websocket.api.WebSocketException;
 
 
 import java.io.IOException;
-import java.util.Map;
 
-@ServerEndpoint(value = "/wb",
+@ServerEndpoint(value = "/ws",
         configurator=MyEndpointConfigurator.class)
 public class GameWebSocket {
     static final Logger logger = LogManager.getLogger(GameWebSocket.class);
@@ -28,14 +29,14 @@ public class GameWebSocket {
     @OnOpen
     public void onOpen(Session userSession) {
         this.userSession = userSession;
-        Map<String, Object> userProperties = userSession.getUserProperties();
-        Object cookie = userProperties.get("cookie");
+//        Map<String, Object> userProperties = userSession.getUserProperties();
+//        String cookie = ((List<String>)userProperties.get("cookie")).get(0);
 
         WebSocketService webSocketService = WebSocketServiceImpl.getInstance();
-        webSocketService.addUser(this, "user");
+        webSocketService.addUser(this, userSession.getId());
 
         GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
-        gameMechanics.addUser("user");
+        gameMechanics.addUser(userSession.getId());
         logger.info("onOpen");
     }
 

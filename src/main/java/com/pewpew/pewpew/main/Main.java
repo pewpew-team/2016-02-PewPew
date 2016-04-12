@@ -1,9 +1,12 @@
 package com.pewpew.pewpew.main;
 
 import com.pewpew.pewpew.common.Settings;
+import com.pewpew.pewpew.mechanics.GameMechanics;
+import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
 import com.pewpew.pewpew.rest.ScoreboardService;
 import com.pewpew.pewpew.rest.SessionService;
 import com.pewpew.pewpew.rest.UserService;
+import com.pewpew.pewpew.websoket.*;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -12,6 +15,8 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -41,9 +46,10 @@ public class Main {
         final Context context = new Context();
         try {
             context.put(AccountService.class, new AccountServiceImpl());
-
+            context.put(WebSocketService.class, WebSocketServiceImpl.getInstance());
+            context.put(GameMechanics.class, GameMechanicsImpl.getInstance());
             final ResourceConfig config = new ResourceConfig(SessionService.class,
-                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
+                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class, GameWebSocket.class);
 
             config.register(new AbstractBinder() {
                 @Override
@@ -65,6 +71,11 @@ public class Main {
                     contextHandler, new DefaultHandler()});
 
             server.setHandler(handlerCollection);
+
+            ServerContainer container = WebSocketServerContainerInitializer.configureContext(contextHandler);
+
+            container.addEndpoint(GameWebSocket.class);
+
             server.start();
             server.join();
         } catch (InterruptedException e) {

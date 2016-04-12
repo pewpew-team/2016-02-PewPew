@@ -1,5 +1,7 @@
-package com.pewpew.pewpew.websoket;
+package com.pewpew.pewpew.mechanics;
 
+import com.pewpew.pewpew.websoket.WebSocketService;
+import com.pewpew.pewpew.websoket.WebSocketServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Singleton
-public class GameMechanicsImpl {
+public class GameMechanicsImpl implements GameMechanics {
 
     private static GameMechanicsImpl instance;
 
@@ -27,7 +29,7 @@ public class GameMechanicsImpl {
     @NotNull
     private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
 
-    public static synchronized GameMechanicsImpl getInstance() {
+    public static synchronized GameMechanics getInstance() {
         if (instance == null) {
             instance = new GameMechanicsImpl();
         }
