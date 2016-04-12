@@ -2,6 +2,7 @@ package com.pewpew.pewpew.websoket;
 
 import com.pewpew.pewpew.model.User;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,14 @@ public class WebSocketServiceImpl implements WebSocketService {
     public void notifyStartGame(String user) {
         GameWebSocket gameWebSocket = userSockets.get(user);
         gameWebSocket.startGame();
+    }
+
+    @Override
+    public void sendMessageToUser(String message, String userSessionId) throws IOException {
+        GameWebSocket gameWebSocket = userSockets.get(userSessionId);
+        if (gameWebSocket == null) {
+            throw new IOException("no such active websocket");
+        }
     }
 
     @Override

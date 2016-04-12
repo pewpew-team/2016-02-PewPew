@@ -65,7 +65,6 @@ public class GameWebSocket {
                 return;
             }
             try {
-                //noinspection ConstantConditions
                 messageHandler.handle(gameFrame, userSession.getId());
             } catch (HandleException e) {
                 logger.error("Can't handle message with content: " + message, e);
