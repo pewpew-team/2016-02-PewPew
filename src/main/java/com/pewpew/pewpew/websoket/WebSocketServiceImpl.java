@@ -34,6 +34,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         if (gameWebSocket == null) {
             throw new IOException("no such active websocket");
         }
+        gameWebSocket.sendMessage(message);
     }
 
     @Override

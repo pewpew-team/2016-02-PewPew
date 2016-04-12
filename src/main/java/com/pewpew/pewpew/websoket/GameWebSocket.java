@@ -46,6 +46,7 @@ public class GameWebSocket {
 
         messageHandler = new GameFrameHandler(webSocketService);
         logger.info("onOpen");
+        System.out.println("open websocket");
     }
 
     @OnClose
@@ -71,10 +72,6 @@ public class GameWebSocket {
             }
         }
     }
-
-//    public void addMessageHandler(MessageHandler msgHandler) {
-//        this.messageHandler = msgHandler;
-//    }
 
     public void sendMessage(String message) {
         this.userSession.getAsyncRemote().sendText(message);
