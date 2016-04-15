@@ -6,8 +6,8 @@ import java.util.List;
 public class GameFrame {
     private PlayerObject player;
     private PlayerObject enemy;
-    private BulletsCollection bullets;
-//    private List<BulletObject> bullets;
+//    private BulletsCollection bullets;
+    private List<BulletObject> bullets;
     private List<BarriersObject> barriers;
 
     public PlayerObject getPlayer() {
@@ -26,22 +26,22 @@ public class GameFrame {
         this.enemy = enemy;
     }
 
-    public BulletsCollection getBullets() {
-        return bullets;
-    }
-
-    public void setBullets(BulletsCollection bullets) {
-        this.bullets = bullets;
-    }
-
-//
-//    public List<BulletObject> getBullets() {
+//    public BulletsCollection getBullets() {
 //        return bullets;
 //    }
 //
-//    public void setBullets(List<BulletObject> bullets) {
+//    public void setBullets(BulletsCollection bullets) {
 //        this.bullets = bullets;
 //    }
+
+
+    public List<BulletObject> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(List<BulletObject> bullets) {
+        this.bullets = bullets;
+    }
 
     public List<BarriersObject> getBarriers() {
         return barriers;

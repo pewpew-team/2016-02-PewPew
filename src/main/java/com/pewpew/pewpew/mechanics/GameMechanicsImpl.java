@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.mechanics;
 
+import com.pewpew.pewpew.model.BulletObject;
 import com.pewpew.pewpew.websoket.WebSocketService;
 import com.pewpew.pewpew.websoket.WebSocketServiceImpl;
 import org.jetbrains.annotations.NotNull;
@@ -70,5 +71,11 @@ public class GameMechanicsImpl implements GameMechanics {
 
         webSocketService.notifyStartGame(gameSession.getPlayerOne());
         webSocketService.notifyStartGame(gameSession.getPlayerTwo());
+    }
+
+    public ArrayList<BulletObject> bulletsCalculation(BulletObject bullet, String user) {
+        GameSession gameSession = nameToGame.get(user);
+        gameSession.setBulletObject(bullet);
+        return gameSession.getAllBullets();
     }
 }

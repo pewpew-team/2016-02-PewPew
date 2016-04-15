@@ -3,6 +3,7 @@ package com.pewpew.pewpew.model;
 public class PlayerObject {
     private Double posX;
     private Double velX;
+    private Double gunAngle;
 
     public Double getPosX() {
         return posX;
@@ -18,5 +19,13 @@ public class PlayerObject {
 
     public void setVelX(Double velX) {
         this.velX = velX;
+    }
+
+    public Double getGunAngle() {
+        return gunAngle;
+    }
+
+    public void setGunAngle(Double gunAngle) {
+        this.gunAngle = gunAngle;
     }
 }

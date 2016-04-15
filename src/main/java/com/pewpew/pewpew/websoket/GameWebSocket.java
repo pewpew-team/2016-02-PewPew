@@ -29,9 +29,6 @@ public class GameWebSocket {
     @NotNull
     private GameFrameHandler messageHandler;
 
-//    @Inject
-//    private Context context;
-
     @OnOpen
     public void onOpen(Session userSession) {
         this.userSession = userSession;
@@ -60,22 +57,25 @@ public class GameWebSocket {
         if (this.messageHandler != null) {
             final GameFrame gameFrame;
             try {
+//                System.out.print("I got message:" + message + "\n");
                 gameFrame = new Gson().fromJson(message, GameFrame.class);
             } catch (JsonSyntaxException ex) {
                 logger.error("wrong json format at response", ex);
                 return;
             }
             try {
+                System.out.print("I got message:" + gameFrame.getBullets().getBullets().size() + "\n");
                 GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
                 String enemyId = gameMechanics.getEnemy(userSession.getId());
                 messageHandler.handle(gameFrame, enemyId);
             } catch (HandleException e) {
-                logger.error("Can't handle message with content: " + message, e);
+                logger.error("Can't handle message with content: " + message + "\n", e);
             }
         }
     }
 
     public void sendMessage(String message) {
+//        System.out.print("I send message:" + message);
         this.userSession.getAsyncRemote().sendText(message);
     }
 

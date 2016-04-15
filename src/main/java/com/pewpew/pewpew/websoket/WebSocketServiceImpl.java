@@ -38,7 +38,11 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyGameOver(User user, boolean win) {
-
+    public void notifyGameOver(String user, boolean win) throws IOException {
+        GameWebSocket gameWebSocket = userSockets.get(user);
+        if (gameWebSocket == null) {
+            throw new IOException("no such active websocket");
+        }
+        gameWebSocket.sendMessage("You win");
     }
 }
