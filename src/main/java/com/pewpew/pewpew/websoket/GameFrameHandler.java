@@ -10,10 +10,12 @@ import java.io.IOException;
 public class GameFrameHandler extends MessageHandler<GameFrame> {
 
     private WebSocketService webSocketService;
-   public GameFrameHandler(WebSocketService webSocketService) {
-       super(GameFrame.class);
-       this.webSocketService = webSocketService;
+
+    public GameFrameHandler(WebSocketService webSocketService) {
+        super(GameFrame.class);
+        this.webSocketService = webSocketService;
     }
+
     @Override
     public void handle(@NotNull GameFrame message, @NotNull String userName) throws HandleException {
         final Gson gson = new Gson();

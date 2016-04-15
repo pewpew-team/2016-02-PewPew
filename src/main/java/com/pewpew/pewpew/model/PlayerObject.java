@@ -1,22 +1,22 @@
 package com.pewpew.pewpew.model;
 
 public class PlayerObject {
-    private Integer posX;
-    private Integer velX;
+    private Double posX;
+    private Double velX;
 
-    public Integer getPosX() {
+    public Double getPosX() {
         return posX;
     }
 
-    public void setPosX(Integer posX) {
+    public void setPosX(Double posX) {
         this.posX = posX;
     }
 
-    public Integer getVelX() {
+    public Double getVelX() {
         return velX;
     }
 
-    public void setVelX(Integer velX) {
+    public void setVelX(Double velX) {
         this.velX = velX;
     }
 }

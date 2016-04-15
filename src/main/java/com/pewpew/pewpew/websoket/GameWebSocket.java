@@ -62,11 +62,13 @@ public class GameWebSocket {
             try {
                 gameFrame = new Gson().fromJson(message, GameFrame.class);
             } catch (JsonSyntaxException ex) {
-                logger.error("wrong json format at ping response", ex);
+                logger.error("wrong json format at response", ex);
                 return;
             }
             try {
-                messageHandler.handle(gameFrame, userSession.getId());
+                GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
+                String enemyId = gameMechanics.getEnemy(userSession.getId());
+                messageHandler.handle(gameFrame, enemyId);
             } catch (HandleException e) {
                 logger.error("Can't handle message with content: " + message, e);
             }

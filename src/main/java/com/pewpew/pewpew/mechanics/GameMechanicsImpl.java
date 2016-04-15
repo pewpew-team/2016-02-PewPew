@@ -44,6 +44,13 @@ public class GameMechanicsImpl implements GameMechanics {
         addUserInternal(user);
     }
 
+    public String getEnemy(@NotNull String user) {
+        if (nameToGame.get(user).getPlayerTwo() != user) {
+            return nameToGame.get(user).getPlayerTwo();
+        }
+        return nameToGame.get(user).getPlayerOne();
+    }
+
     private void addUserInternal(@NotNull String user) {
         if (waiter != null) {
             //noinspection ConstantConditions
@@ -57,6 +64,9 @@ public class GameMechanicsImpl implements GameMechanics {
     private void starGame(@NotNull String first, @NotNull String second) {
         GameSession gameSession = new GameSession(first, second);
         allSessions.add(gameSession);
+
+        nameToGame.put(first, gameSession);
+        nameToGame.put(second, gameSession);
 
         webSocketService.notifyStartGame(gameSession.getPlayerOne());
         webSocketService.notifyStartGame(gameSession.getPlayerTwo());

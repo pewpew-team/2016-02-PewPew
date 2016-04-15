@@ -1,58 +1,58 @@
 package com.pewpew.pewpew.model;
 
 public class BulletObject {
-    private Integer posX;
-    private Integer posY;
-    private Integer velX;
-    private Integer velY;
-    private Integer sizeX;
-    private Integer sizeY;
+    private Double posX;
+    private Double posY;
+    private Double velX;
+    private Double velY;
+    private Double sizeX;
+    private Double sizeY;
 
-    public Integer getPosX() {
+    public Double getPosX() {
         return posX;
     }
 
-    public void setPosX(Integer posX) {
+    public void setPosX(Double posX) {
         this.posX = posX;
     }
 
-    public Integer getPosY() {
+    public Double getPosY() {
         return posY;
     }
 
-    public void setPosY(Integer posY) {
+    public void setPosY(Double posY) {
         this.posY = posY;
     }
 
-    public Integer getVelX() {
+    public Double getVelX() {
         return velX;
     }
 
-    public void setVelX(Integer velX) {
+    public void setVelX(Double velX) {
         this.velX = velX;
     }
 
-    public Integer getVelY() {
+    public Double getVelY() {
         return velY;
     }
 
-    public void setVelY(Integer velY) {
+    public void setVelY(Double velY) {
         this.velY = velY;
     }
 
-    public Integer getSizeX() {
+    public Double getSizeX() {
         return sizeX;
     }
 
-    public void setSizeX(Integer sizeX) {
+    public void setSizeX(Double sizeX) {
         this.sizeX = sizeX;
     }
 
-    public Integer getSizeY() {
+    public Double getSizeY() {
         return sizeY;
     }
 
-    public void setSizeY(Integer sizeY) {
+    public void setSizeY(Double sizeY) {
         this.sizeY = sizeY;
     }
 }

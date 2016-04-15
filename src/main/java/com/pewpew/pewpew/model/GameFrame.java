@@ -1,11 +1,13 @@
 package com.pewpew.pewpew.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameFrame {
     private PlayerObject player;
     private PlayerObject enemy;
     private BulletsCollection bullets;
+//    private List<BulletObject> bullets;
     private List<BarriersObject> barriers;
 
     public PlayerObject getPlayer() {
@@ -31,6 +33,15 @@ public class GameFrame {
     public void setBullets(BulletsCollection bullets) {
         this.bullets = bullets;
     }
+
+//
+//    public List<BulletObject> getBullets() {
+//        return bullets;
+//    }
+//
+//    public void setBullets(List<BulletObject> bullets) {
+//        this.bullets = bullets;
+//    }
 
     public List<BarriersObject> getBarriers() {
         return barriers;

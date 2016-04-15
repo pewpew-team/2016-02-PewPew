@@ -1,23 +1,23 @@
 package com.pewpew.pewpew.model;
 
 public class BarriersObject {
-    private Integer posX;
-    private Integer posY;
+    private Double posX;
+    private Double posY;
     private Boolean isRemovable;
 
-    public Integer getPosX() {
+    public Double getPosX() {
         return posX;
     }
 
-    public void setPosX(Integer posX) {
+    public void setPosX(Double posX) {
         this.posX = posX;
     }
 
-    public Integer getPosY() {
+    public Double getPosY() {
         return posY;
     }
 
-    public void setPosY(Integer posY) {
+    public void setPosY(Double posY) {
         this.posY = posY;
     }
 
