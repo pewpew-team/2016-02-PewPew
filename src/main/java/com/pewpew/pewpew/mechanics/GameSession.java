@@ -4,7 +4,7 @@ import com.pewpew.pewpew.model.BulletObject;
 
 import java.time.Clock;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameSession {
 
@@ -13,7 +13,7 @@ public class GameSession {
 
     private final long startTime;
 
-    private CopyOnWriteArrayList<BulletObject> bulletObjects = new CopyOnWriteArrayList<BulletObject>();
+    private ConcurrentLinkedQueue<BulletObject> bulletObjects = new ConcurrentLinkedQueue<BulletObject>();
 
     public String getPlayerOne() {
         return playerOne;
@@ -37,7 +37,7 @@ public class GameSession {
         startTime = Clock.systemDefaultZone().millis();
     }
 
-    public CopyOnWriteArrayList<BulletObject> getBulletObjects() {
+    public ConcurrentLinkedQueue<BulletObject> getBulletObjects() {
         return bulletObjects;
     }
     public void setBulletObject(BulletObject bulletObjects) {
@@ -53,6 +53,11 @@ public class GameSession {
         for (BulletObject bullet : bulletObjects) {
             moveBullet(bullet);
             resultBulllets.add(bullet);
+            System.out.print(bullet.getPosX() + "\n");
+            System.out.print(bullet.getPosY() + "\n");
+            System.out.print(bullet.getVelX() + "\n");
+            System.out.println();
+            System.out.println();
         }
         return resultBulllets;
     }

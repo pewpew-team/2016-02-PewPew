@@ -10,5 +10,6 @@ public interface GameMechanics {
 
     String getEnemy(@NotNull String user);
 
-    ArrayList<BulletObject> bulletsCalculation(BulletObject bullet, String user);
+    ArrayList<BulletObject> bulletsCalculation(String user);
+    void addNewBullet(BulletObject bullet, String user);
 }

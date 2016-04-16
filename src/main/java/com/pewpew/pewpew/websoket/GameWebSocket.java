@@ -41,7 +41,7 @@ public class GameWebSocket {
         GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
         gameMechanics.addUser(userSession.getId());
 
-        messageHandler = new GameFrameHandler(webSocketService);
+        messageHandler = new GameFrameHandler(webSocketService, gameMechanics);
         logger.info("onOpen");
         System.out.println("open websocket");
     }
@@ -64,7 +64,9 @@ public class GameWebSocket {
                 return;
             }
             try {
-                System.out.print("I got message:" + gameFrame.getBullets().getBullets().size() + "\n");
+                if (gameFrame.getBullet() != null) {
+                    System.out.print("I got message:" + gameFrame.getBullet() + "\n");
+                }
                 GameMechanics gameMechanics = GameMechanicsImpl.getInstance();
                 String enemyId = gameMechanics.getEnemy(userSession.getId());
                 messageHandler.handle(gameFrame, enemyId);

@@ -73,9 +73,13 @@ public class GameMechanicsImpl implements GameMechanics {
         webSocketService.notifyStartGame(gameSession.getPlayerTwo());
     }
 
-    public ArrayList<BulletObject> bulletsCalculation(BulletObject bullet, String user) {
+    public void addNewBullet(BulletObject bullet, String user) {
         GameSession gameSession = nameToGame.get(user);
         gameSession.setBulletObject(bullet);
+    }
+
+    public ArrayList<BulletObject> bulletsCalculation(String user) {
+        GameSession gameSession = nameToGame.get(user);
         return gameSession.getAllBullets();
     }
 }

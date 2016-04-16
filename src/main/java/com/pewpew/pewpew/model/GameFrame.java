@@ -8,6 +8,7 @@ public class GameFrame {
     private PlayerObject enemy;
 //    private BulletsCollection bullets;
     private List<BulletObject> bullets;
+    private BulletObject bullet;
     private List<BarriersObject> barriers;
 
     public PlayerObject getPlayer() {
@@ -34,6 +35,14 @@ public class GameFrame {
 //        this.bullets = bullets;
 //    }
 
+
+    public BulletObject getBullet() {
+        return bullet;
+    }
+
+    public void setBullet(BulletObject bullet) {
+        this.bullet = bullet;
+    }
 
     public List<BulletObject> getBullets() {
         return bullets;

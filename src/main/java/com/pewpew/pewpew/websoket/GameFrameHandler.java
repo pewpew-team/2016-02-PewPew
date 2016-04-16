@@ -27,8 +27,11 @@ public class GameFrameHandler extends MessageHandler<GameFrame> {
         PlayerObject enemy = message.getPlayer();
         message.setPlayer(message.getEnemy());
         message.setEnemy(enemy);
-        BulletObject newBullet = message.getBullets().get(0);
-        message.setBullets(gameMechanics.bulletsCalculation(newBullet, userName));
+        message.setBullets(gameMechanics.bulletsCalculation(userName));
+        if (message.getBullet() != null) {
+            BulletObject newBullet = message.getBullet();
+            gameMechanics.addNewBullet(message.getBullet(), userName);
+        }
         String json = gson.toJson(message);
         try {
             webSocketService.sendMessageToUser(json, userName);
