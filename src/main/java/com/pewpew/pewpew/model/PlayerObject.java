@@ -29,6 +29,12 @@ public class PlayerObject {
         this.gunAngle = gunAngle;
     }
 
+
+    public PlayerObject() {
+        this.posX = 640.0;
+        this.velX = 0.0;
+    }
+
     public void translateToAnotherCoordinateSystem(Double x) {
         posX = x - posX;
         velX = -velX;

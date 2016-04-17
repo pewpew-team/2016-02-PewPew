@@ -2,6 +2,7 @@ package com.pewpew.pewpew.mechanics;
 
 import com.google.gson.Gson;
 import com.pewpew.pewpew.model.BulletObject;
+import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 import com.pewpew.pewpew.websoket.WebSocketService;
@@ -86,30 +87,51 @@ public class GameMechanicsImpl implements GameMechanics {
 
     public void sendState(GameSession gameSession) {
         GameFrame gameFrame = gameSession.getGameFrame();
+        gameFrame.moveBullets();
         try {
             String gameFrameJson = gson.toJson(gameFrame);
             webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
         } catch (IOException e) {
             e.printStackTrace();
+            allSessions.remove(gameSession);
+            nameToGame.remove(gameSession.getPlayerOne());
+            nameToGame.remove(gameSession.getPlayerTwo());
         }
         try {
+
             PlayerObject player = gameFrame.getEnemy();
             gameFrame.setEnemy(gameFrame.getPlayer());
             gameFrame.setPlayer(player);
             gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
             String gameFrameJson = gson.toJson(gameFrame);
+            gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
             webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
+
         } catch (IOException e) {
             e.printStackTrace();
+            allSessions.remove(gameSession);
+            nameToGame.remove(gameSession.getPlayerOne());
+            nameToGame.remove(gameSession.getPlayerTwo());
         }
     }
 
-    public void changeState(GameFrame gameFrame, String userName) {
+    @Override
+    public void changeState(GameChanges gameChanges, String userName) {
         GameSession gameSession = nameToGame.get(userName);
-        gameSession.changeState(gameFrame);
+        if (gameSession.getPlayerOne().equals(userName)) {
+            BulletObject bulletObject = gameChanges.getBullet();
+            bulletObject.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+            gameChanges.setBullet(bulletObject);
+        }
+        gameSession.changeState(gameChanges);
     }
+
+    @Override
     public void addNewBullet(BulletObject bullet, String user) {
-        GameSession gameSession = nameToGame.get(user);
+        final GameSession gameSession = nameToGame.get(user);
+        if (user.equals(gameSession.getPlayerOne())) {
+            bullet.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+        }
         gameSession.setBulletObject(bullet);
     }
 

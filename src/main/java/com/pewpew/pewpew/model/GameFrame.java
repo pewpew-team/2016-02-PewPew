@@ -1,17 +1,18 @@
 package com.pewpew.pewpew.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameFrame {
     private PlayerObject player;
     private PlayerObject enemy;
     private List<BulletObject> bullets;
-    private BulletObject bullet;
     private List<BarriersObject> barriers;
 
     public GameFrame(PlayerObject player, PlayerObject enemy) {
         this.player = player;
         this.enemy = enemy;
+        this.bullets = new ArrayList<>();
     }
 
     public PlayerObject getPlayer() {
@@ -30,24 +31,13 @@ public class GameFrame {
         this.enemy = enemy;
     }
 
-    public BulletObject getBullet() {
-        return bullet;
-    }
-
-    public void setBullet(BulletObject bullet) {
-        this.bullet = bullet;
-    }
-
     public List<BulletObject> getBullets() {
         return bullets;
     }
 
-    public void setBullets(List<BulletObject> bullets) {
-        this.bullets = bullets;
-    }
-
-    public void addBullets(List<BulletObject> bullets) {
-        this.bullets.addAll(bullets);
+    public void addBullet(BulletObject bullet) {
+        bullet.setBulletId(this.bullets.size());
+        this.bullets.add(bullet);
     }
 
     public List<BarriersObject> getBarriers() {
@@ -60,9 +50,16 @@ public class GameFrame {
 
     public void translateToAnotherCoordinateSystem(Double x, Double y) {
         player.translateToAnotherCoordinateSystem(x);
-        enemy.translateToAnotherCoordinateSystem(y);
+        enemy.translateToAnotherCoordinateSystem(x);
         for(BulletObject bullet : bullets) {
             bullet.translateToAnotherCoordinateSystem(x, y);
+        }
+    }
+
+    public void moveBullets() {
+        for(BulletObject bulletObject : bullets) {
+            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
+            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
         }
     }
 }

@@ -1,12 +1,22 @@
 package com.pewpew.pewpew.model;
 
 public class BulletObject {
+
+    private Integer bulletId;
     private Double posX;
     private Double posY;
     private Double velX;
     private Double velY;
     private Double sizeX;
     private Double sizeY;
+
+    public Integer getBulletId() {
+        return bulletId;
+    }
+
+    public void setBulletId(Integer bulletId) {
+        this.bulletId = bulletId;
+    }
 
     public Double getPosX() {
         return posX;
@@ -58,8 +68,8 @@ public class BulletObject {
 
     public void translateToAnotherCoordinateSystem(Double x, Double y) {
         posX = x - posX;
-        posY = posY - y;
-        velX = x - velX;
-        velY = velY - y;
+        posY = y - posY;
+        velX = -velX;
+        velY = -velY;
     }
 }

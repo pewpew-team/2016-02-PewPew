@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.websoket;
 
+import com.pewpew.pewpew.model.GameChanges;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -59,9 +60,9 @@ public class GameWebSocket {
     @OnWebSocketMessage
     public void onMessage(String message) {
         if (this.messageHandler != null) {
-            final GameFrame gameFrame;
+            final GameChanges gameFrame;
             try {
-                gameFrame = new Gson().fromJson(message, GameFrame.class);
+                gameFrame = new Gson().fromJson(message, GameChanges.class);
             } catch (JsonSyntaxException ex) {
                 logger.error("wrong json format at response", ex);
                 return;

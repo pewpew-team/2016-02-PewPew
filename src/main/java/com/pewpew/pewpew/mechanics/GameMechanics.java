@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.pewpew.pewpew.model.BulletObject;
+import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,5 +14,5 @@ public interface GameMechanics {
 
     ArrayList<BulletObject> bulletsCalculation(String user);
     void addNewBullet(BulletObject bullet, String user);
-    void changeState(GameFrame gameFrame, String userName);
+    void changeState(GameChanges gameChanges, String userName);
 }

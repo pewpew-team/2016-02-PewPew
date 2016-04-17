@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.pewpew.pewpew.model.BulletObject;
+import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameSession {
+
+    private static final Double Y_MAX = 720.0;
+    private static final Double X_MAX = 1280.0;
 
     private String playerOne;
     private String playerTwo;
@@ -66,9 +70,13 @@ public class GameSession {
         return Clock.systemDefaultZone().millis() - startTime;
     }
 
-    public void changeState(GameFrame newFrame) {
-        if (newFrame.getBullets() != null) {
-           gameFrame.addBullets(newFrame.getBullets());
+    public void changeState(GameChanges gameChanges) {
+        System.out.print("Gonna change if i got bullet \n");
+        BulletObject bulletObject = gameChanges.getBullet();
+        if (bulletObject != null) {
+           gameFrame.addBullet(bulletObject);
+            System.out.print("I added bullet, i am so cool \n");
+            System.out.print(gameFrame.getBullets().size());
         }
     }
 
@@ -77,11 +85,6 @@ public class GameSession {
         for (BulletObject bullet : bulletObjects) {
             moveBullet(bullet);
             resultBulllets.add(bullet);
-            System.out.print(bullet.getPosX() + "\n");
-            System.out.print(bullet.getPosY() + "\n");
-            System.out.print(bullet.getVelX() + "\n");
-            System.out.println();
-            System.out.println();
         }
         return resultBulllets;
     }
@@ -96,8 +99,5 @@ public class GameSession {
             e.printStackTrace();
             System.out.print(bulletObject);
         }
-    }
-
-    public void translateToAnotherCoordinates() {
     }
 }
