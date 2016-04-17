@@ -103,6 +103,11 @@ public class GameMechanicsImpl implements GameMechanics {
             e.printStackTrace();
         }
     }
+
+    public void changeState(GameFrame gameFrame, String userName) {
+        GameSession gameSession = nameToGame.get(userName);
+        gameSession.changeState(gameFrame);
+    }
     public void addNewBullet(BulletObject bullet, String user) {
         GameSession gameSession = nameToGame.get(user);
         gameSession.setBulletObject(bullet);

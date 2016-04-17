@@ -27,20 +27,8 @@ public class GameFrameHandler extends MessageHandler<GameFrame> {
         PlayerObject enemy = message.getPlayer();
         message.setPlayer(message.getEnemy());
         message.setEnemy(enemy);
-        message.setBullets(gameMechanics.bulletsCalculation(userName));
-        if (message.getBullet() != null) {
-            BulletObject newBullet = message.getBullet();
-            gameMechanics.addNewBullet(message.getBullet(), userName);
-        }
+
         String json = gson.toJson(message);
-        try {
-            webSocketService.sendMessageToUser(json, userName);
-        } catch (IOException e) {
-            try {
-                webSocketService.notifyGameOver(userName, true);
-            } catch (IOException en) {
-                throw new HandleException("Unnable to send answer back to user " + userName, en);
-            }
-        }
+        gameMechanics.changeState(message, userName);
     }
 }

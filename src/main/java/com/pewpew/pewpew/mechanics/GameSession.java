@@ -66,6 +66,12 @@ public class GameSession {
         return Clock.systemDefaultZone().millis() - startTime;
     }
 
+    public void changeState(GameFrame newFrame) {
+        if (newFrame.getBullets() != null) {
+           gameFrame.addBullets(newFrame.getBullets());
+        }
+    }
+
     public ArrayList<BulletObject> getAllBullets() {
         ArrayList<BulletObject> resultBulllets = new ArrayList<>();
         for (BulletObject bullet : bulletObjects) {
@@ -81,10 +87,15 @@ public class GameSession {
     }
 
     private void moveBullet(BulletObject bulletObject) {
-        Double newX = bulletObject.getPosX() + bulletObject.getVelX();
-        Double newY = bulletObject.getPosY() + bulletObject.getVelY();
-        bulletObject.setPosX(newX);
-        bulletObject.setPosY(newY);
+        try {
+            Double newX = bulletObject.getPosX() + bulletObject.getVelX();
+            Double newY = bulletObject.getPosY() + bulletObject.getVelY();
+            bulletObject.setPosX(newX);
+            bulletObject.setPosY(newY);
+        } catch ( NullPointerException e) {
+            e.printStackTrace();
+            System.out.print(bulletObject);
+        }
     }
 
     public void translateToAnotherCoordinates() {

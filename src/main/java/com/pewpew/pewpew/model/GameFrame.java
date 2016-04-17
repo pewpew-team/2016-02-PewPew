@@ -46,6 +46,10 @@ public class GameFrame {
         this.bullets = bullets;
     }
 
+    public void addBullets(List<BulletObject> bullets) {
+        this.bullets.addAll(bullets);
+    }
+
     public List<BarriersObject> getBarriers() {
         return barriers;
     }
