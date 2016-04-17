@@ -15,8 +15,6 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -44,13 +42,11 @@ public class Main {
         final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
         final Context context = new Context();
+        AccountService accountService = new AccountServiceImpl();
         try {
-            context.put(AccountService.class, new AccountServiceImpl());
-            context.put(WebSocketService.class, WebSocketServiceImpl.getInstance());
-            context.put(GameMechanics.class, GameMechanicsImpl.getInstance());
+            context.put(AccountService.class, accountService);
             final ResourceConfig config = new ResourceConfig(SessionService.class,
-                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class, GameWebSocket.class);
-
+                    UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
             config.register(new AbstractBinder() {
                 @Override
                 protected void configure() {
@@ -62,6 +58,12 @@ public class Main {
 
             contextHandler.addServlet(servletHolder, "/*");
 
+            WebSocketService webSocketService = new WebSocketServiceImpl();
+            GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+            contextHandler.addServlet(new ServletHolder(new GameSocketServelet(accountService,
+                    webSocketService, gameMechanics)), "/ws");
+
+
             final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
             resourceHandler.setResourceBase(staticPath);
@@ -71,10 +73,6 @@ public class Main {
                     contextHandler, new DefaultHandler()});
 
             server.setHandler(handlerCollection);
-
-            ServerContainer container = WebSocketServerContainerInitializer.configureContext(contextHandler);
-
-            container.addEndpoint(GameWebSocket.class);
 
             server.start();
             server.join();

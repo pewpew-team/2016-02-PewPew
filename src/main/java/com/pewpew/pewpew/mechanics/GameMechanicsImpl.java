@@ -30,15 +30,8 @@ public class GameMechanicsImpl implements GameMechanics {
     @NotNull
     private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
 
-    public static synchronized GameMechanics getInstance() {
-        if (instance == null) {
-            instance = new GameMechanicsImpl();
-        }
-        return instance;
-    }
-
-    private GameMechanicsImpl() {
-        webSocketService = WebSocketServiceImpl.getInstance();
+    public GameMechanicsImpl(WebSocketService webSocketService) {
+        this.webSocketService = webSocketService;
     }
 
     public void addUser(@NotNull String user) {
