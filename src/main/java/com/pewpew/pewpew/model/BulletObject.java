@@ -55,4 +55,11 @@ public class BulletObject {
     public void setSizeY(Double sizeY) {
         this.sizeY = sizeY;
     }
+
+    public void translateToAnotherCoordinateSystem(Double x, Double y) {
+        posX = x - posX;
+        posY = posY - y;
+        velX = x - velX;
+        velY = velY - y;
+    }
 }

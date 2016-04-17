@@ -28,4 +28,9 @@ public class PlayerObject {
     public void setGunAngle(Double gunAngle) {
         this.gunAngle = gunAngle;
     }
+
+    public void translateToAnotherCoordinateSystem(Double x) {
+        posX = x - posX;
+        velX = -velX;
+    }
 }

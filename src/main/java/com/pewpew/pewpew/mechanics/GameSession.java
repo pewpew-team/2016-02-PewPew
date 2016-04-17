@@ -1,6 +1,8 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.pewpew.pewpew.model.BulletObject;
+import com.pewpew.pewpew.model.GameFrame;
+import com.pewpew.pewpew.model.PlayerObject;
 
 import java.time.Clock;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ public class GameSession {
 
     private String playerOne;
     private String playerTwo;
+
+    private GameFrame gameFrame;
 
     private final long startTime;
 
@@ -31,10 +35,24 @@ public class GameSession {
         this.playerTwo = playerTwo;
     }
 
+    public GameFrame getGameFrame() {
+        return gameFrame;
+    }
+
+    public void setGameFrame(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
+    }
+
     public GameSession(String playerOne, String playerTwo) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         startTime = Clock.systemDefaultZone().millis();
+        PlayerObject playerFirst = new PlayerObject();
+        PlayerObject playerSecond = new PlayerObject();
+        playerFirst.setPosX(640.0);
+        playerSecond.setPosX(640.0);
+
+        gameFrame = new GameFrame(playerFirst, playerSecond);
     }
 
     public ConcurrentLinkedQueue<BulletObject> getBulletObjects() {
@@ -67,5 +85,8 @@ public class GameSession {
         Double newY = bulletObject.getPosY() + bulletObject.getVelY();
         bulletObject.setPosX(newX);
         bulletObject.setPosY(newY);
+    }
+
+    public void translateToAnotherCoordinates() {
     }
 }
