@@ -4,6 +4,9 @@ import com.pewpew.pewpew.mechanics.GameMechanics;
 import com.pewpew.pewpew.model.GameChanges;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public class GameFrameHandler extends MessageHandler<GameChanges> {
 
@@ -19,6 +22,8 @@ public class GameFrameHandler extends MessageHandler<GameChanges> {
 
     @Override
     public void handle(@NotNull GameChanges gameChanges, @NotNull String userName) throws HandleException {
-        gameMechanics.changeState(gameChanges, userName);
+        //FIXME: It s some dangerous multithread
+        ExecutorService service = Executors.newFixedThreadPool(2);
+        service.submit(()->gameMechanics.changeState(gameChanges, userName));
     }
 }

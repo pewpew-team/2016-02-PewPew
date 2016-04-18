@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.google.gson.Gson;
+import com.pewpew.pewpew.common.TimeHelper;
 import com.pewpew.pewpew.model.BulletObject;
 import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
@@ -12,14 +13,16 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Singleton
 public class GameMechanicsImpl implements GameMechanics {
+
+    private static final long STEP_TIME = 30;
+
+    private long lastPingUpdate = 0;
 
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
@@ -42,8 +45,11 @@ public class GameMechanicsImpl implements GameMechanics {
     @NotNull
     private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
 
+    @NotNull
+    private Clock clock = Clock.systemDefaultZone();
+
     static ScheduledExecutorService timer =
-            Executors.newSingleThreadScheduledExecutor();
+            Executors.newScheduledThreadPool(10);
 
     public GameMechanicsImpl(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
@@ -51,7 +57,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void addUser(@NotNull String user) {
-        addUserInternal(user);
+       addUserInternal(user);
     }
 
     public String getEnemy(@NotNull String user) {
