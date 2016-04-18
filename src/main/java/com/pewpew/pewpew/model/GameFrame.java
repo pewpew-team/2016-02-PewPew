@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameFrame {
@@ -64,19 +65,17 @@ public class GameFrame {
     }
 
     public void moveBullets() {
-        for(BulletObject bulletObject : bullets) {
-            try {
-                bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
-                bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
-                if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
-                    bulletObject.setVelX(-1 * bulletObject.getVelX());
-                }
-                if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
-                    bullets.remove(bullets.indexOf(bulletObject));
-                    System.out.println("removed bullet");
-                }
-            } catch (RuntimeException e) {
-                e.printStackTrace();
+        Iterator<BulletObject> i = bullets.iterator();
+        while (i.hasNext()) {
+            BulletObject bulletObject = i.next(); 
+            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
+            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
+            if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
+                bulletObject.setVelX(-1 * bulletObject.getVelX());
+            }
+            if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
+                i.remove();
+                System.out.println("removed bullet");
             }
         }
     }
