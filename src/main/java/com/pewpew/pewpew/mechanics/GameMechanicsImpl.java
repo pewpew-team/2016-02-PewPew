@@ -17,12 +17,7 @@ import java.time.Clock;
 import java.util.*;
 import java.util.concurrent.*;
 
-@Singleton
 public class GameMechanicsImpl implements GameMechanics {
-
-    private static final long STEP_TIME = 30;
-
-    private long lastPingUpdate = 0;
 
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
@@ -41,12 +36,6 @@ public class GameMechanicsImpl implements GameMechanics {
 
     @NotNull
     private final Gson gson;
-
-    @NotNull
-    private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
-
-    @NotNull
-    private Clock clock = Clock.systemDefaultZone();
 
     static ScheduledExecutorService timer =
             Executors.newScheduledThreadPool(10);
@@ -130,19 +119,5 @@ public class GameMechanicsImpl implements GameMechanics {
             gameChanges.setBullet(bulletObject);
         }
         gameSession.changeState(gameChanges);
-    }
-
-    @Override
-    public void addNewBullet(BulletObject bullet, String user) {
-        final GameSession gameSession = nameToGame.get(user);
-        if (user.equals(gameSession.getPlayerOne())) {
-            bullet.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-        }
-        gameSession.setBulletObject(bullet);
-    }
-
-    public ArrayList<BulletObject> bulletsCalculation(String user) {
-        GameSession gameSession = nameToGame.get(user);
-        return gameSession.getAllBullets();
     }
 }

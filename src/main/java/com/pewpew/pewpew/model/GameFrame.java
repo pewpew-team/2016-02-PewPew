@@ -9,6 +9,9 @@ public class GameFrame {
     private List<BulletObject> bullets;
     private List<BarriersObject> barriers;
 
+    private static final Double Y_MAX = 720.0;
+    private static final Double X_MAX = 1280.0;
+
     public GameFrame(PlayerObject player, PlayerObject enemy) {
         this.player = player;
         this.enemy = enemy;
@@ -36,7 +39,11 @@ public class GameFrame {
     }
 
     public void addBullet(BulletObject bullet) {
-        bullet.setBulletId(this.bullets.size());
+        if (this.bullets.size() == 0 ) {
+            bullet.setBulletId(0);
+        } else {
+            bullet.setBulletId(this.bullets.get(this.bullets.size() - 1).getBulletId() + 1);
+        }
         this.bullets.add(bullet);
     }
 
@@ -58,8 +65,19 @@ public class GameFrame {
 
     public void moveBullets() {
         for(BulletObject bulletObject : bullets) {
-            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
-            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
+            try {
+                bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
+                bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
+                if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
+                    bulletObject.setVelX(-1 * bulletObject.getVelX());
+                }
+                if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
+                    bullets.remove(bullets.indexOf(bulletObject));
+                    System.out.println("removed bullet");
+                }
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

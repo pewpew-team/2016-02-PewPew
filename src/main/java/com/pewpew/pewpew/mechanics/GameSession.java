@@ -6,13 +6,9 @@ import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 
 import java.time.Clock;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameSession {
-
-    private static final Double Y_MAX = 720.0;
-    private static final Double X_MAX = 1280.0;
 
     private String playerOne;
     private String playerTwo;
@@ -76,28 +72,6 @@ public class GameSession {
         if (bulletObject != null) {
            gameFrame.addBullet(bulletObject);
             System.out.print("I added bullet, i am so cool \n");
-            System.out.print(gameFrame.getBullets().size());
-        }
-    }
-
-    public ArrayList<BulletObject> getAllBullets() {
-        ArrayList<BulletObject> resultBulllets = new ArrayList<>();
-        for (BulletObject bullet : bulletObjects) {
-            moveBullet(bullet);
-            resultBulllets.add(bullet);
-        }
-        return resultBulllets;
-    }
-
-    private void moveBullet(BulletObject bulletObject) {
-        try {
-            Double newX = bulletObject.getPosX() + bulletObject.getVelX();
-            Double newY = bulletObject.getPosY() + bulletObject.getVelY();
-            bulletObject.setPosX(newX);
-            bulletObject.setPosY(newY);
-        } catch ( NullPointerException e) {
-            e.printStackTrace();
-            System.out.print(bulletObject);
         }
     }
 }

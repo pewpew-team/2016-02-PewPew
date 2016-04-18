@@ -2,7 +2,7 @@ package com.pewpew.pewpew.model;
 
 public class BulletObject {
 
-    private Integer bulletId;
+    private Integer bulletId = 0;
     private Double posX;
     private Double posY;
     private Double velX;
