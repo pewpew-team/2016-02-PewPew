@@ -2,7 +2,7 @@ package com.pewpew.pewpew.model;
 
 public class GameChanges {
     private BulletObject bullet;
-    private String playerEvent;
+    private PlayerObject player;
 
     public BulletObject getBullet() {
         return bullet;
@@ -12,11 +12,11 @@ public class GameChanges {
         this.bullet = bullet;
     }
 
-    public String getPlayerEvent() {
-        return playerEvent;
+    public PlayerObject getPlayer() {
+        return player;
     }
 
-    public void setPlayerEvent(String playerEvent) {
-        this.playerEvent = playerEvent;
+    public void setPlayer(PlayerObject player) {
+        this.player = player;
     }
 }

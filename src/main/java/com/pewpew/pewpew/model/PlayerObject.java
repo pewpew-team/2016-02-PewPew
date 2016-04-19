@@ -39,4 +39,8 @@ public class PlayerObject {
         posX = x - posX;
         velX = -velX;
     }
+
+    public void translateGunAgnle() {
+        gunAngle = 3.14 - gunAngle;
+    }
 }

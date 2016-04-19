@@ -45,4 +45,8 @@ public class WebSocketServiceImpl implements WebSocketService {
         }
         gameWebSocket.sendMessage("You win");
     }
+
+    public void closeSocket(String userName) throws IOException {
+        userSockets.remove(userName);
+    }
 }

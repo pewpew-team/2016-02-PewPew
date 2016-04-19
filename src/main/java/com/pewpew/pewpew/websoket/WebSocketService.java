@@ -18,6 +18,8 @@ public interface WebSocketService {
 
     void sendMessageToUser(String message, String userSessionId)  throws IOException;
 
-    void notifyGameOver(String user, boolean win) throws IOException ;
+    void notifyGameOver(String user, boolean win) throws IOException;
+
+    void closeSocket(String userName) throws IOException;
 }
 

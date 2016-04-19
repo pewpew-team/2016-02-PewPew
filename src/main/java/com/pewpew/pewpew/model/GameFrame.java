@@ -67,7 +67,7 @@ public class GameFrame {
     public void moveBullets() {
         Iterator<BulletObject> i = bullets.iterator();
         while (i.hasNext()) {
-            BulletObject bulletObject = i.next(); 
+            BulletObject bulletObject = i.next();
             bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
             bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
             if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {

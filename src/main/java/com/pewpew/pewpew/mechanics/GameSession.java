@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameSession {
 
+    private static final Double X_MAX = 1280.0;
+
     private String playerOne;
     private String playerTwo;
 
@@ -72,6 +74,12 @@ public class GameSession {
         if (bulletObject != null) {
            gameFrame.addBullet(bulletObject);
             System.out.print("I added bullet, i am so cool \n");
+        }
+        PlayerObject playerObject = gameChanges.getPlayer();
+        if (playerObject != null) {
+            playerObject.translateToAnotherCoordinateSystem(X_MAX);
+//            playerObject.translateGunAgnle();
+            gameFrame.setPlayer(playerObject);
         }
     }
 }

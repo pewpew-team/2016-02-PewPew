@@ -38,7 +38,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private final Gson gson;
 
     static ScheduledExecutorService timer =
-            Executors.newScheduledThreadPool(10);
+            Executors.newSingleThreadScheduledExecutor();
 
     public GameMechanicsImpl(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
@@ -76,48 +76,52 @@ public class GameMechanicsImpl implements GameMechanics {
         webSocketService.notifyStartGame(gameSession.getPlayerOne());
         webSocketService.notifyStartGame(gameSession.getPlayerTwo());
         timer.scheduleAtFixedRate(
-                () -> sendState(gameSession),0,30, TimeUnit.MILLISECONDS);
+                () -> sendState(gameSession),0, 30, TimeUnit.MILLISECONDS);
     }
 
 
     public void sendState(GameSession gameSession) {
-        GameFrame gameFrame = gameSession.getGameFrame();
-        gameFrame.moveBullets();
-        try {
-            String gameFrameJson = gson.toJson(gameFrame);
-            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
-        } catch (IOException e) {
-            e.printStackTrace();
-            allSessions.remove(gameSession);
-            nameToGame.remove(gameSession.getPlayerOne());
-            nameToGame.remove(gameSession.getPlayerTwo());
-        }
-        try {
+        if (gameSession != null) {
+            GameFrame gameFrame = gameSession.getGameFrame();
+            gameFrame.moveBullets();
+            try {
+                String gameFrameJson = gson.toJson(gameFrame);
+                webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
+            } catch (IOException e) {
+                e.printStackTrace();
+                allSessions.remove(gameSession);
+                nameToGame.remove(gameSession.getPlayerOne());
+                nameToGame.remove(gameSession.getPlayerTwo());
+            }
+            try {
 
-            PlayerObject player = gameFrame.getEnemy();
-            gameFrame.setEnemy(gameFrame.getPlayer());
-            gameFrame.setPlayer(player);
-            gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-            String gameFrameJson = gson.toJson(gameFrame);
-            gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
+                PlayerObject player = gameFrame.getEnemy();
+                gameFrame.setEnemy(gameFrame.getPlayer());
+                gameFrame.setPlayer(player);
+                gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+                String gameFrameJson = gson.toJson(gameFrame);
+                gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+                webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            allSessions.remove(gameSession);
-            nameToGame.remove(gameSession.getPlayerOne());
-            nameToGame.remove(gameSession.getPlayerTwo());
+            } catch (IOException e) {
+                e.printStackTrace();
+                allSessions.remove(gameSession);
+                nameToGame.remove(gameSession.getPlayerOne());
+                nameToGame.remove(gameSession.getPlayerTwo());
+            }
         }
     }
 
     @Override
     public void changeState(GameChanges gameChanges, String userName) {
         GameSession gameSession = nameToGame.get(userName);
-        if (gameSession.getPlayerOne().equals(userName)) {
-            BulletObject bulletObject = gameChanges.getBullet();
-            bulletObject.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-            gameChanges.setBullet(bulletObject);
+        if (gameSession != null) {
+            if (gameSession.getPlayerOne().equals(userName)) {
+                BulletObject bulletObject = gameChanges.getBullet();
+                bulletObject.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+                gameChanges.setBullet(bulletObject);
+            }
+            gameSession.changeState(gameChanges);
         }
-        gameSession.changeState(gameChanges);
     }
 }

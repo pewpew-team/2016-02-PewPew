@@ -23,7 +23,7 @@ public class GameFrameHandler extends MessageHandler<GameChanges> {
     @Override
     public void handle(@NotNull GameChanges gameChanges, @NotNull String userName) throws HandleException {
         //FIXME: It s some dangerous multithread
-        ExecutorService service = Executors.newFixedThreadPool(2);
+        ExecutorService service = Executors.newSingleThreadExecutor();
         service.submit(()->gameMechanics.changeState(gameChanges, userName));
     }
 }
