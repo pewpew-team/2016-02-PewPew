@@ -73,12 +73,12 @@ public class GameSession {
         if (bulletObject != null) {
            gameFrame.addBullet(bulletObject);
         }
-        final PlayerObject playerObject = gameChanges.getPlayer();
-        if (playerObject != null) {
-            playerObject.toAnotherCoordinateSystem(X_MAX);
-            playerObject.translateGunAgnle();
-            gameFrame.setEnemy(playerObject);
-        }
+//        final PlayerObject playerObject = gameChanges.getPlayer();
+//        if (playerObject != null) {
+////            playerObject.toAnotherCoordinateSystem(X_MAX);
+//            playerObject.translateGunAgnle();
+//            gameFrame.setEnemy(playerObject);
+//        }
     }
 
     public void moveBullets() {

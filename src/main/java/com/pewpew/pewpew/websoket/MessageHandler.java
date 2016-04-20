@@ -18,7 +18,6 @@ public abstract class MessageHandler<T> {
     public void handleMessage(@NotNull String gameFrame, @NotNull String forUser) throws HandleException {
         try {
             final Object data = new Gson().fromJson(gameFrame, clazz);
-
             handle(clazz.cast(data), forUser);
         } catch (JsonSyntaxException | ClassCastException ex) {
             throw new HandleException("Can't read incoming message with content: " + gameFrame, ex);

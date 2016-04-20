@@ -19,7 +19,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
 
-    private static final long STEP_TIME = 100;
+    private static final long STEP_TIME = 10;
 
     @NotNull
     private final WebSocketService webSocketService;
@@ -49,7 +49,7 @@ public class GameMechanicsImpl implements GameMechanics {
 
     @Override
     public void addUser(@NotNull String user) {
-        tasks.add(()->addUserInternal(user));
+        tasks.add(() -> addUserInternal(user));
     }
 
     @Override
@@ -87,8 +87,8 @@ public class GameMechanicsImpl implements GameMechanics {
             if (nextTask != null) {
                 try {
                     nextTask.run();
-                } catch(RuntimeException ex) {
-                    System.out.println("Cant handle game task " +  ex);
+                } catch (RuntimeException ex) {
+                    System.out.println("Cant handle game task " + ex);
                 }
             }
         }
@@ -100,7 +100,6 @@ public class GameMechanicsImpl implements GameMechanics {
                 webSocketService.notifyGameOver(session.getPlayerTwo(), !firstWin);
             }
         }
-        allSessions.forEach(this::sendState);
     }
 
     private void starGame(@NotNull String first, @NotNull String second) {
@@ -119,16 +118,23 @@ public class GameMechanicsImpl implements GameMechanics {
         if (gameSession != null) {
             final GameFrame gameFrame = gameSession.getGameFrame();
             gameSession.moveBullets();
-            String gameFrameJson = gson.toJson(gameFrame);
+
+            final String gameFrameJson = gson.toJson(gameFrame);
             webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
 
-            final PlayerObject player = gameFrame.getEnemy();
+            PlayerObject player = gameFrame.getEnemy();
             gameFrame.setEnemy(gameFrame.getPlayer());
             gameFrame.setPlayer(player);
             gameFrame.toAnotherCoordinateSystem(X_MAX, Y_MAX);
-            gameFrameJson = gson.toJson(gameFrame);
+
+            final String gameFrameJsonSecond = gson.toJson(gameFrame);
+
+            player = gameFrame.getEnemy();
+            gameFrame.setEnemy(gameFrame.getPlayer());
+            gameFrame.setPlayer(player);
             gameFrame.toAnotherCoordinateSystem(X_MAX, Y_MAX);
-            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
+
+            webSocketService.sendMessageToUser(gameFrameJsonSecond, gameSession.getPlayerTwo());
         }
     }
 
@@ -140,10 +146,24 @@ public class GameMechanicsImpl implements GameMechanics {
     private void changeStateInternal(GameChanges gameChanges, String userName) {
         final GameSession gameSession = nameToGame.get(userName);
         if (gameSession != null) {
+            final PlayerObject playerObject = gameChanges.getPlayer();
+            GameFrame gameFrame = gameSession.getGameFrame();
             if (gameSession.getPlayerOne().equals(userName)) {
                 final BulletObject bulletObject = gameChanges.getBullet();
-                bulletObject.tooAnotherCoordinateSystem(X_MAX, Y_MAX);
-                gameChanges.setBullet(bulletObject);
+                if (bulletObject != null) {
+                    bulletObject.tooAnotherCoordinateSystem(X_MAX, Y_MAX);
+                    gameChanges.setBullet(bulletObject);
+                }
+                if (playerObject != null) {
+                    playerObject.translateGunAgnle();
+                    gameFrame.setEnemy(playerObject);
+                }
+            } else {
+                if (playerObject != null) {
+                    playerObject.translateGunAgnle();
+                    playerObject.toAnotherCoordinateSystem(X_MAX);
+                    gameFrame.setPlayer(playerObject);
+                }
             }
             gameSession.changeState(gameChanges);
         }

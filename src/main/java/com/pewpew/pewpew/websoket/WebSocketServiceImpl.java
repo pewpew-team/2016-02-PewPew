@@ -1,6 +1,5 @@
 package com.pewpew.pewpew.websoket;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +7,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final Map<String, GameWebSocket> userSockets = new HashMap<>();
 
     @Override
-    public void addUser(GameWebSocket user, String userId) {
-        userSockets.put(userId, user);
+    public void addUser(GameWebSocket gameWebSocket, String userId) {
+        userSockets.put(userId, gameWebSocket);
     }
 
     @Override
