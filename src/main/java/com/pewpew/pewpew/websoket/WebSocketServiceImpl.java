@@ -1,5 +1,8 @@
 package com.pewpew.pewpew.websoket;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,12 +35,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Override
     public void notifyGameOver(String user, Boolean win) {
         final GameWebSocket gameWebSocket = userSockets.get(user);
-        if (gameWebSocket != null) {
-            if (win) {
-                gameWebSocket.sendMessage("You win");
-            } else {
-                gameWebSocket.sendMessage("You lose");
-            }
-        }
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("win", win);
+        final Gson gson = new Gson();
+        gameWebSocket.sendMessage(gson.toJson(jsonObject));
     }
 }

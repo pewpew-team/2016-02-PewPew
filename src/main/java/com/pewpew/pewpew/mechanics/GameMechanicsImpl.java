@@ -19,7 +19,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
 
-    private static final long STEP_TIME = 10;
+    private static final long STEP_TIME = 40;
 
     @NotNull
     private final WebSocketService webSocketService;
@@ -95,7 +95,7 @@ public class GameMechanicsImpl implements GameMechanics {
         for (GameSession session : allSessions) {
             sendState(session);
             if (session.getPlayerOneWon() != null) {
-                Boolean firstWin = session.getPlayerOneWon();
+                final Boolean firstWin = session.getPlayerOneWon();
                 webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
                 webSocketService.notifyGameOver(session.getPlayerTwo(), !firstWin);
             }
@@ -147,7 +147,7 @@ public class GameMechanicsImpl implements GameMechanics {
         final GameSession gameSession = nameToGame.get(userName);
         if (gameSession != null) {
             final PlayerObject playerObject = gameChanges.getPlayer();
-            GameFrame gameFrame = gameSession.getGameFrame();
+            final GameFrame gameFrame = gameSession.getGameFrame();
             if (gameSession.getPlayerOne().equals(userName)) {
                 final BulletObject bulletObject = gameChanges.getBullet();
                 if (bulletObject != null) {
@@ -155,13 +155,13 @@ public class GameMechanicsImpl implements GameMechanics {
                     gameChanges.setBullet(bulletObject);
                 }
                 if (playerObject != null) {
+                    playerObject.toAnotherCoordinateSystem(X_MAX);
                     playerObject.translateGunAgnle();
                     gameFrame.setEnemy(playerObject);
                 }
             } else {
                 if (playerObject != null) {
                     playerObject.translateGunAgnle();
-                    playerObject.toAnotherCoordinateSystem(X_MAX);
                     gameFrame.setPlayer(playerObject);
                 }
             }

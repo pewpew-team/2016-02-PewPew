@@ -5,6 +5,7 @@ import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -73,22 +74,24 @@ public class GameSession {
         if (bulletObject != null) {
            gameFrame.addBullet(bulletObject);
         }
-//        final PlayerObject playerObject = gameChanges.getPlayer();
-//        if (playerObject != null) {
-////            playerObject.toAnotherCoordinateSystem(X_MAX);
-//            playerObject.translateGunAgnle();
-//            gameFrame.setEnemy(playerObject);
-//        }
     }
 
     public void moveBullets() {
         final Iterator<BulletObject> iterator = gameFrame.getBullets().iterator();
+        final Rectangle userOne = gameFrame.getPlayer().getRect();
+        final Rectangle userTwo = gameFrame.getEnemy().getRect();
         while (iterator.hasNext()) {
             final BulletObject bulletObject = iterator.next();
             bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
             bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
             if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
                 bulletObject.setVelX(-1 * bulletObject.getVelX());
+            }
+            if (userOne.contains(bulletObject.getRect())) {
+                playerOneWon = true;
+            }
+            if (userTwo.contains(bulletObject.getRect())) {
+                playerOneWon = false;
             }
             if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
                 iterator.remove();

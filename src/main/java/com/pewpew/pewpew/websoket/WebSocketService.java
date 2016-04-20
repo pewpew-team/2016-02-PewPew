@@ -1,7 +1,6 @@
 package com.pewpew.pewpew.websoket;
 
 import javax.inject.Singleton;
-import java.io.IOException;
 
 @Singleton
 public interface WebSocketService {

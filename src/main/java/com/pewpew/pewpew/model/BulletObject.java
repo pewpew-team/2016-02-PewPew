@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.model;
 
+import java.awt.*;
+
 public class BulletObject {
 
     private Integer bulletId = 0;
@@ -51,5 +53,9 @@ public class BulletObject {
         posY = y - posY;
         velX = -velX;
         velY = -velY;
+    }
+
+    public Rectangle getRect() {
+        return new Rectangle(posX.intValue(), posY.intValue(), sizeX.intValue(), sizeY.intValue());
     }
 }
