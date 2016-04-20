@@ -9,4 +9,6 @@ public interface GameMechanics {
     String getEnemy(@NotNull String user);
 
     void changeState(GameChanges gameChanges, String userName);
+
+    void run();
 }

@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.pewpew.pewpew.mechanics.GameMechanics;
-import com.pewpew.pewpew.model.GameFrame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -20,34 +19,35 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+@SuppressWarnings("ALL")
 @WebSocket
 public class GameWebSocket {
-    static final Logger logger = LogManager.getLogger(GameWebSocket.class);
+    static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
 
-    private String userName;
+    private final String userName;
     private Session userSession;
 
     @NotNull
-    private GameFrameHandler messageHandler;
+    private final GameFrameHandler messageHandler;
     @NotNull
-    WebSocketService webSocketService;
+    final WebSocketService webSocketService;
     @NotNull
-    GameMechanics gameMechanics;
+    final GameMechanics gameMechanics;
 
-    public GameWebSocket(String userName, WebSocketService webSocketService, GameMechanics gameMechanics) {
+    public GameWebSocket(String userName, @NotNull WebSocketService webSocketService, @NotNull GameMechanics gameMechanics) {
         this.userName = userName;
         this.webSocketService = webSocketService;
         this.gameMechanics = gameMechanics;
+        this.messageHandler = new GameFrameHandler(gameMechanics);
     }
 
 
     @OnWebSocketConnect
-    public void onOpen(Session userSession) {
-        this.userSession = userSession;
+    public void onOpen(Session session) {
+        userSession = session;
         webSocketService.addUser(this, userName);
         gameMechanics.addUser(userName);
-        messageHandler = new GameFrameHandler(webSocketService, gameMechanics);
-        logger.info("onOpen");
+        LOGGER.info("onOpen");
         System.out.println("open websocket");
     }
 
@@ -59,31 +59,25 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String message) {
-        if (this.messageHandler != null) {
-            final GameChanges gameFrame;
-            try {
-                gameFrame = new Gson().fromJson(message, GameChanges.class);
-            } catch (JsonSyntaxException ex) {
-                logger.error("wrong json format at response", ex);
-                return;
-            }
-            try {
-                if (gameFrame.getBullet() != null) {
-                    System.out.print("I got message:" + gameFrame.getBullet() + "\n");
-                }
-                String enemyId = gameMechanics.getEnemy(userName);
-                messageHandler.handle(gameFrame, enemyId);
-            } catch (HandleException e) {
-                logger.error("Can't handle message with content: " + message + "\n", e);
-            }
+        final GameChanges gameFrame;
+        try {
+            gameFrame = new Gson().fromJson(message, GameChanges.class);
+        } catch (JsonSyntaxException ex) {
+            LOGGER.error("wrong json format at response", ex);
+            return;
         }
+        if (gameFrame.getBullet() != null) {
+            System.out.println("I got message:" + gameFrame.getBullet());
+        }
+        final String enemyId = gameMechanics.getEnemy(userName);
+        messageHandler.handle(gameFrame, enemyId);
     }
 
     public void sendMessage(String message) {
         try {
             this.userSession.getRemote().sendString(message);
-        } catch (Exception e) {
-            System.out.print(e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -94,7 +88,20 @@ public class GameWebSocket {
             if (userSession!= null && userSession.isOpen())
                 userSession.getRemote().sendString(jsonStart.toString());
         } catch (IOException | WebSocketException e) {
-            logger.error("Can't send web socket", e);
+            LOGGER.error("Can't send web socket", e);
+        }
+    }
+
+    public void gameOver(boolean win) {
+        try {
+            final JsonObject jsonEndGame = new JsonObject();
+            jsonEndGame.addProperty("status", "finish");
+            jsonEndGame.addProperty("win", win);
+            if (userSession != null && userSession.isOpen())
+                //noinspection ConstantConditions
+                userSession.getRemote().sendString(jsonEndGame.toString());
+        } catch (IOException | WebSocketException e) {
+            LOGGER.error("Can't send web socket", e);
         }
     }
 

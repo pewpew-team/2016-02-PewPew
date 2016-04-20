@@ -42,9 +42,8 @@ public class Main {
         final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
         final Context context = new Context();
-        AccountService accountService = new AccountServiceImpl();
         try {
-            context.put(AccountService.class, accountService);
+            context.put(AccountService.class, new AccountServiceImpl());
             final ResourceConfig config = new ResourceConfig(SessionService.class,
                     UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
             config.register(new AbstractBinder() {
@@ -58,9 +57,9 @@ public class Main {
 
             contextHandler.addServlet(servletHolder, "/*");
 
-            WebSocketService webSocketService = new WebSocketServiceImpl();
-            GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
-            contextHandler.addServlet(new ServletHolder(new GameSocketServelet(accountService,
+            final WebSocketService webSocketService = new WebSocketServiceImpl();
+            final GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+            contextHandler.addServlet(new ServletHolder(new GameSocketServelet(
                     webSocketService, gameMechanics)), "/ws");
 
 
@@ -74,8 +73,12 @@ public class Main {
 
             server.setHandler(handlerCollection);
 
+
+
             server.start();
-            server.join();
+            gameMechanics.run();
+//            server.join();
+
         } catch (InterruptedException e) {
             System.err.println("Database error");
             System.exit(1);

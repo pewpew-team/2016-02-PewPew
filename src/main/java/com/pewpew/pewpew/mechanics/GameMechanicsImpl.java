@@ -7,12 +7,9 @@ import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 import com.pewpew.pewpew.websoket.WebSocketService;
-import com.pewpew.pewpew.websoket.WebSocketServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Singleton;
-import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
 import java.util.concurrent.*;
@@ -22,14 +19,16 @@ public class GameMechanicsImpl implements GameMechanics {
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
 
-    @NotNull
-    private WebSocketService webSocketService;
+    private static final long STEP_TIME = 100;
 
     @NotNull
-    private Set<GameSession> allSessions = new HashSet<>();
+    private final WebSocketService webSocketService;
 
     @NotNull
-    private Map<String, GameSession> nameToGame = new HashMap<>();
+    private final Set<GameSession> allSessions = new HashSet<>();
+
+    @NotNull
+    private final Map<String, GameSession> nameToGame = new HashMap<>();
 
     @Nullable
     private volatile String waiter;
@@ -37,20 +36,25 @@ public class GameMechanicsImpl implements GameMechanics {
     @NotNull
     private final Gson gson;
 
-    static ScheduledExecutorService timer =
-            Executors.newSingleThreadScheduledExecutor();
+    @NotNull
+    private final Clock clock = Clock.systemDefaultZone();
 
-    public GameMechanicsImpl(WebSocketService webSocketService) {
+    @NotNull
+    private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
+
+    public GameMechanicsImpl(@NotNull WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
         this.gson = new Gson();
     }
 
+    @Override
     public void addUser(@NotNull String user) {
-       addUserInternal(user);
+        tasks.add(()->addUserInternal(user));
     }
 
+    @Override
     public String getEnemy(@NotNull String user) {
-        if (nameToGame.get(user).getPlayerTwo() != user) {
+        if (!Objects.equals(nameToGame.get(user).getPlayerTwo(), user)) {
             return nameToGame.get(user).getPlayerTwo();
         }
         return nameToGame.get(user).getPlayerOne();
@@ -66,8 +70,41 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+    @Override
+    public void run() {
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            final long before = clock.millis();
+            gameStep();
+            final long after = clock.millis();
+            TimeHelper.sleep(STEP_TIME - (after - before));
+        }
+    }
+
+    private void gameStep() {
+        while (!tasks.isEmpty()) {
+            final Runnable nextTask = tasks.poll();
+            if (nextTask != null) {
+                try {
+                    nextTask.run();
+                } catch(RuntimeException ex) {
+                    System.out.println("Cant handle game task " +  ex);
+                }
+            }
+        }
+        for (GameSession session : allSessions) {
+            sendState(session);
+            if (session.getPlayerOneWon() != null) {
+                Boolean firstWin = session.getPlayerOneWon();
+                webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
+                webSocketService.notifyGameOver(session.getPlayerTwo(), !firstWin);
+            }
+        }
+        allSessions.forEach(this::sendState);
+    }
+
     private void starGame(@NotNull String first, @NotNull String second) {
-        GameSession gameSession = new GameSession(first, second);
+        final GameSession gameSession = new GameSession(first, second);
         allSessions.add(gameSession);
 
         nameToGame.put(first, gameSession);
@@ -75,50 +112,37 @@ public class GameMechanicsImpl implements GameMechanics {
 
         webSocketService.notifyStartGame(gameSession.getPlayerOne());
         webSocketService.notifyStartGame(gameSession.getPlayerTwo());
-        timer.scheduleAtFixedRate(
-                () -> sendState(gameSession),0, 30, TimeUnit.MILLISECONDS);
     }
 
 
     public void sendState(GameSession gameSession) {
         if (gameSession != null) {
-            GameFrame gameFrame = gameSession.getGameFrame();
-            gameFrame.moveBullets();
-            try {
-                String gameFrameJson = gson.toJson(gameFrame);
-                webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
-            } catch (IOException e) {
-                e.printStackTrace();
-                allSessions.remove(gameSession);
-                nameToGame.remove(gameSession.getPlayerOne());
-                nameToGame.remove(gameSession.getPlayerTwo());
-            }
-            try {
+            final GameFrame gameFrame = gameSession.getGameFrame();
+            gameSession.moveBullets();
+            String gameFrameJson = gson.toJson(gameFrame);
+            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
 
-                PlayerObject player = gameFrame.getEnemy();
-                gameFrame.setEnemy(gameFrame.getPlayer());
-                gameFrame.setPlayer(player);
-                gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-                String gameFrameJson = gson.toJson(gameFrame);
-                gameFrame.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-                webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                allSessions.remove(gameSession);
-                nameToGame.remove(gameSession.getPlayerOne());
-                nameToGame.remove(gameSession.getPlayerTwo());
-            }
+            final PlayerObject player = gameFrame.getEnemy();
+            gameFrame.setEnemy(gameFrame.getPlayer());
+            gameFrame.setPlayer(player);
+            gameFrame.toAnotherCoordinateSystem(X_MAX, Y_MAX);
+            gameFrameJson = gson.toJson(gameFrame);
+            gameFrame.toAnotherCoordinateSystem(X_MAX, Y_MAX);
+            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerTwo());
         }
     }
 
     @Override
     public void changeState(GameChanges gameChanges, String userName) {
-        GameSession gameSession = nameToGame.get(userName);
+        tasks.add(() -> changeStateInternal(gameChanges, userName));
+    }
+
+    private void changeStateInternal(GameChanges gameChanges, String userName) {
+        final GameSession gameSession = nameToGame.get(userName);
         if (gameSession != null) {
             if (gameSession.getPlayerOne().equals(userName)) {
-                BulletObject bulletObject = gameChanges.getBullet();
-                bulletObject.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+                final BulletObject bulletObject = gameChanges.getBullet();
+                bulletObject.tooAnotherCoordinateSystem(X_MAX, Y_MAX);
                 gameChanges.setBullet(bulletObject);
             }
             gameSession.changeState(gameChanges);
