@@ -7,8 +7,8 @@ import java.util.List;
 public class GameFrame {
     private PlayerObject player;
     private PlayerObject enemy;
-    private List<BulletObject> bullets;
-    private List<BarriersObject> barriers;
+    private List<Bullet> bullets;
+    private List<Barrier> barriers;
 
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
@@ -35,11 +35,11 @@ public class GameFrame {
         this.enemy = enemy;
     }
 
-    public List<BulletObject> getBullets() {
+    public List<Bullet> getBullets() {
         return bullets;
     }
 
-    public void addBullet(BulletObject bullet) {
+    public void addBullet(Bullet bullet) {
         if (this.bullets.size() == 0 ) {
             bullet.setBulletId(0);
         } else {
@@ -48,35 +48,37 @@ public class GameFrame {
         this.bullets.add(bullet);
     }
 
-    public List<BarriersObject> getBarriers() {
+    public List<Barrier> getBarriers() {
         return barriers;
     }
 
-    public void setBarriers(List<BarriersObject> barriers) {
+    public void setBarriers(List<Barrier> barriers) {
         this.barriers = barriers;
     }
 
     public void translateToAnotherCoordinateSystem(Double x, Double y) {
         player.translateToAnotherCoordinateSystem(x);
         enemy.translateToAnotherCoordinateSystem(x);
-        for(BulletObject bullet : bullets) {
+        for(Bullet bullet : bullets) {
             bullet.translateToAnotherCoordinateSystem(x, y);
         }
     }
 
     public void moveBullets() {
-        Iterator<BulletObject> i = bullets.iterator();
+        Iterator<Bullet> i = bullets.iterator();
         while (i.hasNext()) {
-            BulletObject bulletObject = i.next(); 
-            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
-            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
-            if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
-                bulletObject.setVelX(-1 * bulletObject.getVelX());
+            Bullet bullet = i.next();
+            bullet.setPosX(bullet.getPosX() + bullet.getVelX());
+            bullet.setPosY(bullet.getPosY() + bullet.getVelY());
+            if (bullet.getPosX() < 0 || bullet.getPosX() > X_MAX) {
+                bullet.setVelX(-1 * bullet.getVelX());
             }
-            if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
+            if (bullet.getPosY() > Y_MAX || bullet.getPosY() < 0) {
                 i.remove();
                 System.out.println("removed bullet");
             }
         }
     }
+
+
 }

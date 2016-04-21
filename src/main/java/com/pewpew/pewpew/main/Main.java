@@ -42,7 +42,7 @@ public class Main {
         final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
         final Context context = new Context();
-        AccountService accountService = new AccountServiceImpl();
+        final AccountService accountService = new AccountServiceImpl();
         try {
             context.put(AccountService.class, accountService);
             final ResourceConfig config = new ResourceConfig(SessionService.class,
@@ -58,8 +58,8 @@ public class Main {
 
             contextHandler.addServlet(servletHolder, "/*");
 
-            WebSocketService webSocketService = new WebSocketServiceImpl();
-            GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+            final WebSocketService webSocketService = new WebSocketServiceImpl();
+            final GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
             contextHandler.addServlet(new ServletHolder(new GameSocketServelet(accountService,
                     webSocketService, gameMechanics)), "/ws");
 

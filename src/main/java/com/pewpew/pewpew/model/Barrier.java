@@ -1,8 +1,10 @@
 package com.pewpew.pewpew.model;
 
-public class BarriersObject {
+public class Barrier {
     private Double posX;
     private Double posY;
+    private Double sizeX;
+    private Double sizeY;
     private Boolean isRemovable;
 
     public Double getPosX() {
@@ -27,5 +29,21 @@ public class BarriersObject {
 
     public void setRemovable(Boolean removable) {
         isRemovable = removable;
+    }
+
+    public Double getSizeY() {
+        return sizeY;
+    }
+
+    public void setSizeY(Double sizeY) {
+        this.sizeY = sizeY;
+    }
+
+    public Double getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeX(Double sizeX) {
+        this.sizeX = sizeX;
     }
 }

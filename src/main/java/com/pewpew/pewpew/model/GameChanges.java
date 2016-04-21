@@ -1,14 +1,14 @@
 package com.pewpew.pewpew.model;
 
 public class GameChanges {
-    private BulletObject bullet;
+    private Bullet bullet;
     private String playerEvent;
 
-    public BulletObject getBullet() {
+    public Bullet getBullet() {
         return bullet;
     }
 
-    public void setBullet(BulletObject bullet) {
+    public void setBullet(Bullet bullet) {
         this.bullet = bullet;
     }
 

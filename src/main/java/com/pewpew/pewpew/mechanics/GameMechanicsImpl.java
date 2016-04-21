@@ -1,19 +1,15 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.google.gson.Gson;
-import com.pewpew.pewpew.common.TimeHelper;
-import com.pewpew.pewpew.model.BulletObject;
+import com.pewpew.pewpew.model.Bullet;
 import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 import com.pewpew.pewpew.websoket.WebSocketService;
-import com.pewpew.pewpew.websoket.WebSocketServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Singleton;
 import java.io.IOException;
-import java.time.Clock;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -114,9 +110,9 @@ public class GameMechanicsImpl implements GameMechanics {
     public void changeState(GameChanges gameChanges, String userName) {
         GameSession gameSession = nameToGame.get(userName);
         if (gameSession.getPlayerOne().equals(userName)) {
-            BulletObject bulletObject = gameChanges.getBullet();
-            bulletObject.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
-            gameChanges.setBullet(bulletObject);
+            Bullet bullet = gameChanges.getBullet();
+            bullet.translateToAnotherCoordinateSystem(X_MAX, Y_MAX);
+            gameChanges.setBullet(bullet);
         }
         gameSession.changeState(gameChanges);
     }

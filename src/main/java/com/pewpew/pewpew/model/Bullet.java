@@ -1,6 +1,6 @@
 package com.pewpew.pewpew.model;
 
-public class BulletObject {
+public class Bullet {
 
     private Integer bulletId = 0;
     private Double posX;

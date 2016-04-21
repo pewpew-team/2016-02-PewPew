@@ -2,9 +2,11 @@ package com.pewpew.pewpew.model;
 
 import java.util.ArrayList;
 
-public class BulletsCollection {
+public class BulletCollection {
     private Boolean isReset;
-    private ArrayList<BulletObject> bullets;
+    private ArrayList<Bullet> bullets;
+
+
 
     public Boolean getReset() {
         return isReset;
@@ -14,11 +16,11 @@ public class BulletsCollection {
         isReset = reset;
     }
 
-    public ArrayList<BulletObject> getBullets() {
+    public ArrayList<Bullet> getBullets() {
         return bullets;
     }
 
-    public void setBullets(ArrayList<BulletObject> bullets) {
+    public void setBullets(ArrayList<Bullet> bullets) {
         this.bullets = bullets;
     }
 }
