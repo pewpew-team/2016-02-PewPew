@@ -76,14 +76,14 @@ public class GameSession {
         }
     }
 
-    public void moveBullets() {
+    public void moveBullets(long timeTick) {
         final Iterator<BulletObject> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
         final Rectangle userTwo = gameFrame.getEnemy().getRect();
         while (iterator.hasNext()) {
             final BulletObject bulletObject = iterator.next();
-            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX());
-            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY());
+            bulletObject.setPosX(bulletObject.getVelX() * timeTick);
+            bulletObject.setPosY(bulletObject.getVelY() * timeTick);
             if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
                 bulletObject.setVelX(-1 * bulletObject.getVelX());
             }

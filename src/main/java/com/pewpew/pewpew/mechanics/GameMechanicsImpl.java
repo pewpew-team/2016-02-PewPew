@@ -7,6 +7,7 @@ import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 import com.pewpew.pewpew.websoket.WebSocketService;
+import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
 
-    private static final long STEP_TIME = 40;
+    private static final long STEP_TIME = 100;
 
     @NotNull
     private final WebSocketService webSocketService;
@@ -70,18 +71,25 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+    public void removeSession(Session session) {
+        allSessions.remove(session);
+    }
+
     @Override
     public void run() {
         //noinspection InfiniteLoopStatement
         while (true) {
             final long before = clock.millis();
-            gameStep();
+            gameStep((clock.millis() - before) * 10);
             final long after = clock.millis();
+            if (after - before > STEP_TIME) {
+                System.out.println("gm is lagging. step is " + (after - before) + "ms");
+            }
             TimeHelper.sleep(STEP_TIME - (after - before));
         }
     }
 
-    private void gameStep() {
+    private void gameStep(long timeTick) {
         while (!tasks.isEmpty()) {
             final Runnable nextTask = tasks.poll();
             if (nextTask != null) {
@@ -93,7 +101,7 @@ public class GameMechanicsImpl implements GameMechanics {
             }
         }
         for (GameSession session : allSessions) {
-            sendState(session);
+            sendState(session, timeTick);
             if (session.getPlayerOneWon() != null) {
                 final Boolean firstWin = session.getPlayerOneWon();
                 webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
@@ -114,10 +122,10 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
 
-    public void sendState(GameSession gameSession) {
+    public void sendState(GameSession gameSession, long timeTick) {
         if (gameSession != null) {
             final GameFrame gameFrame = gameSession.getGameFrame();
-            gameSession.moveBullets();
+            gameSession.moveBullets(timeTick);
 
             final String gameFrameJson = gson.toJson(gameFrame);
             webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
