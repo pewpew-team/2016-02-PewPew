@@ -1,29 +1,22 @@
 package com.pewpew.pewpew.websoket;
 
-import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.mechanics.GameMechanics;
-import com.pewpew.pewpew.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
-import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 public class GameSocketCreator implements WebSocketCreator {
     static final Logger LOGGER = LogManager.getLogger(GameSocketCreator.class);
-    private Set<GameWebSocket> users;
 
-    private AccountService accountService;
-    private WebSocketService webSocketService;
-    private GameMechanics gameMechanics;
+    private final WebSocketService webSocketService;
+    private final GameMechanics gameMechanics;
 
-    public GameSocketCreator(AccountService accountService, WebSocketService webSocketService,
+    public GameSocketCreator(WebSocketService webSocketService,
                               GameMechanics gameMechanics) {
-        this.accountService = accountService;
         this.webSocketService = webSocketService;
         this.gameMechanics = gameMechanics;
     }
@@ -45,9 +38,8 @@ public class GameSocketCreator implements WebSocketCreator {
 //            LOGGER.error("No such user");
 //            return null;
 //        }
-        String session = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
-        GameWebSocket gameWebSocket = new GameWebSocket(session, webSocketService, gameMechanics);
+        final String session = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
         LOGGER.info("Socket created");
-        return gameWebSocket;
+        return new GameWebSocket(session, webSocketService, gameMechanics);
     }
 }

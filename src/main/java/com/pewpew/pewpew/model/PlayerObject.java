@@ -1,9 +1,25 @@
 package com.pewpew.pewpew.model;
 
+import java.awt.*;
+
 public class PlayerObject {
+    public static final double PI = 3.14;
+    public static final double START_POSITION_X = 640.0;
     private Double posX;
     private Double velX;
     private Double gunAngle;
+
+    private static final Integer WIDTH = 80;
+    private static final Integer HEIGHT = 50;
+
+    public Rectangle getRect() {
+        return new Rectangle(posX.intValue(), HEIGHT/2, WIDTH, HEIGHT);
+    }
+
+    public PlayerObject() {
+        this.posX = START_POSITION_X;
+        this.velX = 0.0;
+    }
 
     public Double getPosX() {
         return posX;
@@ -21,22 +37,12 @@ public class PlayerObject {
         this.velX = velX;
     }
 
-    public Double getGunAngle() {
-        return gunAngle;
-    }
-
-    public void setGunAngle(Double gunAngle) {
-        this.gunAngle = gunAngle;
-    }
-
-
-    public PlayerObject() {
-        this.posX = 640.0;
-        this.velX = 0.0;
-    }
-
-    public void translateToAnotherCoordinateSystem(Double x) {
+    public void toAnotherCoordinateSystem(Double x) {
         posX = x - posX;
         velX = -velX;
+    }
+
+    public void translateGunAgnle() {
+        gunAngle = PI + gunAngle;
     }
 }

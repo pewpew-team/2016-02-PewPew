@@ -1,9 +1,6 @@
 package com.pewpew.pewpew.websoket;
 
-import com.pewpew.pewpew.model.User;
-
 import javax.inject.Singleton;
-import java.io.IOException;
 
 @Singleton
 public interface WebSocketService {
@@ -16,8 +13,8 @@ public interface WebSocketService {
 
     void notifyStartGame(String user);
 
-    void sendMessageToUser(String message, String userSessionId)  throws IOException;
+    void sendMessageToUser(String message, String userSessionId);
 
-    void notifyGameOver(String user, boolean win) throws IOException ;
+    void notifyGameOver(String user, Boolean win);
 }
 

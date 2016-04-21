@@ -1,8 +1,8 @@
 package com.pewpew.pewpew.model;
 
 public class GameChanges {
-    private Bullet bullet;
-    private String playerEvent;
+    private BulletObject bullet;
+    private PlayerObject player;
 
     public Bullet getBullet() {
         return bullet;
@@ -12,11 +12,11 @@ public class GameChanges {
         this.bullet = bullet;
     }
 
-    public String getPlayerEvent() {
-        return playerEvent;
+    public PlayerObject getPlayer() {
+        return player;
     }
 
-    public void setPlayerEvent(String playerEvent) {
-        this.playerEvent = playerEvent;
+    public void setPlayer(PlayerObject player) {
+        this.player = player;
     }
 }

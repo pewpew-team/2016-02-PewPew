@@ -1,6 +1,8 @@
 package com.pewpew.pewpew.model;
 
-public class Bullet {
+import java.awt.*;
+
+public class BulletObject {
 
     private Integer bulletId = 0;
     private Double posX;
@@ -46,30 +48,14 @@ public class Bullet {
         return velY;
     }
 
-    public void setVelY(Double velY) {
-        this.velY = velY;
-    }
-
-    public Double getSizeX() {
-        return sizeX;
-    }
-
-    public void setSizeX(Double sizeX) {
-        this.sizeX = sizeX;
-    }
-
-    public Double getSizeY() {
-        return sizeY;
-    }
-
-    public void setSizeY(Double sizeY) {
-        this.sizeY = sizeY;
-    }
-
-    public void translateToAnotherCoordinateSystem(Double x, Double y) {
+    public void tooAnotherCoordinateSystem(Double x, Double y) {
         posX = x - posX;
         posY = y - posY;
         velX = -velX;
         velY = -velY;
+    }
+
+    public Rectangle getRect() {
+        return new Rectangle(posX.intValue(), posY.intValue(), sizeX.intValue(), sizeY.intValue());
     }
 }
