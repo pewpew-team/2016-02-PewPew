@@ -6,8 +6,10 @@ import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
 
 import java.awt.*;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 public class GameSession {
 
@@ -76,14 +78,14 @@ public class GameSession {
         }
     }
 
-    public void moveBullets(long timeTick) {
+    public void moveBullets(long timeBefore) {
         final Iterator<BulletObject> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
         final Rectangle userTwo = gameFrame.getEnemy().getRect();
         while (iterator.hasNext()) {
             final BulletObject bulletObject = iterator.next();
-            bulletObject.setPosX(bulletObject.getVelX() * timeTick);
-            bulletObject.setPosY(bulletObject.getVelY() * timeTick);
+            bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX() * timeBefore);
+            bulletObject.setPosY(bulletObject.getPosY() + bulletObject.getVelY() * timeBefore);
             if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
                 bulletObject.setVelX(-1 * bulletObject.getVelX());
             }

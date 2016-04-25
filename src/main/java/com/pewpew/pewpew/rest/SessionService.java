@@ -49,14 +49,16 @@ public class SessionService {
     }
 
     @GET
-    public Response checkUserAuth(@CookieParam("token") String token) {
+    public Response checkUserAuth(@CookieParam("token") String token,
+                                  @CookieParam("token") Cookie cook) {
         final AccountService accountService = context.get(AccountService.class);
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         final User user = accountService.getUserByToken(token);
         if (user == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            final NewCookie newCookie = new NewCookie(cook, null, 0, false);
+            return Response.status(Response.Status.UNAUTHORIZED).cookie(newCookie).build();
         }
         return Response.ok(Response.Status.OK).entity(user.getId()).build();
     }
