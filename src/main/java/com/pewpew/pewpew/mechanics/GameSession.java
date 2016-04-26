@@ -81,7 +81,7 @@ public class GameSession {
     public void moveBullets(long timeBefore) {
         final Iterator<BulletObject> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
-        final Rectangle userTwo = gameFrame.getEnemy().getRect();
+        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy(Y_MAX.intValue());
         while (iterator.hasNext()) {
             final BulletObject bulletObject = iterator.next();
             bulletObject.setPosX(bulletObject.getPosX() + bulletObject.getVelX() * timeBefore);
@@ -89,9 +89,11 @@ public class GameSession {
             if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
                 bulletObject.setVelX(-1 * bulletObject.getVelX());
             }
+            System.out.println("userFirst: " + userOne + " with bullet " + bulletObject.getRect());
             if (userOne.contains(bulletObject.getRect())) {
                 playerOneWon = true;
             }
+            System.out.println("userTwo: " + userTwo + " with bullet " + bulletObject.getRect());
             if (userTwo.contains(bulletObject.getRect())) {
                 playerOneWon = false;
             }

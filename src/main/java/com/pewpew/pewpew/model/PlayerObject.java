@@ -15,6 +15,9 @@ public class PlayerObject {
     public Rectangle getRect() {
         return new Rectangle(posX.intValue() - WIDTH/2, HEIGHT/2, WIDTH, HEIGHT);
     }
+    public Rectangle getRectEnemy(Integer yMax) {
+        return new Rectangle(posX.intValue() - WIDTH/2, yMax - HEIGHT/2, WIDTH, HEIGHT);
+    }
 
     public PlayerObject() {
         this.posX = START_POSITION_X;
