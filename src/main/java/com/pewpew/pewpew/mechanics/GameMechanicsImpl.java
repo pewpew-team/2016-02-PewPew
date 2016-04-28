@@ -1,6 +1,7 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.google.gson.Gson;
+import com.pewpew.pewpew.common.TimeHelper;
 import com.pewpew.pewpew.model.Bullet;
 import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
@@ -156,10 +157,10 @@ public class GameMechanicsImpl implements GameMechanics {
             final PlayerObject playerObject = gameChanges.getPlayer();
             final GameFrame gameFrame = gameSession.getGameFrame();
             if (gameSession.getPlayerOne().equals(userName)) {
-                final BulletObject bulletObject = gameChanges.getBullet();
-                if (bulletObject != null) {
-                    bulletObject.tooAnotherCoordinateSystem(X_MAX, Y_MAX);
-                    gameChanges.setBullet(bulletObject);
+                final Bullet bullet = gameChanges.getBullet();
+                if (bullet != null) {
+                    bullet.toAnotherCoordinateSystem(X_MAX, Y_MAX);
+                    gameChanges.setBullet(bullet);
                 }
                 if (playerObject != null) {
                     playerObject.toAnotherCoordinateSystem(X_MAX);

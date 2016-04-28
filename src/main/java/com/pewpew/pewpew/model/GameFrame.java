@@ -6,8 +6,8 @@ import java.util.List;
 public class GameFrame {
     private PlayerObject player;
     private PlayerObject enemy;
-    private final List<BulletObject> bullets;
-    private List<BarriersObject> barriers;
+    private final List<Bullet> bullets;
+    private List<Barrier> barriers;
 
     public GameFrame(PlayerObject player, PlayerObject enemy) {
         this.player = player;
@@ -35,7 +35,7 @@ public class GameFrame {
         return bullets;
     }
 
-    public void addBullet(BulletObject bullet) {
+    public void addBullet(Bullet bullet) {
         if (this.bullets.isEmpty()) {
             bullet.setBulletId(0);
         } else {
@@ -47,8 +47,8 @@ public class GameFrame {
     public void toAnotherCoordinateSystem(Double x, Double y) {
         player.toAnotherCoordinateSystem(x);
         enemy.toAnotherCoordinateSystem(x);
-        for(BulletObject bullet : bullets) {
-            bullet.tooAnotherCoordinateSystem(x, y);
+        for(Bullet bullet : bullets) {
+            bullet.toAnotherCoordinateSystem(x, y);
         }
     }
 

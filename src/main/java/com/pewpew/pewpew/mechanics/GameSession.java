@@ -1,12 +1,12 @@
 package com.pewpew.pewpew.mechanics;
 
-import com.pewpew.pewpew.common.*;
 import com.pewpew.pewpew.common.Point;
 import com.pewpew.pewpew.model.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class GameSession {
 
@@ -20,7 +20,7 @@ public class GameSession {
 
     private GameFrame gameFrame;
 
-    private final ArrayList<BulletObject> bulletObjects = new ArrayList<>();
+    private final ArrayList<Bullet> bulletList = new ArrayList<>();
 
     public String getPlayerOne() {
         return playerOne;
@@ -59,40 +59,40 @@ public class GameSession {
         gameFrame = new GameFrame(playerFirst, playerSecond);
     }
 
-    public ArrayList<BulletObject> getBulletObjects() {
-        return bulletObjects;
+    public ArrayList<Bullet> getBulletObjects() {
+        return bulletList;
     }
 
-    public void setBulletObject(BulletObject bulletObjects) {
-        this.bulletObjects.add(bulletObjects);
+    public void setBulletObject(Bullet bulletObjects) {
+        this.bulletList.add(bulletObjects);
     }
 
 
     public void changeState(GameChanges gameChanges) {
-        final BulletObject bulletObject = gameChanges.getBullet();
-        if (bulletObject != null) {
-           gameFrame.addBullet(bulletObject);
+        final Bullet bullet = gameChanges.getBullet();
+        if (bullet != null) {
+           gameFrame.addBullet(bullet);
         }
     }
 
     public void moveBullets(long timeTick) {
-        final Iterator<BulletObject> iterator = gameFrame.getBullets().iterator();
+        final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
         final Rectangle userTwo = gameFrame.getEnemy().getRect();
         while (iterator.hasNext()) {
-            final BulletObject bulletObject = iterator.next();
-            bulletObject.setPosX(bulletObject.getVelX() * timeTick);
-            bulletObject.setPosY(bulletObject.getVelY() * timeTick);
-            if (bulletObject.getPosX() < 0 || bulletObject.getPosX() > X_MAX) {
-                bulletObject.setVelX(-1 * bulletObject.getVelX());
+            final Bullet bullet = iterator.next();
+            bullet.setPosX(bullet.getVelX() * timeTick);
+            bullet.setPosY(bullet.getVelY() * timeTick);
+            if (bullet.getPosX() < 0 || bullet.getPosX() > X_MAX) {
+                bullet.setVelX(-1 * bullet.getVelX());
             }
-            if (userOne.contains(bulletObject.getRect())) {
+            if (userOne.contains(bullet.getRect())) {
                 playerOneWon = true;
             }
-            if (userTwo.contains(bulletObject.getRect())) {
+            if (userTwo.contains(bullet.getRect())) {
                 playerOneWon = false;
             }
-            if (bulletObject.getPosY() > Y_MAX || bulletObject.getPosY() < 0) {
+            if (bullet.getPosY() > Y_MAX || bullet.getPosY() < 0) {
                 iterator.remove();
                 System.out.println("removed bullet");
             }
@@ -100,11 +100,7 @@ public class GameSession {
     }
 
     public void handleCollision() {
-        List<Bullet> Bullet = gameFrame.getBullets();
-        List<Barrier> Barriers = gameFrame.getBarriers();
-
-
-
+        //TODO: write collision handler or change moveBullets method
     }
 
     private Boolean tryToCollide(Bullet bullet, Barrier barrier) {
@@ -118,16 +114,18 @@ public class GameSession {
     }
 
     private void collide(Bullet bullet, Barrier barrier) {
-        Double bulletPosX = bullet.getPosX() - (barrier.getPosX() - barrier.getSizeX()/2);
-        Double bulletPosY = bullet.getPosY() - (barrier.getPosY() - barrier.getSizeY()/2);
+        final Double bulletPosX = bullet.getPosX() - (barrier.getPosX() - barrier.getSizeX()/2);
+        final Double bulletPosY = bullet.getPosY() - (barrier.getPosY() - barrier.getSizeY()/2);
 
-        Double k = bullet.getVelY() / bullet.getVelX();
-        Double b = bulletPosY - k * bulletPosX;
+        final Double k = bullet.getVelY() / bullet.getVelX();
+        final Double b = bulletPosY - k * bulletPosX;
         final Double fault =  3.0;
         final Double absoluteDeviation = 0.5;
         Random rand = new Random();
         Double deviation = (rand.nextBoolean())? absoluteDeviation: -absoluteDeviation;
 
+
+        //TODO: Refactoring. Remove temporary wariables.
         double tempX = (bullet.getVelX() > 0)? 0 : barrier.getSizeX();
         double tempY = k * tempX + b;
         Point intersectionWithParallelX = new Point(tempX, tempY);
@@ -137,12 +135,25 @@ public class GameSession {
         Point intersectionWithParallelY = new Point(tempX, tempY);
 
         if(Math.abs(intersectionWithParallelY.getX() - intersectionWithParallelX.getX()) < fault) {
-            bullet.
+            this.moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
+            bullet.setVelX(-bullet.getVelX() + deviation);
+            bullet.setVelY(-bullet.getVelY() + deviation);
         }
-
+        else if ((intersectionWithParallelX.getX() >= 0) && (intersectionWithParallelX.getX() <= barrier.getSizeX())) {
+            moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
+            bullet.setVelY(-bullet.getVelY() + deviation);
+        }
+        else if ((intersectionWithParallelY.getX() >= 0) && (intersectionWithParallelY.getX() <= barrier.getSizeY())) {
+            moveToIntersectionPoint(bullet, barrier, intersectionWithParallelY);
+            bullet.setVelX(-bullet.getVelX() + deviation);
+        }
+        return;
     }
 
     private void moveToIntersectionPoint(Bullet bullet, Barrier barrier, Point intersectionPoint) {
-
+        bullet.setPosX(intersectionPoint.getX() + (barrier.getPosX() - barrier.getSizeX()/2));
+        bullet.setPosY(intersectionPoint.getY() + (barrier.getPosY() - barrier.getSizeY()/2));
     }
+
+
 }

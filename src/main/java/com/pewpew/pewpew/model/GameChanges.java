@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.model;
 
 public class GameChanges {
-    private BulletObject bullet;
+    private Bullet bullet;
     private PlayerObject player;
 
     public Bullet getBullet() {

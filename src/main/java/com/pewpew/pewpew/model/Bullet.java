@@ -2,7 +2,7 @@ package com.pewpew.pewpew.model;
 
 import java.awt.*;
 
-public class BulletObject {
+public class Bullet {
 
     private Integer bulletId = 0;
     private Double posX;
@@ -48,7 +48,28 @@ public class BulletObject {
         return velY;
     }
 
-    public void tooAnotherCoordinateSystem(Double x, Double y) {
+    public void setVelY(Double velY) {
+        this.velY = velY;
+    }
+
+
+    public Double getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeX(Double sizeX) {
+        this.sizeX = sizeX;
+    }
+
+    public Double getSizeY() {
+        return sizeY;
+    }
+
+    public void setSizeY(Double sizeY) {
+        this.sizeY = sizeY;
+    }
+
+    public void toAnotherCoordinateSystem(Double x, Double y) {
         posX = x - posX;
         posY = y - posY;
         velX = -velX;
