@@ -4,9 +4,11 @@ import com.pewpew.pewpew.common.Point;
 import com.pewpew.pewpew.model.*;
 
 import java.awt.*;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class GameSession {
 
@@ -75,20 +77,22 @@ public class GameSession {
         }
     }
 
-    public void moveBullets(long timeTick) {
+    public void moveBullets(long timeBefore) {
         final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
-        final Rectangle userTwo = gameFrame.getEnemy().getRect();
+        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy(Y_MAX.intValue());
         while (iterator.hasNext()) {
             final Bullet bullet = iterator.next();
-            bullet.setPosX(bullet.getVelX() * timeTick);
-            bullet.setPosY(bullet.getVelY() * timeTick);
+            bullet.setPosX(bullet.getPosX() + bullet.getVelX() * timeBefore);
+            bullet.setPosY(bullet.getPosY() + bullet.getVelY() * timeBefore);
             if (bullet.getPosX() < 0 || bullet.getPosX() > X_MAX) {
                 bullet.setVelX(-1 * bullet.getVelX());
             }
+            System.out.println("userFirst: " + userOne + " with bullet " + bullet.getRect());
             if (userOne.contains(bullet.getRect())) {
                 playerOneWon = true;
             }
+            System.out.println("userTwo: " + userTwo + " with bullet " + bullet.getRect());
             if (userTwo.contains(bullet.getRect())) {
                 playerOneWon = false;
             }
@@ -119,21 +123,22 @@ public class GameSession {
 
         final Double k = bullet.getVelY() / bullet.getVelX();
         final Double b = bulletPosY - k * bulletPosX;
-        final Double fault =  3.0;
-        final Double absoluteDeviation = 0.5;
-        Random rand = new Random();
-        Double deviation = (rand.nextBoolean())? absoluteDeviation: -absoluteDeviation;
+        final Random rand = new Random();
 
 
         //TODO: Refactoring. Remove temporary wariables.
         double tempX = (bullet.getVelX() > 0)? 0 : barrier.getSizeX();
         double tempY = k * tempX + b;
-        Point intersectionWithParallelX = new Point(tempX, tempY);
+        final Point intersectionWithParallelX = new Point(tempX, tempY);
 
         tempY = (bullet.getVelY() > 0)? 0 : barrier.getSizeY();
         tempX = (tempY - b) / k;
-        Point intersectionWithParallelY = new Point(tempX, tempY);
+        final Point intersectionWithParallelY = new Point(tempX, tempY);
 
+        final Double fault = 3.0;
+        final Double absoluteDeviation = 0.5;
+        final Double deviation = (rand.nextBoolean())? absoluteDeviation: -absoluteDeviation;
+        
         if(Math.abs(intersectionWithParallelY.getX() - intersectionWithParallelX.getX()) < fault) {
             this.moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
             bullet.setVelX(-bullet.getVelX() + deviation);

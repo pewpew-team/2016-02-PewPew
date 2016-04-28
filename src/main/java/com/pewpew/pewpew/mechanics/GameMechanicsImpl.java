@@ -20,7 +20,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private static final Double Y_MAX = 720.0;
     private static final Double X_MAX = 1280.0;
 
-    private static final long STEP_TIME = 100;
+    private static final long STEP_TIME = 50;
 
     @NotNull
     private final WebSocketService webSocketService;
@@ -78,14 +78,17 @@ public class GameMechanicsImpl implements GameMechanics {
     @Override
     public void run() {
         //noinspection InfiniteLoopStatement
+        long lastFrameMilles = STEP_TIME;
         while (true) {
             final long before = clock.millis();
-            gameStep((clock.millis() - before) * 10);
+            gameStep(lastFrameMilles);
             final long after = clock.millis();
             if (after - before > STEP_TIME) {
                 System.out.println("gm is lagging. step is " + (after - before) + "ms");
             }
             TimeHelper.sleep(STEP_TIME - (after - before));
+            final long afterSleep = clock.millis();
+            lastFrameMilles = afterSleep - before;
         }
     }
 
@@ -105,7 +108,7 @@ public class GameMechanicsImpl implements GameMechanics {
             if (session.getPlayerOneWon() != null) {
                 final Boolean firstWin = session.getPlayerOneWon();
                 webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
-                webSocketService.notifyGameOver(session.getPlayerTwo(), !firstWin);
+                webSocketService.notifyGameOver(session.getPlayerOne(), !firstWin);
             }
         }
     }

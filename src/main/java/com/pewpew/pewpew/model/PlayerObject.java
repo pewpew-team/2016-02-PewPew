@@ -13,7 +13,10 @@ public class PlayerObject {
     private static final Integer HEIGHT = 50;
 
     public Rectangle getRect() {
-        return new Rectangle(posX.intValue(), HEIGHT/2, WIDTH, HEIGHT);
+        return new Rectangle(posX.intValue() - WIDTH/2, HEIGHT/2, WIDTH, HEIGHT);
+    }
+    public Rectangle getRectEnemy(Integer yMax) {
+        return new Rectangle(posX.intValue() - WIDTH/2, yMax - HEIGHT/2, WIDTH, HEIGHT);
     }
 
     public PlayerObject() {
