@@ -7,8 +7,10 @@ echo "Test running"
 cd target
 mv pewpew-1.0-SNAPSHOT-jar-with-dependencies.jar multiplayer.jar
 
-echo "Sending"
+echo "Sending jar"
 scp multiplayer.jar pewpew@pewpew.pro:pewpew_project
 cd ..
 
+echo "Sending resources"
+scp -r src/main/java/com/pewpew/pewpew/resources pewpew@pewpew.pro:pewpew_project
 echo "Ready"

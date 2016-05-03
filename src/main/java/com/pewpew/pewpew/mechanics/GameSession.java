@@ -4,6 +4,7 @@ import com.pewpew.pewpew.common.Point;
 import com.pewpew.pewpew.model.*;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -64,8 +65,9 @@ public class GameSession {
 
         gameFrame = new GameFrame(playerFirst, playerSecond);
         final Properties property = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/game.properties";
         try(FileInputStream fileInputStream =
-                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/game.properties")) {
+                    new FileInputStream(path)) {
             property.load(fileInputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

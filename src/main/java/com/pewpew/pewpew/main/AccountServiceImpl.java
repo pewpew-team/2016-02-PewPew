@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,11 +26,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountServiceImpl() throws MongoException {
         final Morphia morphia = new Morphia();
         final Properties property = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/database.properties";
         try(FileInputStream fileInputStream =
-                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/database.properties")) {
+                    new FileInputStream(path)) {
             property.load(fileInputStream);
         } catch (IOException e) {
-            System.out.println("Can't start mongo");
+            e.printStackTrace();
+            System.out.println("Can't start mongo: no resources");
         }
         final MongoClient mongoClient = new MongoClient(property.getProperty("db.adress"),
                     Integer.parseInt(property.getProperty("db.port")));

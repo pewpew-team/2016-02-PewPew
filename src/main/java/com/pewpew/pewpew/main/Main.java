@@ -21,6 +21,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.BindException;
@@ -45,10 +46,12 @@ public class Main {
         final Server server = new Server();
         final ServerConnector connector = new ServerConnector(server);
         final Properties property = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/server.properties";
         try(FileInputStream fileInputStream =
-                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/server.properties")) {
+                    new FileInputStream(path)) {
             property.load(fileInputStream);
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Can't start mongo");
         }
         connector.setHost(property.getProperty("server.host"));

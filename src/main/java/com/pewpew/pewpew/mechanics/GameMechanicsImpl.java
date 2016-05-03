@@ -11,6 +11,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -51,8 +52,9 @@ public class GameMechanicsImpl implements GameMechanics {
         this.gson = new Gson();
 
         final Properties property = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/game.properties";
         try(FileInputStream fileInputStream =
-                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/game.properties")) {
+                    new FileInputStream(path)) {
             property.load(fileInputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
