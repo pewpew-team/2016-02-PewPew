@@ -60,7 +60,7 @@ public class GameMechanicsImpl implements GameMechanics {
             System.out.println("Can't handle game resourses");
         }
         xMax = Double.valueOf(property.getProperty("map.xMax"));
-        yMax = Double.valueOf(property.getProperty("map.xMax"));
+        yMax = Double.valueOf(property.getProperty("map.yMax"));
     }
 
     @Override
