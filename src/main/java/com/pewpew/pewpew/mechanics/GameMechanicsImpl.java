@@ -197,7 +197,7 @@ public class GameMechanicsImpl implements GameMechanics {
 
     @Override
     public void closeGameSession(String user) {
-        GameSession gameSession = nameToGame.remove(user);
+        final GameSession gameSession = nameToGame.remove(user);
         nameToGame.remove(gameSession.getPlayerTwo());
         allSessions.remove(gameSession);
     }
