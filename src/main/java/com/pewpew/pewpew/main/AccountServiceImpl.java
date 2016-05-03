@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.main;
 
 import com.mongodb.MongoClient;
-import com.pewpew.pewpew.common.Settings;
+import com.mongodb.MongoException;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -9,9 +9,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class AccountServiceImpl implements AccountService {
 
@@ -19,11 +22,18 @@ public class AccountServiceImpl implements AccountService {
 
     private final Map<String, User> tokens = new HashMap<>();
 
-    public AccountServiceImpl() {
+    public AccountServiceImpl() throws MongoException {
         final Morphia morphia = new Morphia();
-        @SuppressWarnings("resource")
-        final MongoClient mongoClient = new MongoClient(Settings.DB_ADDRESS, Settings.DB_PORT);
-        this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
+        final Properties property = new Properties();
+        try(FileInputStream fileInputStream =
+                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/database.properties")) {
+            property.load(fileInputStream);
+        } catch (IOException e) {
+            System.out.println("Can't start mongo");
+        }
+        final MongoClient mongoClient = new MongoClient(property.getProperty("db.adress"),
+                    Integer.parseInt(property.getProperty("db.port")));
+        this.datastore = morphia.createDatastore(mongoClient, property.getProperty("db.collection"));
     }
 
     @Override

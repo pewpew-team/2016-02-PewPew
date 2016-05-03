@@ -56,6 +56,7 @@ public class GameWebSocket {
         System.out.println("closing websocket");
         gameMechanics.removeSession(userSession);
         this.userSession = null;
+        gameMechanics.closeGameSession(userName);
     }
 
     @OnWebSocketMessage

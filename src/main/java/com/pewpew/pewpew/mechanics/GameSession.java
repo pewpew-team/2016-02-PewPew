@@ -4,16 +4,20 @@ import com.pewpew.pewpew.common.Point;
 import com.pewpew.pewpew.model.*;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class GameSession {
 
-    private static final Double Y_MAX = 720.0;
-    private static final Double X_MAX = 1280.0;
+    private final Double yMax;
+    private final Double xMax;
 
     private String playerOne;
     private String playerTwo;
@@ -52,13 +56,30 @@ public class GameSession {
         return playerOneWon;
     }
 
-    public GameSession(String playerOne, String playerTwo) {
+    public GameSession(String playerOne, String playerTwo, Double xMax, Double yMax) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         final PlayerObject playerFirst = new PlayerObject();
         final PlayerObject playerSecond = new PlayerObject();
 
         gameFrame = new GameFrame(playerFirst, playerSecond);
+        final Properties property = new Properties();
+        try(FileInputStream fileInputStream =
+                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/game.properties")) {
+            property.load(fileInputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Can't handle game resourses");
+        }
+        final Integer nX = Integer.valueOf(property.getProperty("block.nX"));
+        final Double ratio = Double.valueOf(property.getProperty("block.ratio"));
+        final Integer x0 = Integer.valueOf(property.getProperty("block.x0"));
+        final Integer y0 = Integer.valueOf(property.getProperty("block.y0"));
+        putBlocks(nX, 4, ratio, x0, y0);
+
+        this.xMax = xMax;
+        this.yMax = yMax;
     }
 
     public ArrayList<Bullet> getBulletObjects() {
@@ -80,12 +101,12 @@ public class GameSession {
     public void moveBullets(long timeBefore) {
         final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect();
-        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy(Y_MAX.intValue());
+        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy(yMax.intValue());
         while (iterator.hasNext()) {
             final Bullet bullet = iterator.next();
             bullet.setPosX(bullet.getPosX() + bullet.getVelX() * timeBefore);
             bullet.setPosY(bullet.getPosY() + bullet.getVelY() * timeBefore);
-            if (bullet.getPosX() < 0 || bullet.getPosX() > X_MAX) {
+            if (bullet.getPosX() < 0 || bullet.getPosX() > xMax) {
                 bullet.setVelX(-1 * bullet.getVelX());
             }
             System.out.println("userFirst: " + userOne + " with bullet " + bullet.getRect());
@@ -96,9 +117,32 @@ public class GameSession {
             if (userTwo.contains(bullet.getRect())) {
                 playerOneWon = false;
             }
-            if (bullet.getPosY() > Y_MAX || bullet.getPosY() < 0) {
+            if (bullet.getPosY() > yMax || bullet.getPosY() < 0) {
                 iterator.remove();
                 System.out.println("removed bullet");
+            }
+            gameFrame.getBarriers().stream().filter(barrier -> tryToCollide(bullet, barrier)).forEach(barrier -> {
+                collide(bullet, barrier);
+            });
+        }
+    }
+
+    public void putBlocks(Integer nX, Integer nY, Double ratio, Integer x0, Integer y0) {
+        Integer max = 100;
+        Integer period = 50;
+        for (Integer i = 0; i < nX; ++i) {
+            for (Integer j = 0; j < nY; ++j) {
+                Barrier barrier = new Barrier();
+                barrier.setPosX((double) (i * period + x0));
+                barrier.setPosY((double)(j * period + y0));
+
+                Double randomNumber = (Math.random() * (max + 1));
+
+                barrier.setRemovable(true);
+                if (randomNumber < max * ratio) {
+                    barrier.setRemovable(false);
+                }
+                gameFrame.addBarriers(barrier);
             }
         }
     }

@@ -13,6 +13,7 @@ public class GameFrame {
         this.player = player;
         this.enemy = enemy;
         this.bullets = new ArrayList<>();
+        this.barriers = new ArrayList<>();
     }
 
     public PlayerObject getPlayer() {
@@ -42,6 +43,18 @@ public class GameFrame {
             bullet.setBulletId(this.bullets.get(this.bullets.size() - 1).getBulletId() + 1);
         }
         this.bullets.add(bullet);
+    }
+
+    public void addBarriers(Barrier barrier) {
+        this.barriers.add(barrier);
+    }
+
+    public List<Barrier> getBarriers() {
+        return barriers;
+    }
+
+    public void setBarriers(List<Barrier> barriers) {
+        this.barriers = barriers;
     }
 
     public void toAnotherCoordinateSystem(Double x, Double y) {

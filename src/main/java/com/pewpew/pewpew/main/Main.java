@@ -1,5 +1,7 @@
 package com.pewpew.pewpew.main;
 
+import com.mongodb.MongoException;
+import com.mongodb.MongoSocketOpenException;
 import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.mechanics.GameMechanics;
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
@@ -19,6 +21,13 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.util.Properties;
+
 
 public class Main {
     @SuppressWarnings("OverlyBroadThrowsClause")
@@ -35,7 +44,14 @@ public class Main {
 
         final Server server = new Server();
         final ServerConnector connector = new ServerConnector(server);
-        connector.setHost(Settings.SERVER_HOST);
+        final Properties property = new Properties();
+        try(FileInputStream fileInputStream =
+                    new FileInputStream("src/main/java/com/pewpew/pewpew/resources/server.properties")) {
+            property.load(fileInputStream);
+        } catch (IOException e) {
+            System.out.println("Can't start mongo");
+        }
+        connector.setHost(property.getProperty("server.host"));
         connector.setPort(port);
         server.addConnector(connector);
 
@@ -43,7 +59,8 @@ public class Main {
 
         final Context context = new Context();
         try {
-            context.put(AccountService.class, new AccountServiceImpl());
+            final AccountService accountService = new AccountServiceImpl();
+            context.put(AccountService.class, accountService);
             final ResourceConfig config = new ResourceConfig(SessionService.class,
                     UserService.class, ScoreboardService.class, GsonMessageBodyHandler.class);
             config.register(new AbstractBinder() {
@@ -73,14 +90,10 @@ public class Main {
 
             server.setHandler(handlerCollection);
 
-
-
             server.start();
             gameMechanics.run();
-//            server.join();
-
-        } catch (InterruptedException e) {
-            System.err.println("Database error");
+        } catch (MongoException e) {
+            e.printStackTrace();
             System.exit(1);
         }
     }

@@ -7,6 +7,11 @@ public class Barrier {
     private Double sizeY;
     private Boolean isRemovable;
 
+    public Barrier() {
+        this.sizeX = 30.0;
+        this.sizeY = 30.0;
+    }
+
     public Double getPosX() {
         return posX;
     }
