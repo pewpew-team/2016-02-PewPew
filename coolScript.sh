@@ -12,5 +12,5 @@ scp multiplayer.jar pewpew@pewpew.pro:pewpew_project
 cd ..
 
 echo "Sending resources"
-scp -r src/main/java/com/pewpew/pewpew/resources pewpew@pewpew.pro:pewpew_project
+scp -r resources pewpew@pewpew.pro:pewpew_project
 echo "Ready"

@@ -12,11 +12,11 @@ public class PlayerObject {
     private static final Integer WIDTH = 80;
     private static final Integer HEIGHT = 50;
 
-    public Rectangle getRect() {
-        return new Rectangle(posX.intValue() - WIDTH/2, HEIGHT/2, WIDTH, HEIGHT);
-    }
-    public Rectangle getRectEnemy(Integer yMax) {
+    public Rectangle getRect(Integer yMax) {
         return new Rectangle(posX.intValue() - WIDTH/2, yMax - HEIGHT/2, WIDTH, HEIGHT);
+    }
+    public Rectangle getRectEnemy() {
+        return new Rectangle(posX.intValue() - WIDTH/2, HEIGHT/2, WIDTH, HEIGHT);
     }
 
     public PlayerObject() {

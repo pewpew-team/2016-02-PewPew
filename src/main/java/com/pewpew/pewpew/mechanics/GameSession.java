@@ -102,8 +102,8 @@ public class GameSession {
 
     public void moveBullets(long timeBefore) {
         final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
-        final Rectangle userOne = gameFrame.getPlayer().getRect();
-        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy(yMax.intValue());
+        final Rectangle userOne = gameFrame.getPlayer().getRect(yMax.intValue());
+        final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy();
         while (iterator.hasNext()) {
             final Bullet bullet = iterator.next();
             bullet.setPosX(bullet.getPosX() + bullet.getVelX() * timeBefore);
@@ -111,17 +111,20 @@ public class GameSession {
             if (bullet.getPosX() < 0 || bullet.getPosX() > xMax) {
                 bullet.setVelX(-1 * bullet.getVelX());
             }
-            System.out.println("userFirst: " + userOne + " with bullet " + bullet.getRect());
+            System.out.println("userOne pos: " +userOne + " and bullet with id"
+                    + bullet.getBulletId() + " with pos: " + bullet.getRect());
             if (userOne.contains(bullet.getRect())) {
                 playerOneWon = true;
             }
-            System.out.println("userTwo: " + userTwo + " with bullet " + bullet.getRect());
+            System.out.println("userTow pos: " + userTwo + " and bullet with id"
+                    + bullet.getBulletId() + " with pos: " + bullet.getRect());
             if (userTwo.contains(bullet.getRect())) {
                 playerOneWon = false;
             }
+            System.out.println();
             if (bullet.getPosY() > yMax || bullet.getPosY() < 0) {
+                System.out.println("removed bullet: " + bullet.getBulletId());
                 iterator.remove();
-                System.out.println("removed bullet");
             }
             gameFrame.getBarriers().stream().filter(barrier -> tryToCollide(bullet, barrier)).forEach(barrier -> {
                 collide(bullet, barrier);
