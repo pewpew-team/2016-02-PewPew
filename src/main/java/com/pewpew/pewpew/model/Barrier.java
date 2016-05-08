@@ -28,7 +28,7 @@ public class Barrier {
         this.posY = posY;
     }
 
-    public Boolean getRemovable() {
+    public Boolean isRemovable() {
         return isRemovable;
     }
 

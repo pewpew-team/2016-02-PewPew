@@ -126,9 +126,19 @@ public class GameSession {
                 System.out.println("removed bullet: " + bullet.getBulletId());
                 iterator.remove();
             }
-            gameFrame.getBarriers().stream().filter(barrier -> tryToCollide(bullet, barrier)).forEach(barrier -> {
-                collide(bullet, barrier);
-            });
+//            gameFrame.getBarriers().stream().filter(barrier -> tryToCollide(bullet, barrier)).forEach(barrier -> {
+//                collide(bullet, barrier);
+//            });
+            Iterator<Barrier> barrierIterator = gameFrame.getBarriers().iterator();
+            while (barrierIterator.hasNext()){
+                final Barrier barrier = barrierIterator.next();
+                if (tryToCollide(bullet, barrier)) {
+                    collide(bullet,barrier);
+                    if(barrier.isRemovable()){
+                        barrierIterator.remove();
+                    }
+                }
+            }
         }
     }
 
@@ -201,7 +211,6 @@ public class GameSession {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelY);
             bullet.setVelX(-bullet.getVelX() + deviation);
         }
-        return;
     }
 
     private void moveToIntersectionPoint(Bullet bullet, Barrier barrier, Point intersectionPoint) {
