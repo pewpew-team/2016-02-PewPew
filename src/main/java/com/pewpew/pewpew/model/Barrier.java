@@ -51,4 +51,10 @@ public class Barrier {
     public void setSizeX(Double sizeX) {
         this.sizeX = sizeX;
     }
+
+    public void toAnotherCoordinateSystem(Double x, Double y) {
+        posX = x - posX;
+        posY = y - posY;
+    }
+
 }

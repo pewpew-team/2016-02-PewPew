@@ -126,9 +126,6 @@ public class GameSession {
                 System.out.println("removed bullet: " + bullet.getBulletId());
                 iterator.remove();
             }
-//            gameFrame.getBarriers().stream().filter(barrier -> tryToCollide(bullet, barrier)).forEach(barrier -> {
-//                collide(bullet, barrier);
-//            });
             Iterator<Barrier> barrierIterator = gameFrame.getBarriers().iterator();
             while (barrierIterator.hasNext()){
                 final Barrier barrier = barrierIterator.next();
@@ -147,11 +144,11 @@ public class GameSession {
         Integer period = 50;
         for (Integer i = 0; i < nX; ++i) {
             for (Integer j = 0; j < nY; ++j) {
-                Barrier barrier = new Barrier();
+                final Barrier barrier = new Barrier();
                 barrier.setPosX((double) (i * period + x0));
                 barrier.setPosY((double)(j * period + y0));
 
-                Double randomNumber = (Math.random() * (max + 1));
+                final Double randomNumber = (Math.random() * (max + 1));
 
                 barrier.setRemovable(true);
                 if (randomNumber < max * ratio) {
@@ -161,10 +158,7 @@ public class GameSession {
             }
         }
     }
-
-    public void handleCollision() {
-        //TODO: write collision handler or change moveBullets method
-    }
+    
 
     private Boolean tryToCollide(Bullet bullet, Barrier barrier) {
         final Double collisionDistX = Math.pow(((bullet.getSizeX() + barrier.getSizeX())/2), 2);
@@ -195,7 +189,7 @@ public class GameSession {
         final Point intersectionWithParallelY = new Point(tempX, tempY);
 
         final Double fault = 3.0;
-        final Double absoluteDeviation = 0.5;
+        final Double absoluteDeviation = 0.05;
         final Double deviation = (rand.nextBoolean())? absoluteDeviation: -absoluteDeviation;
         
         if(Math.abs(intersectionWithParallelY.getX() - intersectionWithParallelX.getX()) < fault) {

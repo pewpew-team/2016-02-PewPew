@@ -60,9 +60,8 @@ public class GameFrame {
     public void toAnotherCoordinateSystem(Double x, Double y) {
         player.toAnotherCoordinateSystem(x);
         enemy.toAnotherCoordinateSystem(x);
-        for(Bullet bullet : bullets) {
-            bullet.toAnotherCoordinateSystem(x, y);
-        }
+        bullets.forEach(bullet -> bullet.toAnotherCoordinateSystem(x, y));
+        barriers.forEach(barrier -> barrier.toAnotherCoordinateSystem(x, y));
     }
 
 
