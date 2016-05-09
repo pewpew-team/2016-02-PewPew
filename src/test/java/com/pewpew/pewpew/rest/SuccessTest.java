@@ -3,6 +3,7 @@ package com.pewpew.pewpew.rest;
 import com.pewpew.pewpew.common.RandomString;
 import com.pewpew.pewpew.main.*;
 import com.pewpew.pewpew.model.User;
+import com.pewpew.pewpew.model.Users;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -15,11 +16,14 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unused")
 public class SuccessTest extends JerseyTest {
 
     @Override
@@ -42,8 +46,8 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testSignUp() {
-        RandomString randomString = new RandomString();
-        User userProfile = new User();
+        final RandomString randomString = new RandomString();
+        final User userProfile = new User();
         userProfile.setLogin(randomString.nextString());
         userProfile.setPassword(randomString.nextString());
         userProfile.setEmail(randomString.nextString());
@@ -54,18 +58,18 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testSignIn() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
 
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
 
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
-        Response userInfo = target("user").path(id).request().cookie(newCookie).get();
-        User returnedUser = userInfo.readEntity(User.class);
+        final Response userInfo = target("user").path(id).request().cookie(newCookie).get();
+        final User returnedUser = userInfo.readEntity(User.class);
         assertEquals(user.getLogin(), returnedUser.getLogin());
         assertNotNull(returnedUser.getEmail());
         assertEquals(returnedUser.getId().toString(), id);
@@ -73,11 +77,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testEditUser() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
 
@@ -94,11 +98,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testCheckAuth() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         assertNotNull(id);
         final Map<String, NewCookie> cookies = json.getCookies();
         newCookie = cookies.get("token");
@@ -109,11 +113,11 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testLogout() {
-        User user = new User();
+        final User user = new User();
         user.setLogin("111");
         user.setPassword("111");
         final Response json = target("session").request().post(Entity.json(user));
-        String id = json.readEntity(ObjectId.class).toString();
+        final String id = json.readEntity(ObjectId.class).toString();
         assertNotNull(id);
 
         final Map<String, NewCookie> cookies = json.getCookies();
@@ -124,8 +128,8 @@ public class SuccessTest extends JerseyTest {
 
     @Test
     public void testDelete() {
-        RandomString randomString = new RandomString();
-        User userProfile = new User();
+        final RandomString randomString = new RandomString();
+        final User userProfile = new User();
         userProfile.setLogin(randomString.nextString());
         userProfile.setPassword(randomString.nextString());
         userProfile.setEmail(randomString.nextString());
@@ -134,7 +138,7 @@ public class SuccessTest extends JerseyTest {
         assertEquals(json.getStatus(), Response.Status.OK.getStatusCode());
 
         final Response idJson = target("session").request().post(Entity.json(userProfile));
-        String id = idJson.readEntity(ObjectId.class).toString();
+        final String id = idJson.readEntity(ObjectId.class).toString();
 
         final Response deleteJson = target("user").path(id).request().delete();
         assertEquals(deleteJson.getStatus(), Response.Status.OK.getStatusCode());
@@ -143,16 +147,17 @@ public class SuccessTest extends JerseyTest {
     @Test
     public void testScroyboard() {
         final Response scroyBoard = target("scoreboard").request("application/json").get();
-        List<User> users = scroyBoard.readEntity(new ListGenericType());
+        final Users users = scroyBoard.readEntity(Users.class);
         assertNotNull(users);
-        assertFalse(users.size() < 2);
-        Integer firstUserRating = users.get(0).getRating();
-        Integer secondUserRating = users.get(1).getRating();
+        assertFalse(users.getScores().size() < 2);
+        final Integer firstUserRating = users.getScores().get(0).getRating();
+        final Integer secondUserRating = users.getScores().get(1).getRating();
         assertNotNull(firstUserRating);
         assertNotNull(secondUserRating);
         assertTrue(firstUserRating >= secondUserRating);
     }
 
-    private static class ListGenericType extends GenericType<List<User>> {}
+    @SuppressWarnings("unused")
+    private static class ListGenericType extends GenericType<List<Users>> {}
 
 }

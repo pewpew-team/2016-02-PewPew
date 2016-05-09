@@ -19,7 +19,7 @@ public interface AccountService {
 
     User getUserById(String userId);
 
-    Boolean updateUser(String token, @Nullable User editedUser);
+    void updateUser(String token, @Nullable User editedUser);
 
     Boolean userExists(User newUser);
 

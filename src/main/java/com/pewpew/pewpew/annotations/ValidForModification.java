@@ -33,6 +33,7 @@ public @interface ValidForModification {
 
         @Override
         public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {
+            //noinspection OverlyComplexBooleanExpression
             return user != null
                     && (user.getPassword() != null || user.getEmail() != null || user.getLogin() != null);
         }

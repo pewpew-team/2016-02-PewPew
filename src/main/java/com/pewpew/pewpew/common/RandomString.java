@@ -9,7 +9,7 @@ public class RandomString {
     private static final char[] SYMBOLS;
 
     static {
-        StringBuilder tmp = new StringBuilder();
+        final StringBuilder tmp = new StringBuilder();
         for (char ch = '0'; ch <= '9'; ++ch)
             tmp.append(ch);
         for (char ch = 'a'; ch <= 'z'; ++ch)

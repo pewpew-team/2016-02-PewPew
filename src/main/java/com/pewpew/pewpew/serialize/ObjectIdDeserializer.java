@@ -10,7 +10,7 @@ public class ObjectIdDeserializer implements JsonDeserializer<ObjectId> {
     @Nullable
     @Override
     public ObjectId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObject = json.getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject();
         ObjectId objectId = null;
         if (jsonObject.has("_id")) {
             objectId = new ObjectId(jsonObject.get("_id").getAsString());

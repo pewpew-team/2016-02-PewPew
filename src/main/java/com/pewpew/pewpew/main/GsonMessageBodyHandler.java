@@ -59,7 +59,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         try (InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8)) {
 
             try {
-                Type jsonType;
+                final Type jsonType;
                 if (type.equals(genericType)) {
                     jsonType = type;
                 } else {
@@ -98,6 +98,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         return -1;
     }
 
+    @SuppressWarnings("OverlyBroadThrowsClause")
     @Override
     public void writeTo(Object object, Class<?> type, Type genericType,
                         Annotation[] annotations, MediaType mediaType,
@@ -105,7 +106,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                         OutputStream entityStream) throws IOException,
             WebApplicationException {
         try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
-            Type jsonType;
+            final Type jsonType;
             if (type.equals(genericType)) {
                 jsonType = type;
             } else {

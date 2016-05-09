@@ -1,7 +1,7 @@
 package com.pewpew.pewpew.main;
 
 import com.mongodb.MongoClient;
-import com.pewpew.pewpew.common.Settings;
+import com.mongodb.MongoException;
 import com.pewpew.pewpew.model.User;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -9,26 +9,39 @@ import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService {
 
     private final Datastore datastore;
 
     private final Map<String, User> tokens = new HashMap<>();
 
-    public AccountServiceImpl() {
-        Morphia morphia = new Morphia();
-        @SuppressWarnings("resource")
-        MongoClient mongoClient = new MongoClient(Settings.DB_ADDRESS, Settings.DB_PORT);
-        this.datastore = morphia.createDatastore(mongoClient, Settings.USERS_COLLECTION);
+    public AccountServiceImpl() throws MongoException {
+        final Morphia morphia = new Morphia();
+        final Properties property = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/database.properties";
+        try(FileInputStream fileInputStream =
+                    new FileInputStream(path)) {
+            property.load(fileInputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Can't start mongo: no resources");
+        }
+        final MongoClient mongoClient = new MongoClient(property.getProperty("db.adress"),
+                    Integer.parseInt(property.getProperty("db.port")));
+        this.datastore = morphia.createDatastore(mongoClient, property.getProperty("db.collection"));
     }
 
     @Override
     public List<User> getTop() {
-        return datastore.find(User.class).order("-rating").limit(8).asList();
+        return datastore.find(User.class).retrievedFields(true, "login", "rating").order("-rating").limit(8).asList();
     }
 
     @Override
@@ -62,14 +75,14 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Boolean updateUser(String token, @Nullable User editedUser) {
-        return tokens.replace(token, editedUser) != null;
+    public void updateUser(String token, @Nullable User editedUser) {
+        tokens.replace(token, editedUser);
     }
 
     @Override
     @NotNull
     public Boolean userExists(User newUser) {
-        User user = datastore.find(User.class, "email", newUser.getEmail()).get();
+        final User user = datastore.find(User.class, "email", newUser.getEmail()).get();
         return user == null;
     }
 

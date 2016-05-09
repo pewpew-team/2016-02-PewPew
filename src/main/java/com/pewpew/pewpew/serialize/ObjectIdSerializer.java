@@ -13,7 +13,7 @@ public class ObjectIdSerializer implements JsonSerializer<ObjectId> {
 
     @Override
     public JsonElement serialize(ObjectId src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         if (src != null) {
             jsonObject.addProperty("_id", src.toString());
         }

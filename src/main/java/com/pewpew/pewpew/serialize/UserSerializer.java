@@ -9,7 +9,7 @@ public class UserSerializer implements JsonSerializer<User>{
     @Override
     public JsonElement serialize(User src, Type typeOfSrc, JsonSerializationContext context) {
 
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         if (src.getId() != null) {
             jsonObject.addProperty("_id", src.getId().toString());
         }
@@ -22,10 +22,8 @@ public class UserSerializer implements JsonSerializer<User>{
         if (src.getPassword() !=null) {
             jsonObject.addProperty("password", src.getPassword());
         }
-        if(src.getRating() != null) {
-            jsonObject.addProperty("rating", src.getRating());
-        }
-        System.out.print("Serialized user and sending");
+        jsonObject.addProperty("rating", src.getRating());
+        System.out.print("Serialized user and sending\n");
         return jsonObject;
     }
 }

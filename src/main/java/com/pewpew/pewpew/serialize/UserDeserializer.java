@@ -9,8 +9,8 @@ import java.lang.reflect.Type;
 public class UserDeserializer implements JsonDeserializer<User> {
     @Override
     public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        User user = new User();
-        JsonObject jsonObject = json.getAsJsonObject();
+        final User user = new User();
+        final JsonObject jsonObject = json.getAsJsonObject();
         if (jsonObject.has("_id")) {
             user.setId(new ObjectId(jsonObject.get("_id").getAsString()));
         }
