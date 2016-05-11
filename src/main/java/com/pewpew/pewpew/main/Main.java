@@ -23,6 +23,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ConnectException;
@@ -33,29 +34,22 @@ import java.util.Properties;
 public class Main {
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
-        int port = -1;
-        String staticPath = "";
-        if (args.length == 2) {
-            port = Integer.valueOf(args[0]);
-            staticPath = String.valueOf(args[1]);
-        } else {
-            System.err.println("Specify port");
-            System.exit(1);
+
+        final Properties serverProperties = new Properties();
+        final String path = new File("").getAbsolutePath() + "/resources/server.properties";
+        try(FileInputStream fileInputStream =
+                    new FileInputStream(path)) {
+            serverProperties.load(fileInputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Can't find properties");
         }
 
         final Server server = new Server();
         final ServerConnector connector = new ServerConnector(server);
-        final Properties property = new Properties();
-        final String path = new File("").getAbsolutePath() + "/resources/server.properties";
-        try(FileInputStream fileInputStream =
-                    new FileInputStream(path)) {
-            property.load(fileInputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Can't start mongo");
-        }
-        connector.setHost(property.getProperty("server.host"));
-        connector.setPort(port);
+        connector.setHost(serverProperties.getProperty("server.host"));
+        connector.setPort(Integer.parseInt(serverProperties.getProperty("server.port")));
+
         server.addConnector(connector);
 
         final ServletContextHandler contextHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
@@ -83,9 +77,10 @@ public class Main {
                     webSocketService, gameMechanics)), "/ws");
 
 
+
             final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
-            resourceHandler.setResourceBase(staticPath);
+            resourceHandler.setResourceBase(serverProperties.getProperty("server.staticPath"));
 
             final HandlerCollection handlerCollection = new HandlerCollection();
             handlerCollection.setHandlers(new Handler[]{resourceHandler,

@@ -28,7 +28,7 @@ public class Barrier {
         this.posY = posY;
     }
 
-    public Boolean getRemovable() {
+    public Boolean isRemovable() {
         return isRemovable;
     }
 
@@ -51,4 +51,10 @@ public class Barrier {
     public void setSizeX(Double sizeX) {
         this.sizeX = sizeX;
     }
+
+    public void toAnotherCoordinateSystem(Double x, Double y) {
+        posX = x - posX;
+        posY = y - posY;
+    }
+
 }

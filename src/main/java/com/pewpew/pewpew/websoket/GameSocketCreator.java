@@ -32,7 +32,7 @@ public class GameSocketCreator implements WebSocketCreator {
 //        for (Cookie cookie : cookies) {
 //            if (cookie.getName().equals("token")) {
 //                user = accountService.getUserByToken(cookie.getName()).getLogin();
-//            }
+//            }Serialized user and sendingopen websocket
 //        }
 //        if (user == null) {
 //            LOGGER.error("No such user");

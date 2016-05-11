@@ -23,7 +23,7 @@ public class UserSerializer implements JsonSerializer<User>{
             jsonObject.addProperty("password", src.getPassword());
         }
         jsonObject.addProperty("rating", src.getRating());
-        System.out.print("Serialized user and sending");
+        System.out.print("Serialized user and sending\n");
         return jsonObject;
     }
 }
