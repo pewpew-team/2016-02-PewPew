@@ -24,7 +24,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private final Double yMax;
     private final Double xMax;
 
-    private static final long STEP_TIME = 50;
+    private final long stepTime;
 
     @NotNull
     private final WebSocketService webSocketService;
@@ -61,6 +61,7 @@ public class GameMechanicsImpl implements GameMechanics {
         } catch (IOException e) {
             System.out.println("Can't handle game resourses");
         }
+        stepTime = Integer.valueOf(property.getProperty("game.stepTime"));
         xMax = Double.valueOf(property.getProperty("map.xMax"));
         yMax = Double.valueOf(property.getProperty("map.yMax"));
     }
@@ -81,7 +82,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private void addUserInternal(@NotNull String user) {
         if (waiter != null) {
             //noinspection ConstantConditions
-            starGame(user, waiter);
+            startGame(user, waiter);
             waiter = null;
         } else {
             waiter = user;
@@ -95,15 +96,15 @@ public class GameMechanicsImpl implements GameMechanics {
     @Override
     public void run() {
         //noinspection InfiniteLoopStatement
-        long lastFrameMilles = STEP_TIME;
+        long lastFrameMilles = stepTime;
         while (true) {
             final long before = clock.millis();
             gameStep(lastFrameMilles);
             final long after = clock.millis();
-            if (after - before > STEP_TIME) {
+            if (after - before > stepTime) {
                 System.out.println("gm is lagging. step is " + (after - before) + "ms");
             }
-            TimeHelper.sleep(STEP_TIME - (after - before));
+            TimeHelper.sleep(stepTime - (after - before));
             final long afterSleep = clock.millis();
             lastFrameMilles = afterSleep - before;
         }
@@ -130,7 +131,7 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    private void starGame(@NotNull String first, @NotNull String second) {
+    private void startGame(@NotNull String first, @NotNull String second) {
         final GameSession gameSession = new GameSession(first, second, xMax, yMax);
         allSessions.add(gameSession);
 
