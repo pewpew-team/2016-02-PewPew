@@ -203,6 +203,8 @@ public class GameMechanicsImpl implements GameMechanics {
         if (gameSession != null) {
             nameToGame.remove(gameSession.getPlayerTwo());
             allSessions.remove(gameSession);
+        } else {
+            waiter = null;
         }
     }
 }
