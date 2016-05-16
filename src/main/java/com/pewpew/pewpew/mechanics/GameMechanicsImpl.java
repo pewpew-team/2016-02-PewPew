@@ -90,8 +90,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void removeSession(Session session) {
-        allSessions.remove(session);
-        waiter = null;
+        tasks.add(() -> allSessions.remove(session));
     }
 
     @Override
@@ -203,10 +202,14 @@ public class GameMechanicsImpl implements GameMechanics {
     public void closeGameSession(String user) {
         final GameSession gameSession = nameToGame.remove(user);
         if (gameSession != null) {
-            nameToGame.remove(gameSession.getPlayerTwo());
-            allSessions.remove(gameSession);
+            tasks.add(() -> closeGameSessionInternal(gameSession));
         } else {
-            waiter = null;
+            tasks.add(() -> waiter = null );
         }
+    }
+
+    public void closeGameSessionInternal(GameSession gameSession) {
+        nameToGame.remove(gameSession.getPlayerTwo());
+        allSessions.remove(gameSession);
     }
 }
