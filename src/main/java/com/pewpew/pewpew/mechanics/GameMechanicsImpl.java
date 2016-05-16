@@ -91,6 +91,7 @@ public class GameMechanicsImpl implements GameMechanics {
 
     public void removeSession(Session session) {
         allSessions.remove(session);
+        waiter = null;
     }
 
     @Override
