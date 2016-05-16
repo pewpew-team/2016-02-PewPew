@@ -194,16 +194,16 @@ public class GameSession {
         
         if(Math.abs(intersectionWithParallelY.getX() - intersectionWithParallelX.getX()) < fault) {
             this.moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
-            bullet.setVelX(-bullet.getVelX() + deviation);
-            bullet.setVelY(-bullet.getVelY() + deviation);
+            bullet.setVelX(-bullet.getVelX());
+            bullet.setVelY(-bullet.getVelY());
         }
         else if ((intersectionWithParallelY.getX() >= 0) && (intersectionWithParallelY.getX() <= barrier.getSizeX())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
-            bullet.setVelY(-bullet.getVelY() + deviation);
+            bullet.setVelY(-bullet.getVelY());
         }
         else if ((intersectionWithParallelX.getY() >= 0) && (intersectionWithParallelX.getY() <= barrier.getSizeY())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelY);
-            bullet.setVelX(-bullet.getVelX() + deviation);
+            bullet.setVelX(-bullet.getVelX());
         }
     }
 
