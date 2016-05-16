@@ -76,10 +76,14 @@ public class GameWebSocket {
     }
 
     public void sendMessage(String message) {
-        try {
-            this.userSession.getRemote().sendString(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (this.userSession != null && message != null) {
+            System.out.print(message);
+            System.out.print(this.userSession);
+            try {
+                this.userSession.getRemote().sendString(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

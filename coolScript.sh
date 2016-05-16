@@ -8,7 +8,7 @@ cd target
 mv pewpew-1.0-SNAPSHOT-jar-with-dependencies.jar multiplayer.jar
 
 echo "Sending jar"
-scp multiplayer.jar pewpew@pewpew.pro:pewpew_project
+scp multiplayer.jar pewpew@pewpew.pro:pewpew_test
 cd ..
 
 echo "Sending resources"
