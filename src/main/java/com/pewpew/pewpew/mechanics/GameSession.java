@@ -197,11 +197,11 @@ public class GameSession {
             bullet.setVelX(-bullet.getVelX() + deviation);
             bullet.setVelY(-bullet.getVelY() + deviation);
         }
-        else if ((intersectionWithParallelX.getX() >= 0) && (intersectionWithParallelX.getX() <= barrier.getSizeX())) {
+        else if ((intersectionWithParallelY.getX() >= 0) && (intersectionWithParallelY.getX() <= barrier.getSizeX())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
             bullet.setVelY(-bullet.getVelY() + deviation);
         }
-        else if ((intersectionWithParallelY.getX() >= 0) && (intersectionWithParallelY.getX() <= barrier.getSizeY())) {
+        else if ((intersectionWithParallelX.getY() >= 0) && (intersectionWithParallelX.getY() <= barrier.getSizeY())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelY);
             bullet.setVelX(-bullet.getVelX() + deviation);
         }
