@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Context;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @Path("/session")
@@ -37,15 +38,9 @@ public class SessionService {
         }
         token = UUID.randomUUID().toString();
         accountService.addToken(token, user);
-        final NewCookie cookie = new NewCookie("token", token);
+        NewCookie cookie = new NewCookie("token", token, "/", null, "", Long.valueOf(TimeUnit.DAYS.toSeconds(30)).intValue(), false);
         System.out.print("Putting token into cookie \n");
         return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
-
-//        if (userFromToken == null) {
-//            System.out.print("User have cookie, but not auth \n");
-//            final NewCookie newCookie = new NewCookie(cook, null, 0, false);
-//            return Response.status(Response.Status.UNAUTHORIZED).cookie(newCookie).build();
-//        }
     }
 
     @GET

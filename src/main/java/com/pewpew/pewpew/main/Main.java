@@ -73,10 +73,9 @@ public class Main {
 
             final WebSocketService webSocketService = new WebSocketServiceImpl();
             final GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+
             contextHandler.addServlet(new ServletHolder(new GameSocketServelet(
-                    webSocketService, gameMechanics)), "/ws");
-
-
+                    webSocketService, gameMechanics, accountService)), "/ws");
 
             final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);

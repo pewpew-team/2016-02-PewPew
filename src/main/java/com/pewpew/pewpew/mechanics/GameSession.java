@@ -2,6 +2,7 @@ package com.pewpew.pewpew.mechanics;
 
 import com.pewpew.pewpew.common.Point;
 import com.pewpew.pewpew.model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
@@ -24,6 +25,7 @@ public class GameSession {
     private String playerTwo;
 
     private Boolean playerOneWon;
+    public Boolean paused;
 
     private GameFrame gameFrame;
 
@@ -82,6 +84,7 @@ public class GameSession {
 
         this.xMax = xMax;
         this.yMax = yMax;
+        this.paused = false;
     }
 
     public ArrayList<Bullet> getBulletObjects() {
@@ -140,13 +143,13 @@ public class GameSession {
     }
 
     public void putBlocks(Integer nX, Integer nY, Double ratio, Integer x0, Integer y0) {
-        Integer max = 100;
-        Integer period = 50;
+        final Integer max = 100;
+        final Integer period = 50;
         for (Integer i = 0; i < nX; ++i) {
             for (Integer j = 0; j < nY; ++j) {
                 final Barrier barrier = new Barrier();
                 barrier.setPosX((double) (i * period + x0));
-                barrier.setPosY((double)(j * period + y0));
+                barrier.setPosY((double) (j * period + y0));
 
                 final Double randomNumber = (Math.random() * (max + 1));
 
@@ -160,6 +163,7 @@ public class GameSession {
     }
     
 
+    @NotNull
     private Boolean tryToCollide(Bullet bullet, Barrier barrier) {
         final Double collisionDistX = Math.pow(((bullet.getSizeX() + barrier.getSizeX())/2), 2);
         final Double collisionDistY = Math.pow(((bullet.getSizeY() + barrier.getSizeY())/2), 2);
@@ -211,6 +215,4 @@ public class GameSession {
         bullet.setPosX(intersectionPoint.getX() + (barrier.getPosX() - barrier.getSizeX()/2));
         bullet.setPosY(intersectionPoint.getY() + (barrier.getPosY() - barrier.getSizeY()/2));
     }
-
-
 }

@@ -53,8 +53,8 @@ public class GameMechanicsImpl implements GameMechanics {
 
         final Properties property = new Properties();
         final String path = new File("").getAbsolutePath() + "/resources/game.properties";
-        try(FileInputStream fileInputStream =
-                    new FileInputStream(path)) {
+        try (FileInputStream fileInputStream =
+                     new FileInputStream(path)) {
             property.load(fileInputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -80,18 +80,43 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     private void addUserInternal(@NotNull String user) {
-        if (waiter != null) {
-            //noinspection ConstantConditions
-            startGame(user, waiter);
-            waiter = null;
-        } else {
-            waiter = user;
+        if (!recoverGame(user)) {
+            if (waiter != null) {
+                //noinspection ConstantConditions
+                startGame(user, waiter);
+                waiter = null;
+            } else {
+                waiter = user;
+            }
         }
     }
 
     public void removeSession(Session session) {
         tasks.add(() -> allSessions.remove(session));
     }
+
+    public void pauseGame(String dissconectedUser) {
+        tasks.add(() -> pauseGameInternal(dissconectedUser));
+    }
+
+    private void pauseGameInternal(String dissconectedUser) {
+        GameSession gameSession = nameToGame.get(dissconectedUser);
+        gameSession.paused = true;
+    }
+
+    @NotNull
+    private Boolean recoverGame(String returnedUser) {
+        final Boolean[] isReturned = {false};
+        allSessions.stream().filter(session -> session.paused).forEach(session -> {
+            if (session.getPlayerOne().equals(returnedUser) ||
+                    session.getPlayerTwo().equals(returnedUser)) {
+                session.paused = false;
+                isReturned[0] = true;
+            }
+        });
+        return isReturned[0];
+    }
+
 
     @Override
     public void run() {
@@ -121,14 +146,14 @@ public class GameMechanicsImpl implements GameMechanics {
                 }
             }
         }
-        for (GameSession session : allSessions) {
+        allSessions.stream().filter(session -> !session.paused).forEach(session -> {
             sendState(session, timeTick);
             if (session.getPlayerOneWon() != null) {
                 final Boolean firstWin = session.getPlayerOneWon();
                 webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
                 webSocketService.notifyGameOver(session.getPlayerOne(), !firstWin);
             }
-        }
+        });
     }
 
     private void startGame(@NotNull String first, @NotNull String second) {
@@ -204,7 +229,7 @@ public class GameMechanicsImpl implements GameMechanics {
         if (gameSession != null) {
             tasks.add(() -> closeGameSessionInternal(gameSession));
         } else {
-            tasks.add(() -> waiter = null );
+            tasks.add(() -> waiter = null);
         }
     }
 

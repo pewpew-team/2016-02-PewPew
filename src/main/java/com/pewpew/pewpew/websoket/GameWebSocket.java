@@ -53,10 +53,12 @@ public class GameWebSocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
+        webSocketService.removeUser(userName);
         System.out.println("closing websocket");
-        gameMechanics.removeSession(userSession);
+        gameMechanics.pauseGame(userName);
+        //gameMechanics.removeSession(userSession);
         this.userSession = null;
-        gameMechanics.closeGameSession(userName);
+        //gameMechanics.closeGameSession(userName);
     }
 
     @OnWebSocketMessage

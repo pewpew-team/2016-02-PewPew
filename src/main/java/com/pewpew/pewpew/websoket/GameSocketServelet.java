@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.websoket;
 
+import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.mechanics.GameMechanics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,18 +17,21 @@ public class GameSocketServelet extends WebSocketServlet {
 
     private final WebSocketService webSocketService;
     private final GameMechanics gameMechanics;
+    private final AccountService accountService;
 
     public GameSocketServelet(WebSocketService webSocketService,
-                              GameMechanics gameMechanics) {
+                              GameMechanics gameMechanics,
+                              AccountService accountService) {
         this.webSocketService = webSocketService;
         this.gameMechanics = gameMechanics;
+        this.accountService = accountService;
     }
 
     @Override
     public void configure(WebSocketServletFactory webSocketServletFactory) {
         webSocketServletFactory.getPolicy().setIdleTimeout(IDLE_TIME);
 
-        webSocketServletFactory.setCreator(new GameSocketCreator(webSocketService, gameMechanics));
+        webSocketServletFactory.setCreator(new GameSocketCreator(webSocketService, gameMechanics, accountService));
         LOGGER.info("Socket servlet configured");
     }
 }

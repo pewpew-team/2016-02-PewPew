@@ -16,4 +16,6 @@ public interface GameMechanics {
     void removeSession(Session session);
 
     void closeGameSession(String user);
+
+    void pauseGame(String dissconectedUser);
 }

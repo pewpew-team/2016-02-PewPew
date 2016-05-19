@@ -7,6 +7,8 @@ public interface WebSocketService {
 
     void addUser(GameWebSocket user, String userId);
 
+    void removeUser(String userId);
+
     void notifyStartGame(String user);
 
     void sendMessageToUser(String message, String userSessionId);

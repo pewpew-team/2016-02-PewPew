@@ -14,6 +14,9 @@ public class WebSocketServiceImpl implements WebSocketService {
         userSockets.put(userId, gameWebSocket);
     }
 
+    public void removeUser(String userId) {
+        userSockets.remove(userId);
+    }
     @Override
     public void notifyStartGame(String user) {
         final GameWebSocket gameWebSocket = userSockets.get(user);

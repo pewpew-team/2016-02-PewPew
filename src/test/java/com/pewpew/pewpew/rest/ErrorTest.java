@@ -87,7 +87,7 @@ public class ErrorTest extends JerseyTest {
         user.setPassword("111");
         final NewCookie cookie = new NewCookie("token", "123");
         final Response errorJson = target("session").request().cookie(cookie).post(Entity.json(user));
-        assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), errorJson.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), errorJson.getStatus());
     }
 
 
