@@ -2,6 +2,9 @@ package com.pewpew.pewpew.websoket;
 
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.mechanics.GameMechanics;
+import com.pewpew.pewpew.messageSystem.Abonent;
+import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messageSystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
@@ -14,24 +17,26 @@ import javax.servlet.annotation.WebServlet;
 public class GameSocketServelet extends WebSocketServlet {
     static final Logger LOGGER = LogManager.getLogger(GameSocketServelet.class);
     private static final int IDLE_TIME = 600 * 1000;
+    private final Address address = new Address();
 
-    private final WebSocketService webSocketService;
-    private final GameMechanics gameMechanics;
     private final AccountService accountService;
+    private final MessageSystem messageSystem;
+    private final Address gameMechanicsAddress;
 
-    public GameSocketServelet(WebSocketService webSocketService,
-                              GameMechanics gameMechanics,
-                              AccountService accountService) {
-        this.webSocketService = webSocketService;
-        this.gameMechanics = gameMechanics;
+    public GameSocketServelet(AccountService accountService,
+                              MessageSystem messageSystem,
+                              Address gameMechanicsAddress) {
         this.accountService = accountService;
+        this.messageSystem = messageSystem;
+        this.gameMechanicsAddress = gameMechanicsAddress;
     }
 
     @Override
     public void configure(WebSocketServletFactory webSocketServletFactory) {
         webSocketServletFactory.getPolicy().setIdleTimeout(IDLE_TIME);
 
-        webSocketServletFactory.setCreator(new GameSocketCreator(webSocketService, gameMechanics, accountService));
+        webSocketServletFactory.setCreator(new GameSocketCreator(accountService, messageSystem, gameMechanicsAddress));
         LOGGER.info("Socket servlet configured");
     }
+
 }

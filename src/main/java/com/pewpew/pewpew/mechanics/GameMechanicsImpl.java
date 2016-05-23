@@ -1,12 +1,16 @@
 package com.pewpew.pewpew.mechanics;
 
 import com.google.gson.Gson;
-import com.pewpew.pewpew.common.TimeHelper;
+import com.pewpew.pewpew.messageSystem.Abonent;
+import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messageSystem.MessageSystem;
+import com.pewpew.pewpew.messages.toWebSocket.MessageGameOver;
+import com.pewpew.pewpew.messages.toWebSocket.MessageGameStart;
+import com.pewpew.pewpew.messages.toWebSocket.MessageToUser;
 import com.pewpew.pewpew.model.Bullet;
 import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
-import com.pewpew.pewpew.websoket.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,23 +21,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
-import java.util.concurrent.*;
 
-public class GameMechanicsImpl implements GameMechanics {
+public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
 
     private final Double yMax;
     private final Double xMax;
 
     private final long stepTime;
 
-    @NotNull
-    private final WebSocketService webSocketService;
+    private final Address address = new Address();
+    private final MessageSystem messageSystem;
 
     @NotNull
     private final Set<GameSession> allSessions = new HashSet<>();
 
     @NotNull
     private final Map<String, GameSession> nameToGame = new HashMap<>();
+
+    @NotNull
+    private final Map<String, Address> addressMap = new HashMap<>();
 
     @Nullable
     private volatile String waiter;
@@ -44,11 +50,11 @@ public class GameMechanicsImpl implements GameMechanics {
     @NotNull
     private final Clock clock = Clock.systemDefaultZone();
 
-    @NotNull
-    private final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
+    public GameMechanicsImpl(MessageSystem messageSystem) {
+        this.messageSystem = messageSystem;
+        messageSystem.addService(this);
+        messageSystem.getAddressService().registerGameMechanics(this);
 
-    public GameMechanicsImpl(@NotNull WebSocketService webSocketService) {
-        this.webSocketService = webSocketService;
         this.gson = new Gson();
 
         final Properties property = new Properties();
@@ -67,19 +73,8 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     @Override
-    public void addUser(@NotNull String user) {
-        tasks.add(() -> addUserInternal(user));
-    }
-
-    @Override
-    public String getEnemy(@NotNull String user) {
-        if (!Objects.equals(nameToGame.get(user).getPlayerTwo(), user)) {
-            return nameToGame.get(user).getPlayerTwo();
-        }
-        return nameToGame.get(user).getPlayerOne();
-    }
-
-    private void addUserInternal(@NotNull String user) {
+    public void addUser(@NotNull String user, @NotNull Address addressSocket) {
+        addressMap.put(user, addressSocket);
         if (!recoverGame(user)) {
             if (waiter != null) {
                 //noinspection ConstantConditions
@@ -91,12 +86,21 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+    @Override
+    public String getEnemy(@NotNull String user) {
+        if (!Objects.equals(nameToGame.get(user).getPlayerTwo(), user)) {
+            return nameToGame.get(user).getPlayerTwo();
+        }
+        return nameToGame.get(user).getPlayerOne();
+    }
+
     public void removeSession(Session session) {
-        tasks.add(() -> allSessions.remove(session));
+        allSessions.remove(session);
     }
 
     public void pauseGame(String dissconectedUser) {
-        tasks.add(() -> pauseGameInternal(dissconectedUser));
+        GameSession gameSession = nameToGame.get(dissconectedUser);
+        gameSession.paused = true;
     }
 
     private void pauseGameInternal(String dissconectedUser) {
@@ -117,6 +121,12 @@ public class GameMechanicsImpl implements GameMechanics {
         return isReturned[0];
     }
 
+    @Override
+    public void start() {
+        Thread gameMechanicsThread = (new Thread(this));
+        gameMechanicsThread.setDaemon(true);
+        gameMechanicsThread.setName("Game Mechanics");
+    }
 
     @Override
     public void run() {
@@ -129,29 +139,30 @@ public class GameMechanicsImpl implements GameMechanics {
             if (after - before > stepTime) {
                 System.out.println("gm is lagging. step is " + (after - before) + "ms");
             }
-            TimeHelper.sleep(stepTime - (after - before));
-            final long afterSleep = clock.millis();
-            lastFrameMilles = afterSleep - before;
+            try {
+                Thread.sleep(stepTime - (after - before));
+                final long afterSleep = clock.millis();
+                lastFrameMilles = afterSleep - before;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void gameStep(long timeTick) {
-        while (!tasks.isEmpty()) {
-            final Runnable nextTask = tasks.poll();
-            if (nextTask != null) {
-                try {
-                    nextTask.run();
-                } catch (RuntimeException ex) {
-                    System.out.println("Cant handle game task " + ex);
-                }
-            }
-        }
+        messageSystem.execForAbonent(this);
         allSessions.stream().filter(session -> !session.paused).forEach(session -> {
             sendState(session, timeTick);
             if (session.getPlayerOneWon() != null) {
                 final Boolean firstWin = session.getPlayerOneWon();
-                webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
-                webSocketService.notifyGameOver(session.getPlayerOne(), !firstWin);
+
+                Address firstUserAddress = addressMap.get(session.getPlayerOne());
+                MessageGameOver messageGameOver = new MessageGameOver(address, firstUserAddress, firstWin);
+                messageSystem.sendMessage(messageGameOver);
+
+                Address secondUserAddress = addressMap.get(session.getPlayerOne());
+                messageGameOver = new MessageGameOver(address, secondUserAddress, !firstWin);
+                messageSystem.sendMessage(messageGameOver);
             }
         });
     }
@@ -163,8 +174,13 @@ public class GameMechanicsImpl implements GameMechanics {
         nameToGame.put(first, gameSession);
         nameToGame.put(second, gameSession);
 
-        webSocketService.notifyStartGame(gameSession.getPlayerOne());
-        webSocketService.notifyStartGame(gameSession.getPlayerTwo());
+        Address firstUserAddress = addressMap.get(gameSession.getPlayerOne());
+        MessageGameStart messageGameStart = new MessageGameStart(address, firstUserAddress, gameSession.getPlayerTwo());
+        messageSystem.sendMessage(messageGameStart);
+
+        Address secondUserAddress = addressMap.get(gameSession.getPlayerTwo());
+        messageGameStart = new MessageGameStart(address, secondUserAddress, gameSession.getPlayerOne());
+        messageSystem.sendMessage(messageGameStart);
     }
 
 
@@ -173,8 +189,10 @@ public class GameMechanicsImpl implements GameMechanics {
             final GameFrame gameFrame = gameSession.getGameFrame();
             gameSession.moveBullets(timeTick);
 
+            Address firstUserAddress = addressMap.get(gameSession.getPlayerOne());
             final String gameFrameJson = gson.toJson(gameFrame);
-            webSocketService.sendMessageToUser(gameFrameJson, gameSession.getPlayerOne());
+            MessageToUser messageToUser = new MessageToUser(address, firstUserAddress, gameFrameJson);
+            messageSystem.sendMessage(messageToUser);
 
             PlayerObject player = gameFrame.getEnemy();
             gameFrame.setEnemy(gameFrame.getPlayer());
@@ -182,22 +200,19 @@ public class GameMechanicsImpl implements GameMechanics {
             gameFrame.toAnotherCoordinateSystem(xMax, yMax);
 
             final String gameFrameJsonSecond = gson.toJson(gameFrame);
+            Address secondUserAddress = addressMap.get(gameSession.getPlayerOne());
+            messageToUser = new MessageToUser(address, secondUserAddress, gameFrameJsonSecond);
+            messageSystem.sendMessage(messageToUser);
 
             player = gameFrame.getEnemy();
             gameFrame.setEnemy(gameFrame.getPlayer());
             gameFrame.setPlayer(player);
             gameFrame.toAnotherCoordinateSystem(xMax, yMax);
-
-            webSocketService.sendMessageToUser(gameFrameJsonSecond, gameSession.getPlayerTwo());
         }
     }
 
     @Override
     public void changeState(GameChanges gameChanges, String userName) {
-        tasks.add(() -> changeStateInternal(gameChanges, userName));
-    }
-
-    private void changeStateInternal(GameChanges gameChanges, String userName) {
         final GameSession gameSession = nameToGame.get(userName);
         if (gameSession != null) {
             final PlayerObject playerObject = gameChanges.getPlayer();
@@ -223,18 +238,24 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+
     @Override
     public void closeGameSession(String user) {
         final GameSession gameSession = nameToGame.remove(user);
         if (gameSession != null) {
-            tasks.add(() -> closeGameSessionInternal(gameSession));
+            nameToGame.remove(gameSession.getPlayerTwo());
+            allSessions.remove(gameSession);
         } else {
-            tasks.add(() -> waiter = null);
+            waiter = null;
         }
     }
 
-    public void closeGameSessionInternal(GameSession gameSession) {
-        nameToGame.remove(gameSession.getPlayerTwo());
-        allSessions.remove(gameSession);
+    public MessageSystem getMessageSystem() {
+        return messageSystem;
+    }
+
+    @Override
+    public Address getAddress() {
+        return null;
     }
 }

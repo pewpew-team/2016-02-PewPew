@@ -32,7 +32,6 @@ public class WebSocketServiceImpl implements WebSocketService {
         if (gameWebSocket.getUserSession() == null) {
             userSockets.remove(userSessionId);
         }
-        gameWebSocket.setGameEnded(true);
         gameWebSocket.sendMessage(message);
     }
 

@@ -5,6 +5,7 @@ import com.mongodb.MongoSocketOpenException;
 import com.pewpew.pewpew.common.Settings;
 import com.pewpew.pewpew.mechanics.GameMechanics;
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
+import com.pewpew.pewpew.messageSystem.MessageSystem;
 import com.pewpew.pewpew.rest.ScoreboardService;
 import com.pewpew.pewpew.rest.SessionService;
 import com.pewpew.pewpew.rest.UserService;
@@ -71,11 +72,13 @@ public class Main {
 
             contextHandler.addServlet(servletHolder, "/*");
 
-            final WebSocketService webSocketService = new WebSocketServiceImpl();
-            final GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+            final MessageSystem messageSystem = new MessageSystem();
+
+            final GameMechanicsImpl gameMechanics = new GameMechanicsImpl(messageSystem);
+            gameMechanics.start();
 
             contextHandler.addServlet(new ServletHolder(new GameSocketServelet(
-                    webSocketService, gameMechanics, accountService)), "/ws");
+                    accountService, messageSystem, gameMechanics.getAddress())), "/ws");
 
             final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
@@ -88,7 +91,6 @@ public class Main {
             server.setHandler(handlerCollection);
 
             server.start();
-            gameMechanics.run();
         } catch (MongoException e) {
             e.printStackTrace();
             System.exit(1);

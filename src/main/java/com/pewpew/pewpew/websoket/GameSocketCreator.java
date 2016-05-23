@@ -2,6 +2,8 @@ package com.pewpew.pewpew.websoket;
 
 import com.pewpew.pewpew.main.AccountService;
 import com.pewpew.pewpew.mechanics.GameMechanics;
+import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messageSystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
@@ -14,15 +16,15 @@ import java.time.LocalDateTime;
 public class GameSocketCreator implements WebSocketCreator {
     static final Logger LOGGER = LogManager.getLogger(GameSocketCreator.class);
 
-    private final WebSocketService webSocketService;
-    private final GameMechanics gameMechanics;
     private final AccountService accountService;
+    private final MessageSystem messageSystem;
+    private final Address gameMechanicsAddress;
 
-    public GameSocketCreator(WebSocketService webSocketService,
-                              GameMechanics gameMechanics, AccountService accountService) {
-        this.webSocketService = webSocketService;
-        this.gameMechanics = gameMechanics;
+    public GameSocketCreator(AccountService accountService, MessageSystem messageSystem,
+                             Address gameMechanicsAddress) {
         this.accountService = accountService;
+        this.messageSystem = messageSystem;
+        this.gameMechanicsAddress = gameMechanicsAddress;
     }
     @Override
     public Object createWebSocket(ServletUpgradeRequest servletUpgradeRequest,
@@ -44,6 +46,8 @@ public class GameSocketCreator implements WebSocketCreator {
         }
 //        final String session = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
         LOGGER.info("Socket created");
-        return new GameWebSocket(user, webSocketService, gameMechanics);
+        GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
+        gameWebSocket.start();
+        return gameWebSocket;
     }
 }

@@ -1,5 +1,12 @@
 package com.pewpew.pewpew.websoket;
 
+import com.pewpew.pewpew.messageSystem.Abonent;
+import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messageSystem.MessageSystem;
+import com.pewpew.pewpew.messages.MessageGameChanges;
+import com.pewpew.pewpew.messages.MessagePauseGame;
+import com.pewpew.pewpew.messages.MessageRegister;
+import com.pewpew.pewpew.messages.MessageRemoveSession;
 import com.pewpew.pewpew.model.GameChanges;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -21,46 +28,47 @@ import java.io.IOException;
 
 @SuppressWarnings("ALL")
 @WebSocket
-public class GameWebSocket {
+public class GameWebSocket implements Abonent,Runnable {
     static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
 
     private final String userName;
+    private String enemyName;
     private Session userSession;
     private Boolean gameEnded;
+    private final Address address;
+    private final Address gameMechanicsAddress;
 
     @NotNull
-    private final GameFrameHandler messageHandler;
-    @NotNull
-    final WebSocketService webSocketService;
-    @NotNull
-    final GameMechanics gameMechanics;
+    private final MessageSystem messageSystem;
 
-    public GameWebSocket(String userName, @NotNull WebSocketService webSocketService, @NotNull GameMechanics gameMechanics) {
+    public GameWebSocket(String userName, MessageSystem messageSystem,
+                         Address gameMechanicsAddress) {
         this.userName = userName;
-        this.webSocketService = webSocketService;
-        this.gameMechanics = gameMechanics;
-        this.messageHandler = new GameFrameHandler(gameMechanics);
+        this.messageSystem = messageSystem;
+        this.address = new Address();
+        this.gameMechanicsAddress = gameMechanicsAddress;
     }
 
 
     @OnWebSocketConnect
     public void onOpen(Session session) {
         userSession = session;
-        webSocketService.addUser(this, userName);
-        gameMechanics.addUser(userName);
+        MessageRegister registerMessage = new MessageRegister(address, gameMechanicsAddress, userName);
+        messageSystem.sendMessage(registerMessage);
         LOGGER.info("onOpen");
         System.out.println("open websocket");
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        webSocketService.removeUser(userName);
         System.out.println("closing websocket");
         if (gameEnded) {
-            gameMechanics.removeSession(userSession);
-            gameMechanics.closeGameSession(userName);
+            MessageRemoveSession messageRemoveSession =
+                    new MessageRemoveSession(address, gameMechanicsAddress, userName);
+            messageSystem.sendMessage(messageRemoveSession);
         } else {
-            gameMechanics.pauseGame(userName);
+            MessagePauseGame messagePauseGame = new MessagePauseGame(address, gameMechanicsAddress, userName);
+            messageSystem.sendMessage(messagePauseGame);
         }
         this.userSession = null;
     }
@@ -77,8 +85,7 @@ public class GameWebSocket {
         if (gameFrame.getBullet() != null) {
             System.out.println("I got message:" + gameFrame.getBullet());
         }
-        final String enemyId = gameMechanics.getEnemy(userName);
-        messageHandler.handle(gameFrame, enemyId);
+        MessageGameChanges messageGameChanges = new MessageGameChanges(address, gameMechanicsAddress, gameFrame, enemyName);
     }
 
     public void sendMessage(String message) {
@@ -117,6 +124,10 @@ public class GameWebSocket {
         }
     }
 
+    public void start() {
+        (new Thread(this)).start();
+    }
+
     public void setGameEnded(Boolean gameEnded) {
         this.gameEnded = gameEnded;
     }
@@ -127,5 +138,15 @@ public class GameWebSocket {
 
     public void setUserSession(Session userSession) {
         this.userSession = userSession;
+    }
+
+    @Override
+    public Address getAddress() {
+        return null;
+    }
+
+    @Override
+    public void run() {
+
     }
 }
