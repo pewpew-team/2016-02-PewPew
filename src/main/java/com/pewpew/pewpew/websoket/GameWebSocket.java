@@ -26,6 +26,7 @@ public class GameWebSocket {
 
     private final String userName;
     private Session userSession;
+    private Boolean gameEnded;
 
     @NotNull
     private final GameFrameHandler messageHandler;
@@ -55,10 +56,13 @@ public class GameWebSocket {
     public void onClose(int statusCode, String reason) {
         webSocketService.removeUser(userName);
         System.out.println("closing websocket");
-        gameMechanics.pauseGame(userName);
-        //gameMechanics.removeSession(userSession);
+        if (gameEnded) {
+            gameMechanics.removeSession(userSession);
+            gameMechanics.closeGameSession(userName);
+        } else {
+            gameMechanics.pauseGame(userName);
+        }
         this.userSession = null;
-        //gameMechanics.closeGameSession(userName);
     }
 
     @OnWebSocketMessage
@@ -111,6 +115,10 @@ public class GameWebSocket {
         } catch (IOException | WebSocketException e) {
             LOGGER.error("Can't send web socket", e);
         }
+    }
+
+    public void setGameEnded(Boolean gameEnded) {
+        this.gameEnded = gameEnded;
     }
 
     public Session getUserSession() {
