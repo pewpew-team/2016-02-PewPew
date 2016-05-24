@@ -16,6 +16,7 @@ public class MessageGameChanges extends MessageToGameMechanics {
 
     @Override
     protected void exec(GameMechanicsImpl gameMechanics) {
+        System.out.println("got message - changeGame and sending information to enemy: " + userName);
         gameMechanics.changeState(gameChanges, userName);
     }
 }

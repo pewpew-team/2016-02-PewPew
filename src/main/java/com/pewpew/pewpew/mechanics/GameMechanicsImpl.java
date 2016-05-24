@@ -137,8 +137,8 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
             }
             try {
                 final long lag =  after - before;
-                if (lag > 0) {
-                    Thread.sleep(stepTime - (after - before));
+                if (stepTime - lag > 0) {
+                    Thread.sleep(stepTime - lag);
                 }
                 //Thread.sleep(stepTime - (after - before));
                 final long afterSleep = clock.millis();
@@ -160,7 +160,7 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
                 MessageGameOver messageGameOver = new MessageGameOver(address, firstUserAddress, firstWin);
                 messageSystem.sendMessage(messageGameOver);
 
-                Address secondUserAddress = addressMap.get(session.getPlayerOne());
+                Address secondUserAddress = addressMap.get(session.getPlayerTwo()git a);
                 messageGameOver = new MessageGameOver(address, secondUserAddress, !firstWin);
                 messageSystem.sendMessage(messageGameOver);
             }
@@ -201,8 +201,8 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
 
             final String gameFrameJsonSecond = gson.toJson(gameFrame);
             Address secondUserAddress = addressMap.get(gameSession.getPlayerTwo());
-            messageToUser = new MessageToUser(address, secondUserAddress, gameFrameJsonSecond);
-            messageSystem.sendMessage(messageToUser);
+            MessageToUser secondMessageToUser = new MessageToUser(address, secondUserAddress, gameFrameJsonSecond);
+            messageSystem.sendMessage(secondMessageToUser);
 
             player = gameFrame.getEnemy();
             gameFrame.setEnemy(gameFrame.getPlayer());

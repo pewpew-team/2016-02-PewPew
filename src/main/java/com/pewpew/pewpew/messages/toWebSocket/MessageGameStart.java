@@ -15,5 +15,6 @@ public class MessageGameStart extends MessageToWebSocket {
     protected void exec(GameWebSocket service) {
         System.out.println("Got message startGame: " + userName);
         service.startGame();
+        service.setEnemyName(userName);
     }
 }

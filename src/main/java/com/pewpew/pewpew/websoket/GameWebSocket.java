@@ -88,6 +88,8 @@ public class GameWebSocket implements Abonent,Runnable {
             System.out.println("I got message:" + gameFrame.getBullet());
         }
         MessageGameChanges messageGameChanges = new MessageGameChanges(address, gameMechanicsAddress, gameFrame, enemyName);
+        messageSystem.sendMessage(messageGameChanges);
+
     }
 
     public void sendMessage(String message) {
@@ -143,6 +145,10 @@ public class GameWebSocket implements Abonent,Runnable {
     @Override
     public Address getAddress() {
         return address;
+    }
+
+    public void setEnemyName(String enemyName) {
+        this.enemyName = enemyName;
     }
 
     @Override

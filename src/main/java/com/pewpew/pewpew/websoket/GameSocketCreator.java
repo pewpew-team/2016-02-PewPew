@@ -29,22 +29,22 @@ public class GameSocketCreator implements WebSocketCreator {
     @Override
     public Object createWebSocket(ServletUpgradeRequest servletUpgradeRequest,
                                   ServletUpgradeResponse servletUpgradeResponse) {
-        Cookie[] cookies = servletUpgradeRequest.getHttpServletRequest().getCookies();
-        if (cookies == null) {
-            LOGGER.error("No cookies");
-            return null;
-        }
-        String user = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")) {
-                user = accountService.getUserByToken(cookie.getValue()).getLogin();
-            }
-        }
-        if (user == null) {
-            LOGGER.error("No such user");
-            return null;
-        }
-//        final String user = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
+//        Cookie[] cookies = servletUpgradeRequest.getHttpServletRequest().getCookies();
+//        if (cookies == null) {
+//            LOGGER.error("No cookies");
+//            return null;
+//        }
+//        String user = null;
+//        for (Cookie cookie : cookies) {
+//            if (cookie.getName().equals("token")) {
+//                user = accountService.getUserByToken(cookie.getValue()).getLogin();
+//            }
+//        }
+//        if (user == null) {
+//            LOGGER.error("No such user");
+//            return null;
+//        }
+        final String user = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
         LOGGER.info("Socket created");
         GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
         gameWebSocket.start();
