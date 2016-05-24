@@ -180,7 +180,6 @@ public class GameSession {
         final Double b = bulletPosY - k * bulletPosX;
 
 
-        //TODO: Refactoring. Remove temporary wariables.
         double tempX = (bullet.getVelX() > 0)? 0 : barrier.getSizeX();
         double tempY = k * tempX + b;
         final Point intersectionWithParallelX = new Point(tempX, tempY);
