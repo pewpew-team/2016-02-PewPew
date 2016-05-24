@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.common;
 
+@SuppressWarnings("InstanceVariableNamingConvention")
 public class Point {
     private double x;
     private double y;

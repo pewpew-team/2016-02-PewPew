@@ -1,7 +1,7 @@
-package com.pewpew.pewpew.messages;
+package com.pewpew.pewpew.messages.togamemechanics;
 
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 
 public class MessagePauseGame extends MessageToGameMechanics {
     private final String userName;

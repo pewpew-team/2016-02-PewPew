@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.messageSystem;
+package com.pewpew.pewpew.messagesystem;
 
 /**
  * @author e.shubin

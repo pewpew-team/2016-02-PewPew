@@ -38,7 +38,7 @@ public class SessionService {
         }
         token = UUID.randomUUID().toString();
         accountService.addToken(token, user);
-        NewCookie cookie = new NewCookie("token", token, "/", null, "", Long.valueOf(TimeUnit.DAYS.toSeconds(30)).intValue(), false);
+        final NewCookie cookie = new NewCookie("token", token, "/", null, "", Long.valueOf(TimeUnit.DAYS.toSeconds(30)).intValue(), false);
         System.out.print("Putting token into cookie \n");
         return Response.ok(Response.Status.OK).cookie(cookie).entity(user.getId()).build();
     }

@@ -1,6 +1,6 @@
-package com.pewpew.pewpew.messages.toWebSocket;
+package com.pewpew.pewpew.messages.towebsocket;
 
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.websoket.GameWebSocket;
 
 public class MessageToUser extends MessageToWebSocket {

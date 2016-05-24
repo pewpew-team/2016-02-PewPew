@@ -1,6 +1,6 @@
 package com.pewpew.pewpew.mechanics;
 
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.model.GameChanges;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;

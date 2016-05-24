@@ -1,10 +1,8 @@
 package com.pewpew.pewpew.websoket;
 
 import com.pewpew.pewpew.main.AccountService;
-import com.pewpew.pewpew.mechanics.GameMechanics;
-import com.pewpew.pewpew.messageSystem.Abonent;
-import com.pewpew.pewpew.messageSystem.Address;
-import com.pewpew.pewpew.messageSystem.MessageSystem;
+import com.pewpew.pewpew.messagesystem.Address;
+import com.pewpew.pewpew.messagesystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;

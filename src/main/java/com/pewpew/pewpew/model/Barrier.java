@@ -3,8 +3,8 @@ package com.pewpew.pewpew.model;
 public class Barrier {
     private Double posX;
     private Double posY;
-    private Double sizeX;
-    private Double sizeY;
+    private final Double sizeX;
+    private final Double sizeY;
     private Boolean isRemovable;
 
     public Barrier() {
@@ -40,16 +40,8 @@ public class Barrier {
         return sizeY;
     }
 
-    public void setSizeY(Double sizeY) {
-        this.sizeY = sizeY;
-    }
-
     public Double getSizeX() {
         return sizeX;
-    }
-
-    public void setSizeX(Double sizeX) {
-        this.sizeX = sizeX;
     }
 
     public void toAnotherCoordinateSystem(Double x, Double y) {

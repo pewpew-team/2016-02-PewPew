@@ -1,8 +1,8 @@
-package com.pewpew.pewpew.messages.toWebSocket;
+package com.pewpew.pewpew.messages.towebsocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.websoket.GameWebSocket;
 
 public class MessageGameOver extends MessageToWebSocket {

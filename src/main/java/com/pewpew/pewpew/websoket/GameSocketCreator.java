@@ -1,17 +1,16 @@
 package com.pewpew.pewpew.websoket;
 
 import com.pewpew.pewpew.main.AccountService;
-import com.pewpew.pewpew.mechanics.GameMechanics;
-import com.pewpew.pewpew.messageSystem.Address;
-import com.pewpew.pewpew.messageSystem.MessageSystem;
+import com.pewpew.pewpew.messagesystem.Address;
+import com.pewpew.pewpew.messagesystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
+import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.Cookie;
-import java.time.LocalDateTime;
 
 public class GameSocketCreator implements WebSocketCreator {
     static final Logger LOGGER = LogManager.getLogger(GameSocketCreator.class);
@@ -26,10 +25,11 @@ public class GameSocketCreator implements WebSocketCreator {
         this.messageSystem = messageSystem;
         this.gameMechanicsAddress = gameMechanicsAddress;
     }
+    @Nullable
     @Override
     public Object createWebSocket(ServletUpgradeRequest servletUpgradeRequest,
                                   ServletUpgradeResponse servletUpgradeResponse) {
-        Cookie[] cookies = servletUpgradeRequest.getHttpServletRequest().getCookies();
+        final Cookie[] cookies = servletUpgradeRequest.getHttpServletRequest().getCookies();
         if (cookies == null) {
             LOGGER.error("No cookies");
             return null;
@@ -46,7 +46,7 @@ public class GameSocketCreator implements WebSocketCreator {
         }
         // final String user = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
         LOGGER.info("Socket created");
-        GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
+        final GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
         gameWebSocket.start();
         return gameWebSocket;
     }

@@ -1,12 +1,12 @@
 package com.pewpew.pewpew.websoket;
 
-import com.pewpew.pewpew.messageSystem.Abonent;
-import com.pewpew.pewpew.messageSystem.Address;
-import com.pewpew.pewpew.messageSystem.MessageSystem;
-import com.pewpew.pewpew.messages.MessageGameChanges;
-import com.pewpew.pewpew.messages.MessagePauseGame;
-import com.pewpew.pewpew.messages.MessageRegister;
-import com.pewpew.pewpew.messages.MessageRemoveSession;
+import com.pewpew.pewpew.messagesystem.Abonent;
+import com.pewpew.pewpew.messagesystem.Address;
+import com.pewpew.pewpew.messagesystem.MessageSystem;
+import com.pewpew.pewpew.messages.togamemechanics.MessageGameChanges;
+import com.pewpew.pewpew.messages.togamemechanics.MessagePauseGame;
+import com.pewpew.pewpew.messages.togamemechanics.MessageRegister;
+import com.pewpew.pewpew.messages.togamemechanics.MessageRemoveSession;
 import com.pewpew.pewpew.model.GameChanges;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -17,7 +17,6 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.pewpew.pewpew.mechanics.GameMechanics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -46,7 +45,6 @@ public class GameWebSocket implements Abonent,Runnable {
         this.userName = userName;
         this.messageSystem = messageSystem;
         messageSystem.addService(this);
-        messageSystem.getAddressService().registerGameWebSocket(this);
         this.gameMechanicsAddress = gameMechanicsAddress;
     }
 

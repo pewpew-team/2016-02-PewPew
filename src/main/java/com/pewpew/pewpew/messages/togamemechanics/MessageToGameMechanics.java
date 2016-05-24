@@ -1,10 +1,9 @@
-package com.pewpew.pewpew.messages;
+package com.pewpew.pewpew.messages.togamemechanics;
 
-import com.pewpew.pewpew.mechanics.GameMechanics;
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
-import com.pewpew.pewpew.messageSystem.Abonent;
-import com.pewpew.pewpew.messageSystem.Address;
-import com.pewpew.pewpew.messageSystem.Message;
+import com.pewpew.pewpew.messagesystem.Abonent;
+import com.pewpew.pewpew.messagesystem.Address;
+import com.pewpew.pewpew.messagesystem.Message;
 
 public abstract class MessageToGameMechanics extends Message {
     public MessageToGameMechanics(Address from, Address to) {
@@ -13,7 +12,7 @@ public abstract class MessageToGameMechanics extends Message {
 
     @Override
     public final void exec(Abonent abonent) {
-        if (abonent instanceof GameMechanics) {
+        if (abonent instanceof GameMechanicsImpl) {
             exec((GameMechanicsImpl) abonent);
         }
     }

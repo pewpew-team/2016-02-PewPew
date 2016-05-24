@@ -1,11 +1,11 @@
-package com.pewpew.pewpew.messages;
+package com.pewpew.pewpew.messages.togamemechanics;
 
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 
 public class MessageRegister extends MessageToGameMechanics {
-    private String userName;
-    private Address socketAdress;
+    private final String userName;
+    private final Address socketAdress;
 
     public MessageRegister(Address from, Address to, String userName) {
         super(from, to);

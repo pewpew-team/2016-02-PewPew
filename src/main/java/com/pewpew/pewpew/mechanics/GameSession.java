@@ -9,12 +9,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class GameSession {
 
@@ -25,7 +22,7 @@ public class GameSession {
     private String playerTwo;
 
     private Boolean playerOneWon;
-    public Boolean paused;
+    private Boolean paused;
 
     private GameFrame gameFrame;
 
@@ -80,7 +77,7 @@ public class GameSession {
         final Double ratio = Double.valueOf(property.getProperty("block.ratio"));
         final Integer x0 = Integer.valueOf(property.getProperty("block.x0"));
         final Integer y0 = Integer.valueOf(property.getProperty("block.y0"));
-        putBlocks(nX, 4, ratio, x0, y0);
+        putBlocks(nX, ratio, x0, y0);
 
         this.xMax = xMax;
         this.yMax = yMax;
@@ -103,6 +100,7 @@ public class GameSession {
         }
     }
 
+    @SuppressWarnings("OverlyComplexMethod")
     public void moveBullets(long timeBefore) {
         final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect(yMax.intValue());
@@ -129,7 +127,7 @@ public class GameSession {
                 System.out.println("removed bullet: " + bullet.getBulletId());
                 iterator.remove();
             }
-            Iterator<Barrier> barrierIterator = gameFrame.getBarriers().iterator();
+            final Iterator<Barrier> barrierIterator = gameFrame.getBarriers().iterator();
             while (barrierIterator.hasNext()){
                 final Barrier barrier = barrierIterator.next();
                 if (tryToCollide(bullet, barrier)) {
@@ -142,11 +140,11 @@ public class GameSession {
         }
     }
 
-    public void putBlocks(Integer nX, Integer nY, Double ratio, Integer x0, Integer y0) {
+    public void putBlocks(Integer nX, Double ratio, Integer x0, Integer y0) {
         final Integer max = 100;
         final Integer period = 50;
         for (Integer i = 0; i < nX; ++i) {
-            for (Integer j = 0; j < nY; ++j) {
+            for (Integer j = 0; j < (Integer) 4; ++j) {
                 final Barrier barrier = new Barrier();
                 barrier.setPosX((double) (i * period + x0));
                 barrier.setPosY((double) (j * period + y0));
@@ -180,7 +178,6 @@ public class GameSession {
 
         final Double k = bullet.getVelY() / bullet.getVelX();
         final Double b = bulletPosY - k * bulletPosX;
-        final Random rand = new Random();
 
 
         //TODO: Refactoring. Remove temporary wariables.
@@ -193,8 +190,6 @@ public class GameSession {
         final Point intersectionWithParallelY = new Point(tempX, tempY);
 
         final Double fault = 3.0;
-        final Double absoluteDeviation = 0.05;
-        final Double deviation = (rand.nextBoolean())? absoluteDeviation: -absoluteDeviation;
         
         if(Math.abs(intersectionWithParallelY.getX() - intersectionWithParallelX.getX()) < fault) {
             this.moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
@@ -214,5 +209,13 @@ public class GameSession {
     private void moveToIntersectionPoint(Bullet bullet, Barrier barrier, Point intersectionPoint) {
         bullet.setPosX(intersectionPoint.getX() + (barrier.getPosX() - barrier.getSizeX()/2));
         bullet.setPosY(intersectionPoint.getY() + (barrier.getPosY() - barrier.getSizeY()/2));
+    }
+
+    public void setPaused(Boolean paused) {
+        this.paused = paused;
+    }
+
+    public Boolean getPaused() {
+        return paused;
     }
 }

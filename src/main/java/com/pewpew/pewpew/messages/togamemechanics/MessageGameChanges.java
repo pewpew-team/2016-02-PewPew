@@ -1,12 +1,12 @@
-package com.pewpew.pewpew.messages;
+package com.pewpew.pewpew.messages.togamemechanics;
 
 import com.pewpew.pewpew.mechanics.GameMechanicsImpl;
-import com.pewpew.pewpew.messageSystem.Address;
+import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.model.GameChanges;
 
 public class MessageGameChanges extends MessageToGameMechanics {
-    private GameChanges gameChanges;
-    private String userName;
+    private final GameChanges gameChanges;
+    private final String userName;
 
     public MessageGameChanges(Address from, Address to, GameChanges gameChanges, String userName) {
         super(from, to);

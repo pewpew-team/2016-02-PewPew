@@ -27,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
         final Morphia morphia = new Morphia();
         final Properties property = new Properties();
         final String path = new File("").getAbsolutePath() + "/resources/database.properties";
+        //noinspection OverlyBroadCatchBlock
         try(FileInputStream fileInputStream =
                     new FileInputStream(path)) {
             property.load(fileInputStream);
@@ -34,6 +35,7 @@ public class AccountServiceImpl implements AccountService {
             e.printStackTrace();
             System.out.println("Can't start mongo: no resources");
         }
+        @SuppressWarnings("resource")
         final MongoClient mongoClient = new MongoClient(property.getProperty("db.adress"),
                     Integer.parseInt(property.getProperty("db.port")));
         this.datastore = morphia.createDatastore(mongoClient, property.getProperty("db.collection"));

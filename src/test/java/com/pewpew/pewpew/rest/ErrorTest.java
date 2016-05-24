@@ -12,8 +12,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
-import java.net.ConnectException;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;

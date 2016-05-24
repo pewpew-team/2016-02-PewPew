@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.messageSystem;
+package com.pewpew.pewpew.messagesystem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,14 +9,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public final class MessageSystem {
     private final Map<Address, ConcurrentLinkedQueue<Message>> messages = new HashMap<>();
-    private final AddressService addressService = new AddressService();
-
-    public MessageSystem() {
-    }
-
-    public AddressService getAddressService() {
-        return addressService;
-    }
 
     public void addService(Abonent abonent) {
         messages.put(abonent.getAddress(), new ConcurrentLinkedQueue<>());
@@ -27,9 +19,9 @@ public final class MessageSystem {
     }
 
     public void execForAbonent(Abonent abonent) {
-        ConcurrentLinkedQueue<Message> queue = messages.get(abonent.getAddress());
+        final ConcurrentLinkedQueue<Message> queue = messages.get(abonent.getAddress());
         while (!queue.isEmpty()) {
-            Message message = queue.poll();
+            final Message message = queue.poll();
             message.exec(abonent);
         }
     }

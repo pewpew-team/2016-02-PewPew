@@ -1,4 +1,4 @@
-package com.pewpew.pewpew.threadPool;
+package com.pewpew.pewpew.threadpool;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -25,7 +25,7 @@ public class ThreadPoolMain {
 
         System.out.println("Submitting tasks...");
         for (int i = 0; i < TASK_COUNT; i++) {
-            final Future<Void> future = executorService.submit(taskQueue.poll());
+            @SuppressWarnings("UnusedAssignment") final Future<Void> future = executorService.submit(taskQueue.poll());
         }
         System.out.println("All tasks are submitted!");
 
