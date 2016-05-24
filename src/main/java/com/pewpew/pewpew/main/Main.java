@@ -75,7 +75,7 @@ public class Main {
             final MessageSystem messageSystem = new MessageSystem();
 
             final GameMechanicsImpl gameMechanics = new GameMechanicsImpl(messageSystem);
-            gameMechanics.start();
+
 
             contextHandler.addServlet(new ServletHolder(new GameSocketServelet(
                     accountService, messageSystem, gameMechanics.getAddress())), "/ws");
@@ -91,6 +91,7 @@ public class Main {
             server.setHandler(handlerCollection);
 
             server.start();
+            gameMechanics.start();
         } catch (MongoException e) {
             e.printStackTrace();
             System.exit(1);

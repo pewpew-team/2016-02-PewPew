@@ -35,7 +35,7 @@ public class GameWebSocket implements Abonent,Runnable {
     private String enemyName;
     private Session userSession;
     private Boolean gameEnded;
-    private final Address address;
+    private final Address address = new Address();;
     private final Address gameMechanicsAddress;
 
     @NotNull
@@ -45,7 +45,8 @@ public class GameWebSocket implements Abonent,Runnable {
                          Address gameMechanicsAddress) {
         this.userName = userName;
         this.messageSystem = messageSystem;
-        this.address = new Address();
+        messageSystem.addService(this);
+        messageSystem.getAddressService().registerGameWebSocket(this);
         this.gameMechanicsAddress = gameMechanicsAddress;
     }
 
@@ -66,6 +67,7 @@ public class GameWebSocket implements Abonent,Runnable {
             MessageRemoveSession messageRemoveSession =
                     new MessageRemoveSession(address, gameMechanicsAddress, userName);
             messageSystem.sendMessage(messageRemoveSession);
+            gameEnded = false;
         } else {
             MessagePauseGame messagePauseGame = new MessagePauseGame(address, gameMechanicsAddress, userName);
             messageSystem.sendMessage(messagePauseGame);
@@ -90,8 +92,6 @@ public class GameWebSocket implements Abonent,Runnable {
 
     public void sendMessage(String message) {
         if (this.userSession != null && message != null) {
-            System.out.print(message);
-            System.out.print(this.userSession);
             try {
                 this.userSession.getRemote().sendString(message);
             } catch (IOException e) {
@@ -142,11 +142,18 @@ public class GameWebSocket implements Abonent,Runnable {
 
     @Override
     public Address getAddress() {
-        return null;
+        return address;
     }
 
     @Override
     public void run() {
-
+        while (!Thread.interrupted()) {
+            messageSystem.execForAbonent(this);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
     }
 }

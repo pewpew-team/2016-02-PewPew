@@ -13,6 +13,7 @@ public class MessageGameStart extends MessageToWebSocket {
 
     @Override
     protected void exec(GameWebSocket service) {
+        System.out.println("Got message startGame: " + userName);
         service.sendMessage(userName);
     }
 }

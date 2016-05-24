@@ -44,7 +44,7 @@ public class GameSocketCreator implements WebSocketCreator {
             LOGGER.error("No such user");
             return null;
         }
-//        final String session = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
+//        final String user = servletUpgradeRequest.getHttpServletRequest().getSession().getId() + LocalDateTime.now().toString();
         LOGGER.info("Socket created");
         GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
         gameWebSocket.start();

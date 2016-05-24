@@ -103,11 +103,6 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
         gameSession.paused = true;
     }
 
-    private void pauseGameInternal(String dissconectedUser) {
-        GameSession gameSession = nameToGame.get(dissconectedUser);
-        gameSession.paused = true;
-    }
-
     @NotNull
     private Boolean recoverGame(String returnedUser) {
         final Boolean[] isReturned = {false};
@@ -126,6 +121,7 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
         Thread gameMechanicsThread = (new Thread(this));
         gameMechanicsThread.setDaemon(true);
         gameMechanicsThread.setName("Game Mechanics");
+        gameMechanicsThread.run();
     }
 
     @Override
@@ -140,7 +136,8 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
                 System.out.println("gm is lagging. step is " + (after - before) + "ms");
             }
             try {
-                Thread.sleep(stepTime - (after - before));
+                Thread.sleep((after - before));
+                //Thread.sleep(stepTime - (after - before));
                 final long afterSleep = clock.millis();
                 lastFrameMilles = afterSleep - before;
             } catch (InterruptedException e) {
@@ -200,7 +197,7 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
             gameFrame.toAnotherCoordinateSystem(xMax, yMax);
 
             final String gameFrameJsonSecond = gson.toJson(gameFrame);
-            Address secondUserAddress = addressMap.get(gameSession.getPlayerOne());
+            Address secondUserAddress = addressMap.get(gameSession.getPlayerTwo());
             messageToUser = new MessageToUser(address, secondUserAddress, gameFrameJsonSecond);
             messageSystem.sendMessage(messageToUser);
 
@@ -256,6 +253,6 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
 
     @Override
     public Address getAddress() {
-        return null;
+        return address;
     }
 }
