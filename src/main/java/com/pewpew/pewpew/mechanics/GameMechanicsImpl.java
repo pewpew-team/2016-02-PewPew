@@ -161,7 +161,7 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
                 messageSystem.sendMessage(messageGameOver);
 
                 Address secondUserAddress = addressMap.get(session.getPlayerTwo());
-                messageGameOver = new MessageGameOver(address, secondUserAddress, !git afirstWin);
+                messageGameOver = new MessageGameOver(address, secondUserAddress, firstWin);
                 messageSystem.sendMessage(messageGameOver);
             }
         });
