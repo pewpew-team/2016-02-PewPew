@@ -15,7 +15,6 @@ import javax.servlet.annotation.WebServlet;
 public class GameSocketServelet extends WebSocketServlet {
     static final Logger LOGGER = LogManager.getLogger(GameSocketServelet.class);
     private static final int IDLE_TIME = 600 * 1000;
-    private final Address address = new Address();
 
     private final AccountService accountService;
     private final MessageSystem messageSystem;
