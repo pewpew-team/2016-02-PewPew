@@ -136,7 +136,10 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
                 System.out.println("gm is lagging. step is " + (after - before) + "ms");
             }
             try {
-                Thread.sleep((after - before));
+                final long lag =  after - before;
+                if (lag > 0) {
+                    Thread.sleep(stepTime - (after - before));
+                }
                 //Thread.sleep(stepTime - (after - before));
                 final long afterSleep = clock.millis();
                 lastFrameMilles = afterSleep - before;
