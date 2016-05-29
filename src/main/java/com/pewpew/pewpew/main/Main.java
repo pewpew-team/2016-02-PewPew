@@ -67,11 +67,13 @@ public class Main {
 
             final MessageSystem messageSystem = new MessageSystem();
 
-            final GameMechanicsImpl gameMechanics = new GameMechanicsImpl(messageSystem);
+            final WebSocketService webSocketService = new WebSocketServiceImpl();
+
+            final GameMechanicsImpl gameMechanics = new GameMechanicsImpl(messageSystem, webSocketService);
 
 
             contextHandler.addServlet(new ServletHolder(new GameSocketServelet(
-                    accountService, messageSystem, gameMechanics.getAddress())), "/ws");
+                    accountService, messageSystem, gameMechanics.getAddress(), webSocketService)), "/ws");
 
             final ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);

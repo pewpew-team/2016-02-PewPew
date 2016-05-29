@@ -22,6 +22,7 @@ public class PlayerObject {
     public PlayerObject() {
         this.posX = START_POSITION_X;
         this.velX = 0.0;
+        this.gunAngle = 0.0;
     }
 
     public Double getPosX() {

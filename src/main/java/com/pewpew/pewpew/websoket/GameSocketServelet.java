@@ -19,20 +19,22 @@ public class GameSocketServelet extends WebSocketServlet {
     private final AccountService accountService;
     private final MessageSystem messageSystem;
     private final Address gameMechanicsAddress;
+    private final WebSocketService webSocketService;
 
     public GameSocketServelet(AccountService accountService,
                               MessageSystem messageSystem,
-                              Address gameMechanicsAddress) {
+                              Address gameMechanicsAddress, WebSocketService webSocketService) {
         this.accountService = accountService;
         this.messageSystem = messageSystem;
         this.gameMechanicsAddress = gameMechanicsAddress;
+        this.webSocketService = webSocketService;
     }
 
     @Override
     public void configure(WebSocketServletFactory webSocketServletFactory) {
         webSocketServletFactory.getPolicy().setIdleTimeout(IDLE_TIME);
 
-        webSocketServletFactory.setCreator(new GameSocketCreator(accountService, messageSystem, gameMechanicsAddress));
+        webSocketServletFactory.setCreator(new GameSocketCreator(accountService, messageSystem, gameMechanicsAddress, webSocketService));
         LOGGER.info("Socket servlet configured");
     }
 

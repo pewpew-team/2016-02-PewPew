@@ -18,12 +18,14 @@ public class GameSocketCreator implements WebSocketCreator {
     private final AccountService accountService;
     private final MessageSystem messageSystem;
     private final Address gameMechanicsAddress;
+    private final WebSocketService webSocketService;
 
     public GameSocketCreator(AccountService accountService, MessageSystem messageSystem,
-                             Address gameMechanicsAddress) {
+                             Address gameMechanicsAddress, WebSocketService webSocketService) {
         this.accountService = accountService;
         this.messageSystem = messageSystem;
         this.gameMechanicsAddress = gameMechanicsAddress;
+        this.webSocketService = webSocketService;
     }
     @Nullable
     @Override
@@ -45,8 +47,7 @@ public class GameSocketCreator implements WebSocketCreator {
             return null;
         }
         LOGGER.info("Socket created");
-        final GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress);
-        gameWebSocket.start();
+        final GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress, webSocketService);
         return gameWebSocket;
     }
 }

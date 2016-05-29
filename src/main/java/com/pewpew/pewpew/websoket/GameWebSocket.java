@@ -1,5 +1,6 @@
 package com.pewpew.pewpew.websoket;
 
+import com.pewpew.pewpew.common.TimeHelper;
 import com.pewpew.pewpew.messagesystem.Abonent;
 import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.messagesystem.MessageSystem;
@@ -24,34 +25,46 @@ import org.jetbrains.annotations.NotNull;
 
 
 import java.io.IOException;
+import java.time.Clock;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("ALL")
 @WebSocket
-public class GameWebSocket implements Abonent,Runnable {
+public class GameWebSocket implements Abonent {
     static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
+
+    private WebSocketService webSocketService;
 
     private final String userName;
     private String enemyName;
     private Session userSession;
     private Boolean gameEnded;
-    private final Address address = new Address();;
+    private final Address address = new Address();
     private final Address gameMechanicsAddress;
 
     @NotNull
+    private final Clock clock = Clock.systemDefaultZone();
+
+    private final long stepTime = 50;
+    @NotNull
     private final MessageSystem messageSystem;
 
+
     public GameWebSocket(String userName, MessageSystem messageSystem,
-                         Address gameMechanicsAddress) {
+                         Address gameMechanicsAddress, WebSocketService webSocketService) {
         this.userName = userName;
         this.messageSystem = messageSystem;
         messageSystem.addService(this);
         this.gameMechanicsAddress = gameMechanicsAddress;
+        this.webSocketService = webSocketService;
     }
 
 
     @OnWebSocketConnect
     public void onOpen(Session session) {
         userSession = session;
+        webSocketService.addUser(this, userName);
         MessageRegister registerMessage = new MessageRegister(address, gameMechanicsAddress, userName);
         messageSystem.sendMessage(registerMessage);
         LOGGER.info("onOpen");
@@ -66,6 +79,7 @@ public class GameWebSocket implements Abonent,Runnable {
                     new MessageRemoveSession(address, gameMechanicsAddress, userName);
             messageSystem.sendMessage(messageRemoveSession);
             gameEnded = false;
+            webSocketService.removeUser(userName);
         } else {
             MessagePauseGame messagePauseGame = new MessagePauseGame(address, gameMechanicsAddress, userName);
             messageSystem.sendMessage(messagePauseGame);
@@ -124,10 +138,6 @@ public class GameWebSocket implements Abonent,Runnable {
         }
     }
 
-    public void start() {
-        (new Thread(this)).start();
-    }
-
     public void setGameEnded(Boolean gameEnded) {
         this.gameEnded = gameEnded;
     }
@@ -147,17 +157,5 @@ public class GameWebSocket implements Abonent,Runnable {
 
     public void setEnemyName(String enemyName) {
         this.enemyName = enemyName;
-    }
-
-    @Override
-    public void run() {
-        while (!Thread.interrupted()) {
-            messageSystem.execForAbonent(this);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
     }
 }
