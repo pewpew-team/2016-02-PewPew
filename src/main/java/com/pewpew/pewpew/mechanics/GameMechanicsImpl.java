@@ -4,14 +4,10 @@ import com.google.gson.Gson;
 import com.pewpew.pewpew.messagesystem.Abonent;
 import com.pewpew.pewpew.messagesystem.Address;
 import com.pewpew.pewpew.messagesystem.MessageSystem;
-import com.pewpew.pewpew.messages.towebsocket.MessageGameOver;
-import com.pewpew.pewpew.messages.towebsocket.MessageGameStart;
-import com.pewpew.pewpew.messages.towebsocket.MessageToUser;
 import com.pewpew.pewpew.model.Bullet;
 import com.pewpew.pewpew.model.GameChanges;
 import com.pewpew.pewpew.model.GameFrame;
 import com.pewpew.pewpew.model.PlayerObject;
-import com.pewpew.pewpew.websoket.GameWebSocket;
 import com.pewpew.pewpew.websoket.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +37,6 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
 
     @NotNull
     private final Map<String, GameSession> nameToGame = new HashMap<>();
-
-    @NotNull
-    private final Map<String, Address> addressMap = new HashMap<>();
 
     @Nullable
     private volatile String waiter;
@@ -78,7 +71,6 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
 
     @Override
     public void addUser(@NotNull String user, @NotNull Address addressSocket) {
-        addressMap.put(user, addressSocket);
         if (!recoverGame(user)) {
             if (waiter != null) {
                 //noinspection ConstantConditions
@@ -147,7 +139,6 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
                 if (stepTime - lag > 0) {
                     Thread.sleep(stepTime - lag);
                 }
-                //Thread.sleep(stepTime - (after - before));
                 final long afterSleep = clock.millis();
                 lastFrameMilles = afterSleep - before;
             } catch (InterruptedException e) {
@@ -160,18 +151,11 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
         messageSystem.execForAbonent(this);
         allSessions.stream().filter(session -> !session.getPaused()).forEach(session -> {
             sendState(session, timeTick);
+            System.out.println(session.getGameFrame().getBullets().size());
             if (session.getPlayerOneWon() != null) {
                 final Boolean firstWin = session.getPlayerOneWon();
-
                 webSocketService.notifyGameOver(session.getPlayerOne(), !firstWin);
                 webSocketService.notifyGameOver(session.getPlayerTwo(), firstWin);
-//                final Address firstUserAddress = addressMap.get(session.getPlayerOne());
-//                final MessageGameOver messageGameOver = new MessageGameOver(address, firstUserAddress, !firstWin);
-//                messageSystem.sendMessage(messageGameOver);
-//
-//                final Address secondUserAddress = addressMap.get(session.getPlayerTwo());
-//                final MessageGameOver secondMessageGameOver = new MessageGameOver(address, secondUserAddress, firstWin);
-//                messageSystem.sendMessage(secondMessageGameOver);
             }
         });
     }
@@ -213,7 +197,7 @@ public class GameMechanicsImpl implements GameMechanics, Abonent, Runnable {
     }
 
     @Override
-    public void changeState(GameChanges gameChanges, String userName) {
+    public synchronized void changeState(GameChanges gameChanges, String userName) {
         final GameSession gameSession = nameToGame.get(userName);
         if (gameSession != null) {
             final PlayerObject playerObject = gameChanges.getPlayer();

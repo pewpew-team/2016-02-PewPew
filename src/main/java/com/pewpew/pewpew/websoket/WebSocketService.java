@@ -9,6 +9,8 @@ public interface WebSocketService {
 
     void removeUser(String userId);
 
+    Boolean containsUser(String userId);
+
     void notifyStartGame(String user, String enemy);
 
     void sendMessageToUser(String message, String userSessionId);

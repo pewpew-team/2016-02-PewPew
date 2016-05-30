@@ -46,6 +46,9 @@ public class GameSocketCreator implements WebSocketCreator {
             LOGGER.error("No such user");
             return null;
         }
+        if (webSocketService.containsUser(user)) {
+            return null;
+        }
         LOGGER.info("Socket created");
         final GameWebSocket gameWebSocket = new GameWebSocket(user, messageSystem, gameMechanicsAddress, webSocketService);
         return gameWebSocket;

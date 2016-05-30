@@ -83,6 +83,7 @@ public class GameWebSocket implements Abonent {
         } else {
             MessagePauseGame messagePauseGame = new MessagePauseGame(address, gameMechanicsAddress, userName);
             messageSystem.sendMessage(messagePauseGame);
+            webSocketService.removeUser(userName);
         }
         this.userSession = null;
     }

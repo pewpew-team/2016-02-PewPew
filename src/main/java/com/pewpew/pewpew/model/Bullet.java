@@ -12,6 +12,16 @@ public class Bullet {
     private Double sizeX;
     private Double sizeY;
 
+    private transient Integer collisions = 0;
+
+    public Integer getCollisions() {
+        return collisions;
+    }
+
+    public void setCollisions(Integer collisions) {
+        this.collisions = collisions;
+    }
+
     public Integer getBulletId() {
         return bulletId;
     }

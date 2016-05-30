@@ -45,4 +45,9 @@ public class WebSocketServiceImpl implements WebSocketService {
         final Gson gson = new Gson();
         gameWebSocket.sendMessage(gson.toJson(jsonObject));
     }
+
+    public Boolean containsUser(String user) {
+        return userSockets.containsKey(user);
+    }
+
 }

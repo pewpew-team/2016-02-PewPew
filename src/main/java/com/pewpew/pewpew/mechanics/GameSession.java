@@ -101,7 +101,7 @@ public class GameSession {
     }
 
     @SuppressWarnings("OverlyComplexMethod")
-    public void moveBullets(long timeBefore) {
+    public synchronized void moveBullets(long timeBefore) {
         final Iterator<Bullet> iterator = gameFrame.getBullets().iterator();
         final Rectangle userOne = gameFrame.getPlayer().getRect(yMax.intValue());
         final Rectangle userTwo = gameFrame.getEnemy().getRectEnemy();
@@ -137,6 +137,10 @@ public class GameSession {
                     }
                 }
             }
+            if (bullet.getCollisions() > 20) {
+                System.out.println("Object should be removed");
+                iterator.remove();
+            }
         }
     }
 
@@ -162,7 +166,7 @@ public class GameSession {
     
 
     @NotNull
-    private Boolean tryToCollide(Bullet bullet, Barrier barrier) {
+    private synchronized Boolean tryToCollide(Bullet bullet, Barrier barrier) {
         final Double collisionDistX = Math.pow(((bullet.getSizeX() + barrier.getSizeX())/2), 2);
         final Double collisionDistY = Math.pow(((bullet.getSizeY() + barrier.getSizeY())/2), 2);
 
@@ -172,7 +176,7 @@ public class GameSession {
         return ((collisionDistX > distSquare) || (collisionDistY > distSquare));
     }
 
-    private void collide(Bullet bullet, Barrier barrier) {
+    private synchronized void collide(Bullet bullet, Barrier barrier) {
         final Double bulletPosX = bullet.getPosX() - (barrier.getPosX() - barrier.getSizeX()/2);
         final Double bulletPosY = bullet.getPosY() - (barrier.getPosY() - barrier.getSizeY()/2);
 
@@ -194,14 +198,17 @@ public class GameSession {
             this.moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
             bullet.setVelX(-bullet.getVelX());
             bullet.setVelY(-bullet.getVelY());
+            bullet.setCollisions(bullet.getCollisions() + 1);
         }
         else if ((intersectionWithParallelY.getX() >= 0) && (intersectionWithParallelY.getX() <= barrier.getSizeX())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelX);
             bullet.setVelY(-bullet.getVelY());
+            bullet.setCollisions(bullet.getCollisions() + 1);
         }
         else if ((intersectionWithParallelX.getY() >= 0) && (intersectionWithParallelX.getY() <= barrier.getSizeY())) {
             moveToIntersectionPoint(bullet, barrier, intersectionWithParallelY);
             bullet.setVelX(-bullet.getVelX());
+            bullet.setCollisions(bullet.getCollisions() + 1);
         }
     }
 
